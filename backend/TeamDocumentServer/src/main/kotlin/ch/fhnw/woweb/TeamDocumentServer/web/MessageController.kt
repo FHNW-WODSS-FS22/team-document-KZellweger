@@ -1,6 +1,7 @@
 package ch.fhnw.woweb.TeamDocumentServer.web
 
 import ch.fhnw.woweb.TeamDocumentServer.service.DocumentService
+import ch.fhnw.woweb.TeamDocumentServer.service.JavaService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,7 +17,7 @@ class MessageController(
 
     @PostMapping()
     fun message(@RequestBody message: List<String>): ResponseEntity<Void> {
-        service.producePseudoStream(message)
+        service.consumer?.accept(message)
         return ResponseEntity(HttpStatus.OK)
     }
 }
