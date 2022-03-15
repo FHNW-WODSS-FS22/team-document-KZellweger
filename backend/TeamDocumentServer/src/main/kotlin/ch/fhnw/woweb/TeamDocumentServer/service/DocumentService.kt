@@ -1,22 +1,28 @@
 package ch.fhnw.woweb.TeamDocumentServer.service
 
-import org.reactivestreams.Publisher
+import org.springframework.http.codec.ServerSentEvent
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
-import reactor.core.publisher.FluxSink
-import java.util.function.Consumer
-import java.util.function.Supplier
+import reactor.core.publisher.Sinks
 
 @Service
 class DocumentService {
-    var consumer: Consumer<List<String?>>? = null
-    fun produceStream(): Flux<String?> {
-        return Flux.create { sink: FluxSink<String?> ->
-            consumer = Consumer { items: List<String?> ->
-                items.forEach(
-                    Consumer { t: String? -> sink.next(t!!) })
+    val sink = Sinks.many().multicast().onBackpressureBuffer<String>()
+
+    fun postMessages(messages: List<String>) {
+        for (m in messages) {
+            val result = sink.tryEmitNext(m)
+            if (result.isFailure) {
+                println("emit result is failure")
             }
         }
     }
 
+    fun getStream(): Flux<ServerSentEvent<String>>? {
+        return sink.asFlux().map { e: String ->
+            ServerSentEvent.builder(
+                "Processed: $e"
+            ).build()
+        }.log()
+    }
 }
