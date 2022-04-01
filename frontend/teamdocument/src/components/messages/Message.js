@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {getMessages, sendMessage} from "../../hooks/messages.hook";
+import {sendMessage} from "../../hooks/messages.hook";
+import {fromFetch} from "rxjs/fetch";
 
 // https://www.digitalocean.com/community/tutorials/how-to-call-web-apis-with-the-useeffect-hook-in-react
 function Message() {
@@ -7,15 +8,16 @@ function Message() {
     const [messageInput, setMessageInput] = useState('');
 
     useEffect(() => {
-        let mounted = true;
-        getMessages()
-            .then(messages => {
-                if(mounted) {
-                    setMessages(messages)
-                }
-            })
-        return () => mounted = false;
+        fromFetch(process.env.REACT_APP_BACKEND_BASE + '/message')
+            .subscribe(response =>
+                response.json().then(
+                    data => {
+                        console.log(data)
+                        setMessages(data)
+                    })
+            );
     }, [])
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,9 +27,6 @@ function Message() {
     return(
         <div className="wrapper">
             <h1>Messages</h1>
-            <ul>
-                {messages.map(message => <li key={message}>{message}</li>)}
-            </ul>
             <form onSubmit={handleSubmit}>
                 <label>
                     <p>New Message</p>
