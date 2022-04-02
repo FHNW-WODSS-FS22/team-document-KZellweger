@@ -15,21 +15,25 @@ sealed class DocumentCommand : Command {
     ) : DocumentCommand()
 
     data class AddParagraph(
+        // TODO: Payload
         override val sender: UUID,
         override val type: String
     ) : DocumentCommand()
 
     data class UpdateParagraphContent(
+        // TODO: Payload
         override val sender: UUID,
         override val type: String
     ) : DocumentCommand()
 
     data class UpdateParagraphOrdinals(
+        // TODO: Payload
         override val sender: UUID,
         override val type: String
     ) : DocumentCommand()
 
     data class UpdateAuthor(
+        // TODO: Payload
         override val sender: UUID,
         override val type: String
     ) : DocumentCommand()

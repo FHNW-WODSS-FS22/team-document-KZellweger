@@ -25,10 +25,10 @@ class DocumentService {
             .log()
     }
 
-    // TODO implement
     fun process(command: Command) = when(command) {
         is DocumentCommand.InitializeDocument -> process(command)
-        else -> {}
+        else -> {     // TODO implement commands
+        }
     }
 
     private fun process(command: DocumentCommand.InitializeDocument) {
