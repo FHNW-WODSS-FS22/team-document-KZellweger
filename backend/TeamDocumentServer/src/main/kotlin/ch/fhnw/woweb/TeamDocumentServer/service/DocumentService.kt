@@ -1,6 +1,7 @@
 package ch.fhnw.woweb.TeamDocumentServer.service
 
-import org.springframework.http.codec.ServerSentEvent
+import ch.fhnw.woweb.TeamDocumentServer.domain.Command
+import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
@@ -18,11 +19,21 @@ class DocumentService {
         }
     }
 
-    fun getStream(): Flux<ServerSentEvent<String>>? {
-        return sink.asFlux().map { e: String ->
-            ServerSentEvent.builder(
-                "Processed: $e"
-            ).build()
-        }.log()
+    fun getStream(): Flux<String> {
+        return sink.asFlux()
+            .map { "Processed: $it" }
+            .log()
     }
+
+    fun process(command: Command) = when(command) {
+        is DocumentCommand.InitializeDocument -> process(command)
+        else -> {     // TODO implement commands
+        }
+    }
+
+    private fun process(command: DocumentCommand.InitializeDocument) {
+        print(command.payload)
+    }
+
+
 }
