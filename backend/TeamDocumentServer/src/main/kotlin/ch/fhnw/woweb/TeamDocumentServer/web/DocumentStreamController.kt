@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("api/v1/document")
@@ -16,9 +17,9 @@ class DocumentStreamController(
 )
 {
 
-    @GetMapping(produces = [MediaType.APPLICATION_NDJSON_VALUE])
-    fun getUpdatedDocument(): Flux<ServerSentEvent<String>>? {
-        return service.getStream();
+    @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun getUpdatedDocument(): Flux<String> {
+        // TODO: Return initial state and the update stream
+        return service.getStream()
     }
-
 }

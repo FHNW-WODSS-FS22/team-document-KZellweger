@@ -1,6 +1,5 @@
 package ch.fhnw.woweb.TeamDocumentServer.service
 
-import org.springframework.http.codec.ServerSentEvent
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
@@ -18,11 +17,9 @@ class DocumentService {
         }
     }
 
-    fun getStream(): Flux<ServerSentEvent<String>>? {
-        return sink.asFlux().map { e: String ->
-            ServerSentEvent.builder(
-                "Processed: $e"
-            ).build()
-        }.log()
+    fun getStream(): Flux<String> {
+        return sink.asFlux()
+            .map { "Processed: $it" }
+            .log()
     }
 }
