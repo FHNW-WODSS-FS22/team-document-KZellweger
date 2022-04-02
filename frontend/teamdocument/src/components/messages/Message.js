@@ -10,11 +10,19 @@ function Message() {
     const [messageInput, setMessageInput] = useState('');
 
     useEffect(() => {
-        Observable.bind(observer => {
-            const eventSource = new EventSource(process.env.REACT_APP_BACKEND_BASE + '/message');
-            eventSource.onmessage = msg => observer.next(console.log(msg.data));
+        Observable.create(observer => {
+            const eventSource = new EventSource(process.env.REACT_APP_BACKEND_BASE + '/document');
+            eventSource.onmessage = msg => observer.next(msg.data);
             eventSource.onerror = err => observer.error(err);
-        })
+
+            return () => {
+                eventSource.close();
+            }
+        }).subscribe({
+            next: data => console.log(data),
+            error: e => console.log(e)
+        });
+
     }, []);
 
     const handleSubmit = (e) => {
