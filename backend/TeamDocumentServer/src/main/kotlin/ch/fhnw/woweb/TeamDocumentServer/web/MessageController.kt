@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 class MessageController(
     val service: DocumentService
 ) {
-    @CrossOrigin
+    @CrossOrigin(origins = ["*", "http://localhost:3000"])
     @PostMapping()
     fun message(@RequestBody message: List<String>): ResponseEntity<Void> {
         println(message)

@@ -5,5 +5,5 @@ export function sendMessage(message) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify([message])
-    }).then(data => data.json())
+    }).then(data => data.json()).then(json => console.log(json)).then(error => console.error(error))
 }

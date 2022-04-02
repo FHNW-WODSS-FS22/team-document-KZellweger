@@ -16,7 +16,7 @@ class DocumentStreamController(
 )
 {
 
-    @CrossOrigin
+    @CrossOrigin(origins = ["http://localhost:3000", "*"])
     @GetMapping(produces = [MediaType.APPLICATION_NDJSON_VALUE])
     fun getUpdatedDocument(): Flux<ServerSentEvent<String>>? {
         return service.getStream();
