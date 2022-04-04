@@ -1,27 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
+import { useDispatch } from 'react-redux'
+import Paragraph from "./components/Paragraph";
 import Message from "./components/messages/Message";
 
-function App() {
+const App = () => {
+
+
+  const dispatch = useDispatch()
+
+
+  const esRef = useRef(null);
+  useEffect(() => {
+    // TODO: Wrap in observable
+    if (!esRef.current) {
+      const eventSource = new EventSource(process.env.REACT_APP_BACKEND_BASE + '/document');
+      eventSource.onmessage = msg => console.log(msg.data);
+      eventSource.onerror = err => console.log(err);
+      esRef.current = eventSource;
+
+      return () => esRef.current.close()
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Test: {process.env.REACT_APP_BACKEND_BASE}</p>
+    <div className="App" id="app">
+        <Paragraph />
         <Message />
-      </header>
     </div>
   );
 }
