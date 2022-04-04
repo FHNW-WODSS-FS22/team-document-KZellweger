@@ -5,5 +5,7 @@ export function sendMessage(message) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify([message])
-    }).then(response => console.log("Response for " + response.url + " with status: " + response.status)).then(error => console.error(error))
+    }).then(response => {
+        // console.log("Response for " + response?.url + " with status: " + response?.status);
+    }).catch(error => console.error(error))
 }

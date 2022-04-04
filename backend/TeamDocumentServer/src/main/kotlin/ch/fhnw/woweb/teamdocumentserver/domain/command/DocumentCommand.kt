@@ -5,5 +5,5 @@ import java.util.*
 data class DocumentCommand(
     val payload: String,
     val sender: UUID,
-    val type: CommandType = CommandType.GENERIC
+    val type: CommandType
 )

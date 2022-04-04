@@ -1,10 +1,21 @@
 import React, {useEffect, useState, useRef} from 'react'
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {sendMessage} from "../hooks/messages.hook";
 
 const Paragraph = () => {
 
     const text = useSelector(state => state.text);
+    const dispatch = useDispatch()
 
+    const handleChange = e => {
+        e.preventDefault()
+        dispatch({ type: 'UPDATE_PARAGRAPH', payload: e.target.value })
+        sendMessage({
+            type: 'UPDATE_PARAGRAPH',
+            payload: e.target.value,
+            sender: '89f3a230-8996-4d60-bc5a-a384cb9f824e'
+        });
+    }
 
     return (
         <div>
@@ -12,7 +23,7 @@ const Paragraph = () => {
             <br/>
             <input type="number" min="0"  />
             <br/>
-            <textarea value={text}>
+            <textarea value={text} onChange={handleChange}>
             </textarea>
         </div>
     );

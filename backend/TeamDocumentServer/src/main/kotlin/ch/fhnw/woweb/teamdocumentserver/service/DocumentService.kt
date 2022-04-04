@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
+import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -23,7 +24,8 @@ class DocumentService(
         return Flux.just(
             DocumentCommand(
                 "I am the initial state.",
-                UUID.randomUUID()
+                UUID.randomUUID(),
+                CommandType.INITIAL
             )
         )
     }
