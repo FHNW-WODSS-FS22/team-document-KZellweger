@@ -16,10 +16,8 @@ class DocumentStreamController(
     val service: DocumentService
 )
 {
-
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun getUpdatedDocument(): Flux<String> {
-        // TODO: Return initial state and the update stream
-        return service.getStream()
+        return service.subscribe()
     }
 }
