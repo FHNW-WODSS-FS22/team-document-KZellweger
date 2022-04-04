@@ -15,8 +15,8 @@ class MessageController(
     val service: DocumentService
 ) {
 
-    @PostMapping
-    fun message(@RequestBody message: List<DocumentCommand>): ResponseEntity<Void> {
+    @PostMapping("/GENERIC")
+    fun message(@RequestBody message: List<DocumentCommand.GenericCommand>): ResponseEntity<Void> {
         println(message)
         service.postMessages(message)
         return ResponseEntity(HttpStatus.OK)
