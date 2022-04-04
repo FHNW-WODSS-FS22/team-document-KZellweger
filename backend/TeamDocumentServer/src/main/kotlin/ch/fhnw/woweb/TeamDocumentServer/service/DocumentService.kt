@@ -1,8 +1,10 @@
 package ch.fhnw.woweb.TeamDocumentServer.service
 
+import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand.GenericCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
+import java.util.*
 
 @Service
 class DocumentService {
@@ -18,17 +20,17 @@ class DocumentService {
         }
     }
 
-    fun subscribe(): Flux<String> {
+    fun subscribe(): Flux<GenericCommand> {
         return Flux.merge(getInitialState(), getStream())
     }
 
-    private fun getInitialState(): Flux<String> {
-        return Flux.just("I am the initial state.")
+    private fun getInitialState(): Flux<GenericCommand> {
+        return Flux.just(GenericCommand("I am the initial state.", UUID.randomUUID(), "INITIAL"))
     }
 
-    private fun getStream(): Flux<String> {
+    private fun getStream(): Flux<GenericCommand> {
         return sink.asFlux()
-            .map { "Processed: $it" }
+            .map { GenericCommand("Processed: $it", UUID.randomUUID(), "UPDATE") }
             .log()
     }
 }

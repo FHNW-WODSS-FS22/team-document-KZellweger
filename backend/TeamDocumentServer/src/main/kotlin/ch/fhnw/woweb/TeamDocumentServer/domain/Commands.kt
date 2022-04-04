@@ -8,6 +8,13 @@ interface Command {
 }
 
 sealed class DocumentCommand : Command {
+
+    data class GenericCommand(
+        val payload: String,
+        override val sender: UUID,
+        override val type: String,
+    ) : DocumentCommand()
+
     data class InitializeDocument(
         val payload: Document,
         override val sender: UUID,
