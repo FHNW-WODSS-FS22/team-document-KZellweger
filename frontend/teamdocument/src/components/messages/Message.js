@@ -19,7 +19,14 @@ function Message() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(JSON.stringify([messageInput]));
-        sendMessage(messageInput)
+
+        const mesg = {
+            sender: "8f7f292b-ffc9-4aba-a523-6a1d826a6608",
+            type: "GENERIC",
+            payload: messageInput
+        }
+
+        sendMessage(mesg)
     };
 
     return(

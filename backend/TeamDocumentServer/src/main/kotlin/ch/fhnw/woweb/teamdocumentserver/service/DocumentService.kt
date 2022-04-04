@@ -30,7 +30,7 @@ class DocumentService(
         return sink.asFlux().log()
     }
 
-    fun postMessages(messages: List<String>) {
+    fun postMessages(messages: List<DocumentCommand>) {
         messages
             .map { processor.process(it) }
             .forEach { publish(it) }

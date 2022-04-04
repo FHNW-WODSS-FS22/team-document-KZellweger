@@ -12,7 +12,7 @@ class DocumentProcessor(
 ) {
 
     // TODO: Receive command instead of string
-    fun process(cmd: String): DocumentCommand {
+    fun process(cmd: DocumentCommand): DocumentCommand {
         return DocumentCommand.GenericCommand("Processed: $cmd", UUID.randomUUID())
     }
 
