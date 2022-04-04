@@ -4,17 +4,20 @@ import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
+import reactor.util.concurrent.Queues
+import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import java.util.*
+
 
 @Service
 class DocumentService(
     val processor: DocumentProcessor,
 ) {
 
-    private val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>()
+    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
-        return Flux.merge(getInitialState(), getUpdateStream())
+        return Flux.merge(getInitialState(), getUpdateStream()).onErrorStop()
     }
 
     private fun getInitialState(): Flux<DocumentCommand> {

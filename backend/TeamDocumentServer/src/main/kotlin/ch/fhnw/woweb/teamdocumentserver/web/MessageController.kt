@@ -21,4 +21,5 @@ class MessageController(
         service.postMessages(message)
         return ResponseEntity(HttpStatus.OK)
     }
+
 }
