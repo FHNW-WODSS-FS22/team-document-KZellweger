@@ -1,14 +1,12 @@
-package ch.fhnw.woweb.TeamDocumentServer.web
+package ch.fhnw.woweb.teamdocumentserver.web
 
-import ch.fhnw.woweb.TeamDocumentServer.service.DocumentService
+import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
+import ch.fhnw.woweb.teamdocumentserver.service.DocumentService
 import org.springframework.http.MediaType
-import org.springframework.http.codec.ServerSentEvent
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("api/v1/document")
@@ -16,10 +14,8 @@ class DocumentStreamController(
     val service: DocumentService
 )
 {
-
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun getUpdatedDocument(): Flux<String> {
-        // TODO: Return initial state and the update stream
-        return service.getStream()
+    fun getUpdatedDocument(): Flux<DocumentCommand> {
+        return service.subscribe()
     }
 }
