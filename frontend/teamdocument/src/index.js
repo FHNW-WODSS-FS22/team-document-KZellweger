@@ -16,14 +16,6 @@ const initialState = {
         name: 'Grünes Walross'
     },
     paragraphs: [
-        {
-            id: randomUUID(),
-            ordinal: 0,
-            content: 'SomeText',
-            author: {
-                id: randomUUID()
-            }
-        }
     ],
 
     text: 'Some Text'

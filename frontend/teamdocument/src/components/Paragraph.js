@@ -7,12 +7,15 @@ import {sendMessage} from "../hooks/messages.hook";
 const Paragraph = ({id}) => {
 
     const paragraph = useSelector(state => {
+        console.log(state);
+
         return state.paragraphs.find(p => id === p.id);
     });
     const dispatch = useDispatch()
 
     const handleChange = e => {
         e.preventDefault()
+
 
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })

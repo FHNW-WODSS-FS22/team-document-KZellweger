@@ -17,8 +17,8 @@ const App = () => {
       const eventSource = new EventSource(process.env.REACT_APP_BACKEND_BASE + '/document');
       eventSource.onmessage = msg => {
         const cmd = JSON.parse(msg.data)
-        console.log(cmd.type);
-        dispatch({ type: cmd.type, payload: cmd.payload })
+        const payload = JSON.parse(cmd.payload);
+        dispatch({ type: cmd.type, payload: payload })
       }
       eventSource.onerror = err => {
         console.log(err)
@@ -32,7 +32,7 @@ const App = () => {
   return (
     <div className="App" id="app">
       {
-        paragraphs.map(p => { return <Paragraph key={p.id} id={p.id} /> }  )
+        paragraphs.map(p => { return <Paragraph key={p} id={p.id} /> }  )
       }
 
         <Message />

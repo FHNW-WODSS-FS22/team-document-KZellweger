@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 const REDUCERS = {
-    'INITIAL': (state, action) => ( { ...state, text: action.payload }),
+    'INITIAL': (state, action) => ( { ...state, paragraphs: _.concat(state.paragraphs, action.payload) }),
 
     'UPDATE_PARAGRAPH': (state, action) => ({
         ...state,
