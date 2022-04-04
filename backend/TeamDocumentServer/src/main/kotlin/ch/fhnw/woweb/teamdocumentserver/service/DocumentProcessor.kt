@@ -13,7 +13,20 @@ class DocumentProcessor(
 
     // TODO: Receive command instead of string
     fun process(cmd: DocumentCommand): DocumentCommand {
-        return DocumentCommand.GenericCommand("Processed: $cmd", UUID.randomUUID())
+
+//        when(cmd.type) {
+//            GENERIC -> TODO()
+//            INITIAL -> TODO()
+//            ADD_PARAGRAPH -> TODO()
+//            UPDATE_PARAGRAPH -> TODO()
+//            UPDATE_PARAGRAPH_ORDINALS -> TODO()
+//            UPDATE_AUTHOR -> TODO()
+//        }
+
+        return DocumentCommand(
+            payload = "Processed: $cmd",
+            sender = UUID.randomUUID()
+        )
     }
 
 }

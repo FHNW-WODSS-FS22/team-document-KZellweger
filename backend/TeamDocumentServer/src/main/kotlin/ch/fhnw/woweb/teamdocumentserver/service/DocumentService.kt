@@ -4,7 +4,6 @@ import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
-import reactor.util.concurrent.Queues
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import java.util.*
 
@@ -22,7 +21,7 @@ class DocumentService(
 
     private fun getInitialState(): Flux<DocumentCommand> {
         return Flux.just(
-            DocumentCommand.InitializeDocument(
+            DocumentCommand(
                 "I am the initial state.",
                 UUID.randomUUID()
             )
@@ -33,7 +32,7 @@ class DocumentService(
         return sink.asFlux().log()
     }
 
-    fun postMessages(messages: List<DocumentCommand>) {
+    fun process(messages: List<DocumentCommand>) {
         messages
             .map { processor.process(it) }
             .forEach { publish(it) }

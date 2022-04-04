@@ -1,5 +1,5 @@
 export function sendMessage(message) {
-    return fetch(process.env.REACT_APP_BACKEND_BASE + '/message/GENERIC', {
+    return fetch(process.env.REACT_APP_BACKEND_BASE + '/message', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
