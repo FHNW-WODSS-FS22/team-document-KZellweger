@@ -1,20 +1,6 @@
-package ch.fhnw.woweb.TeamDocumentServer.domain
+package ch.fhnw.woweb.teamdocumentserver.domain.command
 
 import java.util.UUID
-
-interface Command {
-    val sender: UUID
-    val type: CommandType
-}
-
-enum class CommandType {
-    GENERIC, // For testing
-    INITIAL,
-    ADD_PARAGRAPH,
-    UPDATE_PARAGRAPH,
-    UPDATE_PARAGRAPH_ORDINALS,
-    UPDATE_AUTHOR
-}
 
 sealed class DocumentCommand : Command {
 

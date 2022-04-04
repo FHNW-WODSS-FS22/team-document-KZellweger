@@ -1,9 +1,8 @@
-package ch.fhnw.woweb.TeamDocumentServer.service
+package ch.fhnw.woweb.teamdocumentserver.service
 
-import ch.fhnw.woweb.TeamDocumentServer.domain.CommandType
-import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand
-import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand.GenericCommand
-import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand.InitializeDocument
+import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
+import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
+import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand.InitializeDocument
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks

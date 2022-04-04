@@ -1,6 +1,6 @@
-package ch.fhnw.woweb.TeamDocumentServer.web
+package ch.fhnw.woweb.teamdocumentserver.web
 
-import ch.fhnw.woweb.TeamDocumentServer.service.DocumentService
+import ch.fhnw.woweb.teamdocumentserver.service.DocumentService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

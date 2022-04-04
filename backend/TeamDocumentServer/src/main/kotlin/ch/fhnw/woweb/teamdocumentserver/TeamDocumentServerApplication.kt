@@ -1,4 +1,4 @@
-package ch.fhnw.woweb.TeamDocumentServer
+package ch.fhnw.woweb.teamdocumentserver
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

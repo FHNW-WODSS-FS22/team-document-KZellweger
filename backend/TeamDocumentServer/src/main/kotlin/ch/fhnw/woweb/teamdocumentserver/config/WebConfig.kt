@@ -1,4 +1,4 @@
-package ch.fhnw.woweb.TeamDocumentServer.config
+package ch.fhnw.woweb.teamdocumentserver.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
