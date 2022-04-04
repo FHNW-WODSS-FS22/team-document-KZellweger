@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.TeamDocumentServer.service
 
+import ch.fhnw.woweb.TeamDocumentServer.domain.CommandType
 import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand
 import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand.GenericCommand
 import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand.InitializeDocument
@@ -20,7 +21,7 @@ class DocumentService(
     }
 
     private fun getInitialState(): Flux<DocumentCommand> {
-        return Flux.just(InitializeDocument("I am the initial state.", UUID.randomUUID(), "INITIAL"))
+        return Flux.just(InitializeDocument("I am the initial state.", UUID.randomUUID(), CommandType.INITIAL))
     }
 
     private fun getUpdateStream(): Flux<DocumentCommand> {
