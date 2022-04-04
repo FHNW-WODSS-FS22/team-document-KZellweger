@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.TeamDocumentServer.web
 
+import ch.fhnw.woweb.TeamDocumentServer.domain.DocumentCommand
 import ch.fhnw.woweb.TeamDocumentServer.service.DocumentService
 import org.springframework.http.MediaType
 import org.springframework.http.codec.ServerSentEvent
@@ -17,7 +18,7 @@ class DocumentStreamController(
 )
 {
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun getUpdatedDocument(): Flux<String> {
+    fun getUpdatedDocument(): Flux<DocumentCommand> {
         return service.subscribe()
     }
 }

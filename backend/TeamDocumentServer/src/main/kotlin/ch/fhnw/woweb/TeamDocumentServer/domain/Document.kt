@@ -3,7 +3,7 @@ package ch.fhnw.woweb.TeamDocumentServer.domain
 import java.util.UUID
 
 class Document(
-    val paragraphs: List<Paragraph>
+    val paragraphs: List<Paragraph> = mutableListOf()
 )
 
 class Paragraph(
