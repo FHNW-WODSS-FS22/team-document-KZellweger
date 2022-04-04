@@ -2,17 +2,24 @@ import React, {useEffect, useState, useRef} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../hooks/messages.hook";
 
-const Paragraph = () => {
+// TODO
+/* eslint-disable react/prop-types */
+const Paragraph = ({id}) => {
 
-    const text = useSelector(state => state.text);
+    const paragraph = useSelector(state => {
+        return state.paragraphs.find(p => id === p.id);
+    });
     const dispatch = useDispatch()
 
     const handleChange = e => {
         e.preventDefault()
-        dispatch({ type: 'UPDATE_PARAGRAPH', payload: e.target.value })
+
+        const payload =  { ...paragraph, content: e.target.value }
+        dispatch({ type: 'UPDATE_PARAGRAPH', payload })
+
         sendMessage({
             type: 'UPDATE_PARAGRAPH',
-            payload: e.target.value,
+            payload: JSON.stringify(payload),
             sender: '89f3a230-8996-4d60-bc5a-a384cb9f824e'
         });
     }
@@ -23,10 +30,11 @@ const Paragraph = () => {
             <br/>
             <input type="number" min="0"  />
             <br/>
-            <textarea value={text} onChange={handleChange}>
+            <textarea value={paragraph.content} onChange={handleChange}>
             </textarea>
         </div>
     );
 }
+
 
 export default Paragraph;

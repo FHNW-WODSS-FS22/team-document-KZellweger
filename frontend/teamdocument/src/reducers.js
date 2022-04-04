@@ -2,7 +2,12 @@ import _ from 'lodash'
 
 const REDUCERS = {
     'INITIAL': (state, action) => ( { ...state, text: action.payload }),
-    'UPDATE_PARAGRAPH': (state, action) => ( { ...state, text: action.payload }),
+
+    'UPDATE_PARAGRAPH': (state, action) => ({
+        ...state,
+        paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p )
+    }),
+
     'ERROR': (state, action) => ( { ...state })
 }
 

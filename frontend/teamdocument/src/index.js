@@ -7,8 +7,25 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reducer from "./reducers";
+import randomUUID from "./uuid";
 
 const initialState = {
+
+    author: {
+        id: randomUUID(),
+        name: 'Grünes Walross'
+    },
+    paragraphs: [
+        {
+            id: randomUUID(),
+            ordinal: 0,
+            content: 'SomeText',
+            author: {
+                id: randomUUID()
+            }
+        }
+    ],
+
     text: 'Some Text'
 }
 
