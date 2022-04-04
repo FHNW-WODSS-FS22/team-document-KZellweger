@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
+import ch.fhnw.woweb.teamdocumentserver.domain.command.Command
 import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand.InitializeDocument
@@ -13,17 +14,17 @@ class DocumentService(
     val processor: DocumentProcessor,
 ) {
 
-    private val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>()
+    private val sink = Sinks.many().multicast().onBackpressureBuffer<Command>()
 
-    fun subscribe(): Flux<DocumentCommand> {
+    fun subscribe(): Flux<Command> {
         return Flux.merge(getInitialState(), getUpdateStream())
     }
 
-    private fun getInitialState(): Flux<DocumentCommand> {
+    private fun getInitialState(): Flux<Command> {
         return Flux.just(InitializeDocument("I am the initial state.", UUID.randomUUID(), CommandType.INITIAL))
     }
 
-    private fun getUpdateStream(): Flux<DocumentCommand> {
+    private fun getUpdateStream(): Flux<Command> {
         return sink.asFlux().log()
     }
 
@@ -33,7 +34,7 @@ class DocumentService(
             .forEach { publish(it) }
     }
 
-    private fun publish(cmd: DocumentCommand) {
+    private fun publish(cmd: Command) {
         val result = sink.tryEmitNext(cmd)
         if (result.isFailure) {
             println("emit result is failure")
