@@ -1,45 +1,43 @@
 package ch.fhnw.woweb.teamdocumentserver.domain.command
 
-import java.util.UUID
+import java.util.*
 
-sealed class DocumentCommand : Command {
+sealed class DocumentCommand(
+    val type: CommandType = CommandType.GENERIC
+) {
+
+    abstract val sender: UUID;
 
     // This is only for testing
     data class GenericCommand(
         val payload: String,
         override val sender: UUID,
-        override val type: CommandType = CommandType.GENERIC,
     ) : DocumentCommand()
 
     data class InitializeDocument(
         val payload: String, // TODO: Use Document as Payload
         override val sender: UUID,
-        override val type: CommandType = CommandType.INITIAL,
-    ) : DocumentCommand()
+    ) : DocumentCommand(CommandType.INITIAL)
 
     data class AddParagraph(
         // TODO: Payload
         override val sender: UUID,
-        override val type: CommandType = CommandType.ADD_PARAGRAPH,
-    ) : DocumentCommand()
+    ) : DocumentCommand(CommandType.ADD_PARAGRAPH)
 
     data class UpdateParagraphContent(
         // TODO: Payload
         override val sender: UUID,
-        override val type: CommandType = CommandType.UPDATE_PARAGRAPH,
-    ) : DocumentCommand()
+    ) : DocumentCommand(CommandType.UPDATE_PARAGRAPH)
 
     data class UpdateParagraphOrdinals(
         // TODO: Payload
         override val sender: UUID,
-        override val type: CommandType = CommandType.UPDATE_PARAGRAPH_ORDINALS,
-    ) : DocumentCommand()
+    ) : DocumentCommand(CommandType.UPDATE_PARAGRAPH_ORDINALS)
 
     data class UpdateAuthor(
         // TODO: Payload
         override val sender: UUID,
-        override val type: CommandType = CommandType.UPDATE_AUTHOR,
-    ) : DocumentCommand()
+    ) : DocumentCommand(CommandType.UPDATE_AUTHOR)
 }
 
 
