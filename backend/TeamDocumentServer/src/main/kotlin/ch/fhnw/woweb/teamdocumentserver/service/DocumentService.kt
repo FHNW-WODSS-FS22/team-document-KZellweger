@@ -35,7 +35,7 @@ class DocumentService(
 
         return Flux.just(
             DocumentCommand(
-                Gson().toJson(p),
+                Gson().toJson(listOf(p)),
                 UUID.randomUUID(),
                 CommandType.INITIAL
             )
