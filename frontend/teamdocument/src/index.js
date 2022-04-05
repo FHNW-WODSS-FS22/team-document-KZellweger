@@ -13,11 +13,9 @@ const initialState = {
 
     author: {
         id: randomUUID(),
-        name: 'Grünes Walross'
+        name: Date.now()
     },
-    paragraphs: [
-    ],
-
+    paragraphs: [],
     messages: []
 }
 
