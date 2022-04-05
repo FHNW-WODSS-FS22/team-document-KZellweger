@@ -1,27 +1,41 @@
-import logo from './logo.svg';
 import './App.css';
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import Paragraph from "./components/Paragraph";
 import Message from "./components/messages/Message";
 
-function App() {
+const App = () => {
+
+  const dispatch = useDispatch()
+
+  const paragraphs = useSelector(state => state.paragraphs);
+
+
+  const esRef = useRef(null);
+  useEffect(() => {
+    if (!esRef.current) {
+      const eventSource = new EventSource(process.env.REACT_APP_BACKEND_BASE + '/document');
+      eventSource.onmessage = msg => {
+        const cmd = JSON.parse(msg.data)
+        const payload = JSON.parse(cmd.payload);
+        dispatch({ type: cmd.type, payload: payload })
+      }
+      eventSource.onerror = err => {
+        console.log(err)
+        dispatch({ type: 'ERROR', value: err })
+      }
+      esRef.current = eventSource;
+      return () => esRef.current.close()
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p>Test: {process.env.REACT_APP_BACKEND_BASE}</p>
+    <div className="App" id="app">
+      {
+        paragraphs.map(p => { return <Paragraph key={p} id={p.id} /> }  )
+      }
+
         <Message />
-      </header>
     </div>
   );
 }

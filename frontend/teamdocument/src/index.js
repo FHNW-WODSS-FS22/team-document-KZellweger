@@ -1,15 +1,28 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import ReduxThunk from 'redux-thunk'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import reducer from "./reducers";
+import randomUUID from "./uuid";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const initialState = {
+
+    author: {
+        id: randomUUID(),
+        name: 'Grünes Walross'
+    },
+    paragraphs: [
+    ],
+
+    text: 'Some Text'
+}
+
+const store = createStore(reducer, initialState, applyMiddleware(ReduxThunk))
+ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('app'))
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
