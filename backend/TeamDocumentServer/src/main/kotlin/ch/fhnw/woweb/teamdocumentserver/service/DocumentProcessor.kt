@@ -25,17 +25,9 @@ class DocumentProcessor(
             UPDATE_AUTHOR -> TODO()
         }
 
-    fun updateParagraphOrdinals(cmd: DocumentCommand): DocumentCommand {
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        document
-            .paragraphs
-            .find { it.id == p.id }
-            ?.ordinal = p.ordinal
-        return cmd;
-    }
-
     fun addParagraph(cmd: DocumentCommand): DocumentCommand {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        // TODO: Validate Ordinal and resolve Conflict if necessary
         document.paragraphs.add(p)
         return cmd;
     }
@@ -49,4 +41,13 @@ class DocumentProcessor(
         return cmd;
     }
 
+    fun updateParagraphOrdinals(cmd: DocumentCommand): DocumentCommand {
+        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        // TODO: sanity check: when staying with swapping no conflict resolve is necessary right?
+        document
+            .paragraphs
+            .find { it.id == p.id }
+            ?.ordinal = p.ordinal
+        return cmd;
+    }
 }
