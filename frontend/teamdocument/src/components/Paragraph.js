@@ -6,16 +6,12 @@ import {sendMessage} from "../hooks/messages.hook";
 /* eslint-disable react/prop-types */
 const Paragraph = ({id}) => {
 
-    const paragraph = useSelector(state => {
-        console.log(state);
+    const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
 
-        return state.paragraphs.find(p => id === p.id);
-    });
     const dispatch = useDispatch()
 
     const handleChange = e => {
         e.preventDefault()
-
 
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
@@ -29,8 +25,7 @@ const Paragraph = ({id}) => {
 
     return (
         <div>
-            <p>Author goes here.</p>
-            <br/>
+            <p>Author: {paragraph.author.id}</p>
             <input type="number" min="0"  />
             <br/>
             <textarea value={paragraph.content} onChange={handleChange}>

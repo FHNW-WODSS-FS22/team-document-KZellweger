@@ -18,7 +18,7 @@ const initialState = {
     paragraphs: [
     ],
 
-    text: 'Some Text'
+    messages: []
 }
 
 const store = createStore(reducer, initialState, applyMiddleware(ReduxThunk))

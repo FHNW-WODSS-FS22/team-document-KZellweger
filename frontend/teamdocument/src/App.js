@@ -7,9 +7,7 @@ import Message from "./components/messages/Message";
 const App = () => {
 
   const dispatch = useDispatch()
-
   const paragraphs = useSelector(state => state.paragraphs);
-
 
   const esRef = useRef(null);
   useEffect(() => {
