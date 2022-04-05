@@ -30,11 +30,11 @@ const Paragraph = ({id}) => {
         const payload =  { ...paragraph, ordinal: e.target.valueAsNumber }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
 
-        // sendMessage({
-        //     type: 'UPDATE_PARAGRAPH_ORDINALS',
-        //     payload: JSON.stringify(payload),
-        //     sender: author.id
-        // });
+        sendMessage({
+            type: 'UPDATE_PARAGRAPH_ORDINALS',
+            payload: JSON.stringify(payload),
+            sender: author.id
+        });
     }
     return (
         <div>

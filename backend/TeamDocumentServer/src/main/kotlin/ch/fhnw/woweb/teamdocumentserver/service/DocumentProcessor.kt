@@ -21,9 +21,18 @@ class DocumentProcessor(
             INITIAL -> cmd
             ADD_PARAGRAPH -> addParagraph(cmd)
             UPDATE_PARAGRAPH -> updateParagraph(cmd)
-            UPDATE_PARAGRAPH_ORDINALS -> TODO()
+            UPDATE_PARAGRAPH_ORDINALS -> updateParagraphOrdinals(cmd)
             UPDATE_AUTHOR -> TODO()
         }
+
+    fun updateParagraphOrdinals(cmd: DocumentCommand): DocumentCommand {
+        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        document
+            .paragraphs
+            .find { it.id == p.id }
+            ?.ordinal = p.ordinal
+        return cmd;
+    }
 
     fun addParagraph(cmd: DocumentCommand): DocumentCommand {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
