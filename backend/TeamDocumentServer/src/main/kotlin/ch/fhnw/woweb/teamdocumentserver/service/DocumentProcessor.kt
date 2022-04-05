@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class DocumentProcessor(
     // TODO: Add repository
-    val document: Document = createPlaceholderDocument()
+    val document: Document = Document()
 ) {
 
     fun getFullDocument(): Document {
