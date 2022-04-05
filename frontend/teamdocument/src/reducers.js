@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import paragraph from "./components/document/Paragraph";
 
 const REDUCERS = {
     'INITIAL': (state, action) => ( {
@@ -19,7 +20,25 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
+    'UPDATE_PARAGRAPH_ORDINALS': (state, action) => ({
+        ...state,
+        paragraphs: updateOrder(state.paragraphs, action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
     'ERROR': (state, action) => ( { ...state })
+}
+
+/*TODO: Currently this SWAPS (if you enter manually on idx 1 the idx 4 they will changes places)
+        Not Sure if that is even better than reordering. Discuss in team.
+* */
+
+const updateOrder = (paragraphs, changedParagraph) => {
+    const old = paragraphs.find(p => p.id === changedParagraph.id)
+    const sibling = paragraphs.find(p => p.ordinal === changedParagraph.ordinal)
+    sibling.ordinal = old.ordinal
+    const updateParagraphs = [changedParagraph, sibling]
+    return paragraphs.map(p => updateParagraphs.find(np => np.id === p.id) || p)
 }
 
 const reducer = (state, action) => _.get(REDUCERS, action.type, _.identity)(state, action)

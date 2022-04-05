@@ -9,8 +9,11 @@ const Paragraph = ({id}) => {
     const author = useSelector(state => state.author);
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
     const dispatch = useDispatch()
-
-    const handleChange = e => {
+    const maxOrdinal = useSelector(state => {
+        const ordinals =  state.paragraphs.map(p => p.ordinal)
+        return Math.max(...ordinals)
+    })
+    const handleContentChange = e => {
         e.preventDefault()
 
         const payload =  { ...paragraph, content: e.target.value }
@@ -22,13 +25,24 @@ const Paragraph = ({id}) => {
             sender: author.id
         });
     }
+    const handleOrdinalChange = e => {
+        e.preventDefault()
+        const payload =  { ...paragraph, ordinal: e.target.valueAsNumber }
+        dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
 
+        // sendMessage({
+        //     type: 'UPDATE_PARAGRAPH_ORDINALS',
+        //     payload: JSON.stringify(payload),
+        //     sender: author.id
+        // });
+    }
     return (
         <div>
             <p>Author: {paragraph.author.name}</p>
-            <input type="number" min="0"  />
+            <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
+                   min="1" max={maxOrdinal}  />
             <br/>
-            <textarea value={paragraph.content} onChange={handleChange}>
+            <textarea value={paragraph.content} onChange={handleContentChange}>
             </textarea>
         </div>
     );
