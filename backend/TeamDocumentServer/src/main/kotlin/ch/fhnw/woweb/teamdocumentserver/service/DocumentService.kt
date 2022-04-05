@@ -2,8 +2,6 @@ package ch.fhnw.woweb.teamdocumentserver.service
 
 import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
-import ch.fhnw.woweb.teamdocumentserver.domain.document.Author
-import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -17,7 +15,6 @@ class DocumentService(
     val processor: DocumentProcessor,
 ) {
 
-    val placeholderId = UUID.randomUUID()
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
@@ -25,17 +22,10 @@ class DocumentService(
     }
 
     private fun getInitialState(): Flux<DocumentCommand> {
-
-        val p = Paragraph(
-            id = placeholderId,
-            ordinal = 0,
-            content = "Hurray",
-            author = Author(id = placeholderId, name = "Babababa")
-        )
-
+        val paragraphs = processor.getFullDocument().paragraphs
         return Flux.just(
             DocumentCommand(
-                Gson().toJson(listOf(p)),
+                Gson().toJson(paragraphs),
                 UUID.randomUUID(),
                 CommandType.INITIAL
             )
