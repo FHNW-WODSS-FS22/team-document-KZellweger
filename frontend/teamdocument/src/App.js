@@ -3,12 +3,14 @@ import React, {useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import Paragraph from "./components/Paragraph";
 import Message from "./components/messages/Message";
+import {sendMessage} from "./hooks/messages.hook";
+import randomUUID from "./uuid";
 
 const App = () => {
 
   const dispatch = useDispatch()
   const paragraphs = useSelector(state => state.paragraphs);
-
+  const thisAuthor = useSelector(state => state.author)
   const esRef = useRef(null);
   useEffect(() => {
     if (!esRef.current) {
@@ -27,13 +29,27 @@ const App = () => {
     }
   }, []);
 
+  const addParagraph = () => {
+    sendMessage({
+      type: 'ADD_PARAGRAPH',
+      payload: JSON.stringify({
+        id: randomUUID(),
+        ordinal: -1,
+        content: '',
+        author: thisAuthor
+      }),
+      sender: '89f3a230-8996-4d60-bc5a-a384cb9f824e'
+    });
+  }
+
   return (
     <div className="App" id="app">
+      <button onClick={addParagraph}>+</button>
       {
         paragraphs.map(p => { return <Paragraph key={p} id={p.id} /> }  )
       }
 
-        <Message />
+      <Message />
     </div>
   );
 }

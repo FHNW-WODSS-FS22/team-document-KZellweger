@@ -13,6 +13,11 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
+    'ADD_PARAGRAPH': (state, action) => ({
+        ...state,
+        paragraphs: _.concat(state.paragraphs, action.payload)
+    }),
+
     'ERROR': (state, action) => ( { ...state })
 }
 

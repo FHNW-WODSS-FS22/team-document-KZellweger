@@ -7,6 +7,7 @@ import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import ch.fhnw.woweb.teamdocumentserver.service.TestDataUtil.createPlaceholderDocument
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class DocumentProcessor(
@@ -30,7 +31,15 @@ class DocumentProcessor(
 
     fun addParagraph(cmd: DocumentCommand): DocumentCommand {
         // TODO: Consider author
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        val initialParagraph = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        val maxOrdinal = if(document.paragraphs.isEmpty())  0 else document.paragraphs.maxOf { paragraph: Paragraph -> paragraph.ordinal }
+        println("Max Ordinal $maxOrdinal")
+        val p = Paragraph(
+            id = UUID.randomUUID(),
+            ordinal = maxOrdinal + 1,
+            content = "",
+            author = initialParagraph.author
+        )
         document.paragraphs.add(p)
         return cmd;
     }
