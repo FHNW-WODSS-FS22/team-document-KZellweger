@@ -13,9 +13,9 @@ const AddButton = () => {
 
         const payload =  {
             id: uuid(),
-            author: {id: author.id},
+            author: author,
             ordinal: 0,
-            content: e.target.value
+            content: ''
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
 

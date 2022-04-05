@@ -25,7 +25,7 @@ const Paragraph = ({id}) => {
 
     return (
         <div>
-            <p>Author: {paragraph.author.id}</p>
+            <p>Author: {paragraph.author.name}</p>
             <input type="number" min="0"  />
             <br/>
             <textarea value={paragraph.content} onChange={handleChange}>
