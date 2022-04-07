@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import paragraph from "./components/document/Paragraph";
 
 const REDUCERS = {
     'INITIAL': (state, action) => ( {
@@ -26,6 +25,13 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
+    'UPDATE_AUTHOR': (state, action) => ({
+        ...state,
+        author: action.payload.id === state.author.id ? action.payload : state.author,
+        paragraphs: updateParagraphAuthors(state.paragraphs, action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
     'ERROR': (state, action) => ( { ...state })
 }
 
@@ -39,6 +45,15 @@ const updateOrder = (paragraphs, changedParagraph) => {
     sibling.ordinal = old.ordinal
     const updateParagraphs = [changedParagraph, sibling]
     return paragraphs.map(p => updateParagraphs.find(np => np.id === p.id) || p)
+}
+
+const updateParagraphAuthors = (paragraphs, changedAuthor) => {
+    const updatedParagraphs = paragraphs.filter(p => {
+        return p.author.id === changedAuthor.id
+    }).map(p => {
+        return {...p, 'author': changedAuthor}
+    })
+    return paragraphs.map(p => updatedParagraphs.find(up => up.id === p.id) || p)
 }
 
 const reducer = (state, action) => _.get(REDUCERS, action.type, _.identity)(state, action)

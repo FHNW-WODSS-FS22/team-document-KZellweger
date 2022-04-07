@@ -32,6 +32,8 @@ const App = () => {
 
   return (
     <div className="App" id="app">
+      <p>Author : {author.name}</p>
+      <p>AuthorID : {author.id}</p>
       <AddButton/>
       {
         paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
