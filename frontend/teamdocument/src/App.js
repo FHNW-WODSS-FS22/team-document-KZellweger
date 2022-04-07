@@ -32,8 +32,13 @@ const App = () => {
 
   return (
     <div className="App" id="app">
+      <p>Author : {author.name}</p>
+      <p>AuthorID : {author.id}</p>
       <AddButton/>
-      { paragraphs.map(p => { return <Paragraph key={p} id={p.id} /> } ) }
+      {
+        paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
+          .map(p => { return <Paragraph key={p.id} id={p.id} /> } )
+      }
       <Message />
     </div>
   );
