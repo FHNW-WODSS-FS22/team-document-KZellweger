@@ -29,8 +29,9 @@ class DocumentProcessor(
      fun updateAuthor(cmd: DocumentCommand): DocumentCommand {
         val a = Gson().fromJson(cmd.payload, Author::class.java)
          document.paragraphs
-             .find { it.author.id == a.id }
-             ?.author?.name = a.name
+             .filter { it.author.id == a.id }
+             .map { paragraph -> paragraph.author.name = a.name }
+
          return cmd
     }
 
