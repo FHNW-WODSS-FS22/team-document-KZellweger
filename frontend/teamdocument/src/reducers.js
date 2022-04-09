@@ -27,7 +27,7 @@ const REDUCERS = {
 
     'UPDATE_AUTHOR': (state, action) => ({
         ...state,
-        author: action.payload.id === state.author.id ? action.payload : state.author,
+        author:  updateLocalAuthor(state.author, action.payload),
         paragraphs: updateParagraphAuthors(state.paragraphs, action.payload),
         messages: _.concat(state.messages, action.type)
     }),
@@ -45,6 +45,14 @@ const updateOrder = (paragraphs, changedParagraph) => {
     sibling.ordinal = old.ordinal
     const updateParagraphs = [changedParagraph, sibling]
     return paragraphs.map(p => updateParagraphs.find(np => np.id === p.id) || p)
+}
+
+const updateLocalAuthor = (author, changedAuthor) => {
+    if(author.id === changedAuthor.id){
+        localStorage.setItem('localAuthorName', changedAuthor.name)
+        return changedAuthor
+    }
+    return author
 }
 
 const updateParagraphAuthors = (paragraphs, changedAuthor) => {
