@@ -9,10 +9,9 @@ import com.google.gson.Gson
 import org.springframework.stereotype.Service
 
 @Service
-class DocumentProcessor(
-    // TODO: Add repository
+class DocumentProcessor {
+
     val document: Document = Document()
-) {
 
     fun getFullDocument(): Document {
         return document
