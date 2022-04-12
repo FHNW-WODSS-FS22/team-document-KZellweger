@@ -7,7 +7,7 @@ import java.util.*
 @Document
 data class DocumentCommand(
     @Id
-    val id: UUID?,
+    val id: UUID? = UUID.randomUUID(),
     val payload: String,
     val sender: UUID,
     val type: CommandType
