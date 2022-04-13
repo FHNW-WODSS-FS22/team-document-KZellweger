@@ -6,7 +6,7 @@ import ReduxThunk from 'redux-thunk'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import reducer from "./reducers";
+import reducer from "./reducers/reducers";
 import randomUUID from "./uuid";
 import {fetchSampleName} from "./nameGenerator";
 

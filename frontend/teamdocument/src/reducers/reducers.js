@@ -13,6 +13,12 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
+    'REMOVE_PARAGRAPH': (state, action) => ({
+        ...state,
+        paragraphs: _.remove(state.paragraphs, p => p.id !== action.payload.id),
+        messages: _.concat(state.messages, action.type)
+    }),
+
     'UPDATE_PARAGRAPH': (state, action) => ({
         ...state,
         paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p ),

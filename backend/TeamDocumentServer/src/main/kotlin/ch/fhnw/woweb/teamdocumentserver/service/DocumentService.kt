@@ -1,14 +1,11 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
-import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
-import com.google.gson.Gson
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
-import java.util.*
 import javax.annotation.PostConstruct
 
 
@@ -29,15 +26,7 @@ class DocumentService(
     }
 
     private fun getInitialState(): Flux<DocumentCommand> {
-        val paragraphs = processor.getFullDocument().paragraphs
-        return Flux.just(
-            DocumentCommand(
-                UUID.randomUUID(),
-                Gson().toJson(paragraphs),
-                UUID.randomUUID(),
-                CommandType.INITIAL
-            )
-        )
+        return processor.getFullDocument()
     }
 
     private fun getUpdateStream(): Flux<DocumentCommand> {

@@ -3,7 +3,7 @@ import React, {useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import Paragraph from "./components/document/Paragraph";
 import Message from "./components/messages/Message";
-import AddButton from "./components/document/AddButton";
+import AddParagraphButton from "./components/document/AddParagraphButton";
 
 const App = () => {
 
@@ -34,7 +34,7 @@ const App = () => {
     <div className="App" id="app">
       <p>Author : {author.name}</p>
       <p>AuthorID : {author.id}</p>
-      <AddButton/>
+      <AddParagraphButton/>
       {
         paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
           .map(p => { return <Paragraph key={p.id} id={p.id} /> } )

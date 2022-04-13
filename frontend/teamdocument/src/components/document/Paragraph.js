@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../hooks/messages.hook";
+import RemoveParagraphButton from "./RemoveParagraphButton";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -49,7 +50,6 @@ const Paragraph = ({id}) => {
         });
     }
 
-
     return (
         <div>
             <label>Author: </label>
@@ -57,6 +57,8 @@ const Paragraph = ({id}) => {
             <br/>
             <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
                    min="1" max={maxOrdinal}  />
+            <br/>
+            <RemoveParagraphButton id={id}/>
             <br/>
             <textarea value={paragraph.content} onChange={handleContentChange}>
             </textarea>
