@@ -8,17 +8,16 @@ import uuid from "../../uuid";
 const RemoveParagraphButton = ({id}) => {
 
     const dispatch = useDispatch();
+    const author = useSelector(state => state.author);
 
     const handleRemoveParagraph = e => {
         e.preventDefault();
-        const payload =  {
-            id: id
-        }
-        dispatch({ type: 'REMOVE_PARAGRAPH', payload })
+        dispatch({ type: 'REMOVE_PARAGRAPH', payload: id })
 
         sendMessage({
             type: 'REMOVE_PARAGRAPH',
-            payload: JSON.stringify(payload)
+            payload: JSON.stringify(id),
+            sender: author.id
         });
     }
 
