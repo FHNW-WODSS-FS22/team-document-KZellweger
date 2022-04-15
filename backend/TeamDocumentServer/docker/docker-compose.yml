@@ -1,6 +1,13 @@
 version: '3.9'
 services:
-  team_document:
+  team_document_server:
+    image: zellwegerk/fhnw-document-server:latest
+    container_name: team_document_server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "team_document_db"
+  team_document_db:
     image: mongo:5.0
     container_name: team_document_db
     ports:
