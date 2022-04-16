@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/team_document_db
+
+teamdocument:
+  userName: "User"
+  userPassword: "1234"

@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TeamDocumentServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
     <module name="TeamDocumentServer.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ch.fhnw.woweb.teamdocumentserver.TeamDocumentServerApplication" />
     <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
       <option name="credential" />
       <option name="region" />
       <option name="useCurrentConnection" value="false" />
     </extension>
-    <option name="SPRING_BOOT_MAIN_CLASS" value="ch.fhnw.woweb.teamdocumentserver.TeamDocumentServerApplication" />
-    <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
