@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://team_document_db:27017/team_document_db
+
+teamdocument:
+  userName: ${USER_NAME}
+  userPassword: ${USER_PASSWORD}
+  allowedOrigins: http://localhost:3000, http://localhost, http://team_document
