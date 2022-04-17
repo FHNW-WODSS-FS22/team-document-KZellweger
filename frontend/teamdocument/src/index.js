@@ -6,9 +6,10 @@ import ReduxThunk from 'redux-thunk'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import reducer from "./reducers";
-import randomUUID from "./uuid";
-import {fetchSampleName} from "./nameGenerator";
+import reducer from "./utils/reducers";
+import randomUUID from "./utils/uuid";
+import {fetchSampleName} from "./utils/nameGenerator";
+import 'typeface-roboto'
 
 const localAuthorId = localStorage.getItem('localAuthorId')
 const localAuthorName = localStorage.getItem('localAuthorName')

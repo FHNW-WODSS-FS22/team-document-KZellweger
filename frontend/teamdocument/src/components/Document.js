@@ -3,6 +3,7 @@ import React, {useEffect, useRef} from "react";
 import AddButton from "./document/AddButton";
 import Paragraph from "./document/Paragraph";
 import Message from "./messages/Message";
+import User from "./user/User";
 
 const Document = () => {
     const dispatch = useDispatch()
@@ -32,8 +33,7 @@ const Document = () => {
 
     return (
         <div className="Document" id="Document">
-            <p>Author : {author.name}</p>
-            <p>AuthorID : {author.id}</p>
+            <User />
             <AddButton/>
             {
                 paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)

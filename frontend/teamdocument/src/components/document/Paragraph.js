@@ -37,23 +37,10 @@ const Paragraph = ({id}) => {
         });
     }
 
-    const handleAuthorChange = e => {
-        e.preventDefault()
-        const payload = { ...paragraph.author, name: e.target.value }
-        dispatch({type: 'UPDATE_AUTHOR', payload})
-
-        sendMessage({
-            type: 'UPDATE_AUTHOR',
-            payload: JSON.stringify(payload),
-            sender: author.id
-        });
-    }
-
-
     return (
         <div>
             <label>Author: </label>
-            <input value={paragraph.author.name} type="text" onChange={handleAuthorChange}/>
+            <p>{paragraph.author.name}</p>
             <br/>
             <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
                    min="1" max={maxOrdinal}  />
