@@ -6,3 +6,4 @@ spring:
 teamdocument:
   userName: ${USER_NAME}
   userPassword: ${USER_PASSWORD}
+  allowedOrigins: http://localhost:3000, http://localhost, http://team_document

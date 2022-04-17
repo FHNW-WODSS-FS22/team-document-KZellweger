@@ -4,11 +4,6 @@ spring:
       uri: mongodb://localhost:27017/team_document_db
 
 teamdocument:
-  userName: "User"
-  userPassword: "1234"
-
-logging:
-  level:
-    org:
-      springframework:
-        security: TRACE
+  userName: User
+  userPassword: 1234
+  allowedOrigins: http://localhost:3000, http://localhost:80, http://team_document:80

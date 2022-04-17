@@ -27,6 +27,9 @@ class WebConfig {
     @Value("\${teamdocument.userPassword}")
     private val userPassword: String = ""
 
+    @Value("\${teamdocument.allowedOrigins}")
+    private val allowedOrigins: List<String> = mutableListOf()
+
     @Bean
     fun userDetailsService(): ReactiveUserDetailsService {
         val userDetails = User.withDefaultPasswordEncoder()
@@ -41,7 +44,7 @@ class WebConfig {
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
         configuration.applyPermitDefaultValues()
-        configuration.allowedOrigins = mutableListOf("http://localhost:3000/")
+        configuration.allowedOrigins = allowedOrigins
         configuration.allowedMethods = mutableListOf("*")
         configuration.allowedHeaders = mutableListOf("*")
         configuration.allowCredentials = true
