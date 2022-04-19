@@ -14,11 +14,12 @@ import 'typeface-roboto'
 const localAuthorId = localStorage.getItem('localAuthorId')
 const localAuthorName = localStorage.getItem('localAuthorName')
 
-const initialState = (authorId, authorName) => {
+const initialState = (authorId, authorName, image) => {
     return {
         author: {
             id: authorId,
-            name: authorName
+            name: authorName,
+            image: image
         },
         paragraphs: [],
         messages: []
@@ -30,7 +31,7 @@ if (!localAuthorId) {
             const uuid = randomUUID()
             localStorage.setItem('localAuthorId', uuid)
             localStorage.setItem('localAuthorName', data.name)
-            const store = createStore(reducer, initialState(uuid, data.name) , applyMiddleware(ReduxThunk))
+            const store = createStore(reducer, initialState(uuid, data.name, data.image) , applyMiddleware(ReduxThunk))
             ReactDOM.render(<Provider store={store}><App/></Provider>, document.getElementById('app'))
         }
     )

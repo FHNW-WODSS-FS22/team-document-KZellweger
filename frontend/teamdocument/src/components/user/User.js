@@ -8,6 +8,7 @@ const User = () => {
     const dispatch = useDispatch()
     const author = useSelector(state => state.author);
 
+    // TODO image is not updated, thus lost after name change: Do we want images?
     const handleAuthorChange = e => {
         e.preventDefault()
         const json = {
@@ -26,8 +27,10 @@ const User = () => {
 
     return (
         <div className="user">
-            <img src={author.image === undefined ? blank : author.image} alt="Profile image" />
-            <div>
+            <div className="circular">
+                <img src={author.image === undefined ? blank : author.image} alt="Profile image" />
+            </div>
+            <div className="name">
                 <input type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
                 <p><em className="secondary-text-color">{author.id}</em></p>
             </div>

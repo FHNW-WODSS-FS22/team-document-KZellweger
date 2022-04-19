@@ -1,9 +1,10 @@
+import './Document.css';
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useRef} from "react";
-import AddButton from "./document/AddButton";
-import Paragraph from "./document/Paragraph";
-import Message from "./messages/Message";
-import User from "./user/User";
+import AddButton from "./AddButton";
+import Paragraph from "./paragraph/Paragraph";
+import Message from "../message/Message";
+import User from "../user/User";
 
 const Document = () => {
     const dispatch = useDispatch()
@@ -32,16 +33,28 @@ const Document = () => {
 
 
     return (
-        <div className="Document" id="Document">
-            <User />
-            <AddButton/>
-            {
-                paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
-                    .map(p => {
-                        return <Paragraph key={p.id} id={p.id}/>
-                    })
-            }
-            <Message/>
+        <div className="document" id="document">
+            <div>
+                <User />
+            </div>
+            <div>
+                <AddButton/>
+            </div>
+            <div className="documentContent">
+                <div className="paragraphs">
+                    <h1>Paragraphs</h1>
+                    {
+                        paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
+                            .map(p => {
+                                return <Paragraph key={p.id} id={p.id}/>
+                            })
+                    }
+                </div>
+                <div className="messages">
+                    <h1>Messages</h1>
+                    <Message/>
+                </div>
+            </div>
         </div>
     );
 }

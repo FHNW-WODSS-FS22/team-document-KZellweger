@@ -1,6 +1,7 @@
-import React, {useEffect, useState, useRef} from 'react'
+import './Paragraph.css';
+import React from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
+import {sendMessage} from "../../../hooks/messages.hook";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -38,15 +39,20 @@ const Paragraph = ({id}) => {
     }
 
     return (
-        <div>
-            <label>Author: </label>
-            <p>{paragraph.author.name}</p>
-            <br/>
-            <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
-                   min="1" max={maxOrdinal}  />
-            <br/>
-            <textarea value={paragraph.content} onChange={handleContentChange}>
-            </textarea>
+        <div className="paragraph divider-color">
+            <div className="paragraphHeader">
+                <div>
+                    <label>Author: </label>
+                    <p>{paragraph.author.name}</p>
+                </div>
+                <div>
+                    <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
+                           min="1" max={maxOrdinal}  />
+                </div>
+            </div>
+            <div className="paragraphContent">
+                <textarea value={paragraph.content} onChange={handleContentChange} />
+            </div>
         </div>
     );
 }

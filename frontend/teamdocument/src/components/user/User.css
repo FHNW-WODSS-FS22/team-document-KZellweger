@@ -3,18 +3,17 @@
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
-    padding: 1rem;
 }
 
-.user > img {
-    border-radius: 50%;
+.circular {
     width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
 }
 
-.user input {
-    border: 1px solid;
-}
-
-.user div {
-    flex: 1 1 0px;
+.circular img {
+    width: 100%;
+    height: auto;
 }

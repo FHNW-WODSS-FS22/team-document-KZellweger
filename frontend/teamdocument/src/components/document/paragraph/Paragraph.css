@@ -1,0 +1,23 @@
+.paragraph {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid;
+}
+
+.paragraphHeader, .paragraphContent {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.paragraphHeader {
+    justify-content: space-between;
+}
+
+.paragraphContent textarea {
+    min-width: 100%;
+    min-height: 10rem;
+}
