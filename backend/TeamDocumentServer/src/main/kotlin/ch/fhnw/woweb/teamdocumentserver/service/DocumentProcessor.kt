@@ -14,23 +14,7 @@ import java.util.*
 @Service
 class DocumentProcessor {
 
-    val document: Document = Document()
-
-    fun process(cmd: DocumentCommand): Flux<DocumentCommand> = when (cmd.type) {
-        INITIAL -> just(cmd)
-        ADD_PARAGRAPH -> addParagraph(cmd)
-        REMOVE_PARAGRAPH -> removeParagraph(cmd)
-        UPDATE_PARAGRAPH -> updateParagraph(cmd)
-        UPDATE_PARAGRAPH_ORDINALS -> updateParagraphOrdinals(cmd)
-        UPDATE_AUTHOR -> updateAuthor(cmd)
-    }
-
-    fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: Validate Ordinal and resolve Conflict if necessary
-        document.paragraphs.add(p)
-        return just(cmd)
-    }
+    private val document: Document = Document()
 
     fun getFullDocument(): Flux<DocumentCommand> {
         return just(
@@ -43,23 +27,37 @@ class DocumentProcessor {
         )
     }
 
-    fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
+    fun process(cmd: DocumentCommand): Flux<DocumentCommand> = when (cmd.type) {
+        INITIAL -> just(cmd)
+        ADD_PARAGRAPH -> addParagraph(cmd)
+        REMOVE_PARAGRAPH -> removeParagraph(cmd)
+        UPDATE_PARAGRAPH -> updateParagraph(cmd)
+        UPDATE_PARAGRAPH_ORDINALS -> updateParagraphOrdinals(cmd)
+        UPDATE_AUTHOR -> updateAuthor(cmd)
+    }
+
+    private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
+        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        // TODO: Validate Ordinal and resolve Conflict if necessary
+        document.paragraphs.add(p)
+        return just(cmd)
+    }
+
+    private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
-        document.paragraphs
-            .removeIf { it.id == id }
+        document.paragraphs.removeIf { it.id == id }
         return just(cmd);
     }
 
-    fun updateAuthor(cmd: DocumentCommand): Flux<DocumentCommand> {
+    private fun updateAuthor(cmd: DocumentCommand): Flux<DocumentCommand> {
         val a = Gson().fromJson(cmd.payload, Author::class.java)
         document.paragraphs
             .filter { it.author.id == a.id }
             .map { paragraph -> paragraph.author.name = a.name }
-
         return just(cmd)
     }
 
-    fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
+    private fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
             .find { it.id == p.id }
@@ -67,9 +65,11 @@ class DocumentProcessor {
         return just(cmd)
     }
 
-    fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
+    private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: sanity check: when staying with swapping no conflict resolve is necessary right?
+        // TODO: Fix ordinal update:
+        // All effected paragraphs have to be updated within a single command.
+        // Otherwise a command could leave the document in an invald state, which is not permitted.
         document.paragraphs
             .find { it.id == p.id }
             ?.ordinal = p.ordinal
