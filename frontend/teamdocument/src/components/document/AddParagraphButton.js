@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../hooks/messages.hook";
 import uuid from "../../utils/uuid";
 
-const AddButton = () => {
+const AddParagraphButton = () => {
 
     const author = useSelector(state => state.author);
     const ordinals = useSelector(state => {
@@ -37,4 +37,4 @@ const AddButton = () => {
     );
 }
 
-export default AddButton;
+export default AddParagraphButton;

@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  team_document_db_local:
+    image: mongo:5.0
+    container_name: team_document_db_local
+    ports:
+      - "27017:27017"
+    environment:
+        - MONGO_INITDB_DATABASE=team_document_db
+    volumes:
+      - mongo-volume:/data/db
+
+volumes:
+  mongo-volume:
