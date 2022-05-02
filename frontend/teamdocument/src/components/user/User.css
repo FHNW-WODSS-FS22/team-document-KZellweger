@@ -1,0 +1,19 @@
+.user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.circular {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.circular img {
+    width: 100%;
+    height: auto;
+}

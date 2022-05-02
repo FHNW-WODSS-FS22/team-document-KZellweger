@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../hooks/messages.hook";
-import uuid from "../../uuid";
+import uuid from "../../utils/uuid";
 
 const AddParagraphButton = () => {
 

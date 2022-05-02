@@ -4,6 +4,7 @@ export function sendMessage(message) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify([message])
     }).then(response => {
         // console.log("Response for " + response?.url + " with status: " + response?.status);
