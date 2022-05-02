@@ -21,9 +21,9 @@ object DocumentCommandAssertions {
         return true
     }
 
-    fun verifyAddParagraphCommand(cmd: DocumentCommand, expectedPayload: Paragraph): Boolean {
-        assertThat(cmd.type).isEqualTo(CommandType.ADD_PARAGRAPH)
-        val paragraph = gson.fromJson(cmd.payload, Paragraph::class.java)
+    fun verifyAddParagraphCommand(cmd: DocumentCommand?, expectedPayload: Paragraph): Boolean {
+        assertThat(cmd?.type).isEqualTo(CommandType.ADD_PARAGRAPH)
+        val paragraph = gson.fromJson(cmd?.payload, Paragraph::class.java)
         assertThat(paragraph)
             .usingRecursiveComparison()
             .isEqualTo(expectedPayload)
