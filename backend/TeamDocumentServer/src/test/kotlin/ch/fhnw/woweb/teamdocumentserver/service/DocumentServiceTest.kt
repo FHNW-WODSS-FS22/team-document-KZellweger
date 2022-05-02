@@ -28,7 +28,6 @@ internal class DocumentServiceTest {
         // When
         val subscription = service.subscribe()
 
-
         // Then
         DocumentCommandAssertions.verifyInitialDocumentCommand(subscription.blockFirst())
         Mockito.verify(processor).getFullDocument()
