@@ -6,4 +6,12 @@ spring:
 teamdocument:
   userName: ${USER_NAME}
   userPassword: ${USER_PASSWORD}
-  allowedOrigins: http://localhost:3000, http://localhost, http://team_document
+  allowedOrigins: https://localhost, http://localhost, http://team_document ,https://team_document, https://test-pebs.ch
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        security: DEBUG
+        http: DEBUG
