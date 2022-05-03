@@ -17,10 +17,8 @@ const Paragraph = ({id}) => {
     })
     const handleContentChange = e => {
         e.preventDefault()
-
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
-
         sendMessage({
             type: 'UPDATE_PARAGRAPH',
             payload: JSON.stringify(payload),
@@ -29,15 +27,16 @@ const Paragraph = ({id}) => {
     }
     const handleOrdinalChange = e => {
         e.preventDefault()
-
-        const sibling = paragraphs.find(p => p.ordinal === e.target.valueAsNumber)
-
-        const payload =  [{ ...paragraph, ordinal: e.target.valueAsNumber }, { ...sibling, ordinal: paragraph.ordinal }]
-        console.log(payload)
-
+        if (isNaN(e.target.valueAsNumber)) {
+            return;
+        }
+        const ordinal = e.target.valueAsNumber > maxOrdinal ? maxOrdinal : e.target.valueAsNumber;
+        const payload =  [{ ...paragraph, ordinal: ordinal }]
+        const sibling = paragraphs.find(p => p.ordinal === ordinal)
+        if (sibling) {
+            payload.push({ ...sibling, ordinal: paragraph.ordinal })
+        }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
-
-
         sendMessage({
             type: 'UPDATE_PARAGRAPH_ORDINALS',
             payload: JSON.stringify(payload),
@@ -63,6 +62,5 @@ const Paragraph = ({id}) => {
         </div>
     );
 }
-
 
 export default Paragraph;

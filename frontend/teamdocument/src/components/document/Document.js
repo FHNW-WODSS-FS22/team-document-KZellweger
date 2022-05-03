@@ -10,7 +10,6 @@ const Document = () => {
     const dispatch = useDispatch()
     const paragraphs = useSelector(state => state.paragraphs);
     const author = useSelector(state => state.author);
-
     const esRef = useRef(null);
 
     useEffect(() => {
