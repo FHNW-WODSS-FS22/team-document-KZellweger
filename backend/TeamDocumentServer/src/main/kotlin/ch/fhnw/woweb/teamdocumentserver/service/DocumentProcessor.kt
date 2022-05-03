@@ -40,9 +40,17 @@ class DocumentProcessor {
 
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: Validate Ordinal and resolve Conflict if necessary
+        if (document.paragraphs.any { it.ordinal == p.ordinal }) {
+            p.ordinal++
+        }
         document.paragraphs.add(p)
-        return just(cmd)
+        val updateOrdinalsCmd = DocumentCommand(
+            id = UUID.randomUUID(),
+            payload = Gson().toJson(document.paragraphs),
+            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            type = UPDATE_PARAGRAPH_ORDINALS
+        )
+        return just(cmd, updateOrdinalsCmd)
     }
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
