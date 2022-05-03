@@ -66,13 +66,14 @@ class DocumentProcessor {
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: Fix ordinal update:
-        // All effected paragraphs have to be updated within a single command.
-        // Otherwise a command could leave the document in an invald state, which is not permitted.
-        document.paragraphs
-            .find { it.id == p.id }
-            ?.ordinal = p.ordinal
+        val paragraphs = Gson().fromJson(cmd.payload, Array<Paragraph>::class.java)
+        paragraphs.forEach { updateParagraphOrdinals(it) }
         return just(cmd)
+    }
+
+    private fun updateParagraphOrdinals(paragraph: Paragraph) {
+        document.paragraphs
+            .find { paragraph.id == it.id }
+            ?.ordinal = paragraph.ordinal
     }
 }

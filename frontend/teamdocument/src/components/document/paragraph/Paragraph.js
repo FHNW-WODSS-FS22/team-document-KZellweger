@@ -9,6 +9,7 @@ const Paragraph = ({id}) => {
 
     const author = useSelector(state => state.author);
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
+    const paragraphs = useSelector(state => state.paragraphs);
     const dispatch = useDispatch()
     const maxOrdinal = useSelector(state => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
@@ -28,8 +29,14 @@ const Paragraph = ({id}) => {
     }
     const handleOrdinalChange = e => {
         e.preventDefault()
-        const payload =  { ...paragraph, ordinal: e.target.valueAsNumber }
+
+        const sibling = paragraphs.find(p => p.ordinal === e.target.valueAsNumber)
+
+        const payload =  [{ ...paragraph, ordinal: e.target.valueAsNumber }, { ...sibling, ordinal: paragraph.ordinal }]
+        console.log(payload)
+
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
+
 
         sendMessage({
             type: 'UPDATE_PARAGRAPH_ORDINALS',

@@ -39,12 +39,12 @@ const REDUCERS = {
         Not Sure if that is even better than reordering. Discuss in team.
 * */
 
-const updateOrder = (paragraphs, changedParagraph) => {
-    const old = paragraphs.find(p => p.id === changedParagraph.id)
-    const sibling = paragraphs.find(p => p.ordinal === changedParagraph.ordinal)
-    sibling.ordinal = old.ordinal
-    const updateParagraphs = [changedParagraph, sibling]
-    return paragraphs.map(p => updateParagraphs.find(np => np.id === p.id) || p)
+const updateOrder = (prevStateParagraphs, changedStateParagraphs) => {
+    changedStateParagraphs.forEach(pChanged => {
+        const prev = prevStateParagraphs.find(pPrev => pPrev.id === pChanged.id)
+        prev.ordinal = pChanged.ordinal
+    })
+    return prevStateParagraphs.map(p => changedStateParagraphs.find(np => np.id === p.id) || p)
 }
 
 const updateLocalAuthor = (author, changedAuthor) => {
