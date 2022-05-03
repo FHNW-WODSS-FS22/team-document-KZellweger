@@ -40,20 +40,6 @@ class WebConfig {
         return MapReactiveUserDetailsService(userDetails)
     }
 
-//    @Bean
-//    fun corsConfigurationSource(): CorsConfigurationSource {
-//        allowedOrigins.forEach { s -> println(s) }
-//        val configuration = CorsConfiguration()
-//        configuration.applyPermitDefaultValues()
-//        configuration.allowedOriginPatterns = mutableListOf("*")
-//        configuration.allowedMethods = mutableListOf("*")
-//        configuration.allowedHeaders = mutableListOf("*")
-//        configuration.allowCredentials = true
-//        val source = UrlBasedCorsConfigurationSource()
-//        source.registerCorsConfiguration("/**", configuration)
-//        return source
-//    }
-
     @Bean
     fun corsFilter(): CorsWebFilter = CorsWebFilter(
         UrlBasedCorsConfigurationSource().apply {
