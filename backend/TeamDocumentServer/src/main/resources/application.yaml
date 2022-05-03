@@ -7,11 +7,3 @@ teamdocument:
   userName: ${USER_NAME}
   userPassword: ${USER_PASSWORD}
   allowedOrigins: https://test-pebs.ch/, https://test-pebs.ch
-
-logging:
-  level:
-    org:
-      springframework:
-        web: DEBUG
-        security: DEBUG
-        http: DEBUG
