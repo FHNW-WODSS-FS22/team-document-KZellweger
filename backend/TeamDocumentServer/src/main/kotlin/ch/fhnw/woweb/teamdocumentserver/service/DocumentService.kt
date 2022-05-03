@@ -15,7 +15,7 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
-    private val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
+    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
         return Flux.merge(getInitialState(), getUpdateStream()).onErrorStop()
