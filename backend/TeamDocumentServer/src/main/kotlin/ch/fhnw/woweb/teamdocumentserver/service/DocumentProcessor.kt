@@ -7,11 +7,13 @@ import ch.fhnw.woweb.teamdocumentserver.domain.document.Document
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.just
 import java.util.*
 
 @Service
+@Transactional
 class DocumentProcessor {
 
     private val document: Document = Document()
