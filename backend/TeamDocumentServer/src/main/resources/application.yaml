@@ -1,12 +1,3 @@
-server:
-  ssl:
-    key-store-type: PKCS12
-    key-store: classpath:keystore/teamserver.p12
-    key-password: 123456
-    key-alias: teamdocumentserver
-    enabled: true
-  port: 443
-
 spring:
   data:
     mongodb:
@@ -15,7 +6,7 @@ spring:
 teamdocument:
   userName: ${USER_NAME}
   userPassword: ${USER_PASSWORD}
-  allowedOrigins: https://localhost, http://localhost, http://team_document ,https://team_document, https://test-pebs.ch
+  allowedOrigins: https://test-pebs.ch, https://test-pebs.ch/
 
 logging:
   level:
