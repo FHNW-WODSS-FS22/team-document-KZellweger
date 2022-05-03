@@ -21,10 +21,11 @@ const Document = () => {
                 if (cmd.sender !== author.id) {
                     dispatch({type: cmd.type, payload: JSON.parse(cmd.payload)})
                 }
+                dispatch({type: 'ERROR', payload: { isPresent: false }})
             }
             eventSource.onerror = err => {
                 console.log(err)
-                dispatch({type: 'ERROR', value: err})
+                dispatch({type: 'ERROR', payload: { isPresent: true, message: err }})
             }
             esRef.current = eventSource;
             return () => esRef.current.close()

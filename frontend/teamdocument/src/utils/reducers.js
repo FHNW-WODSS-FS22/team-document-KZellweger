@@ -32,7 +32,7 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
-    'ERROR': (state, action) => ( { ...state })
+    'ERROR': (state, action) => ( { ...state, error: action.payload })
 }
 
 /*TODO: Currently this SWAPS (if you enter manually on idx 1 the idx 4 they will changes places)
