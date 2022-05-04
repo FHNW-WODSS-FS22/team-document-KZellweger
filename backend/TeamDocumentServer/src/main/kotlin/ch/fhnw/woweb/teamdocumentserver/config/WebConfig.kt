@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.reactive.CorsConfigurationSource
+import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.config.EnableWebFlux
 
@@ -41,18 +41,20 @@ class WebConfig {
     }
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-        configuration.applyPermitDefaultValues()
-        configuration.allowedOrigins = allowedOrigins
-        configuration.allowedMethods = mutableListOf("*")
-        configuration.allowedHeaders = mutableListOf("*")
-        configuration.allowCredentials = true
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
-    }
-
+    fun corsFilter(): CorsWebFilter = CorsWebFilter(
+        UrlBasedCorsConfigurationSource().apply {
+            registerCorsConfiguration("/**",
+                CorsConfiguration().apply {
+                    allowCredentials = true
+                    // allowedOriginPatterns = mutableListOf("*") works on localhost with dev profile
+                    // TODO: It somewhat makes a difference if this list is taken from app.yaml ?????????????
+                    allowedOriginPatterns = mutableListOf("http://localhost:3000", "https://test-pebs.ch")
+                    allowedHeaders = mutableListOf("*")
+                    allowedMethods = mutableListOf("*")
+                }
+            )
+        }
+    )
 
     @Bean
     fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain? {
@@ -62,6 +64,7 @@ class WebConfig {
                     .pathMatchers(HttpMethod.OPTIONS).permitAll()
                     .anyExchange().authenticated()
             }
+            .cors().disable()
             .httpBasic { }
             .csrf().disable()
         return http.build()

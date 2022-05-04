@@ -6,4 +6,7 @@ spring:
 teamdocument:
   userName: ${USER_NAME}
   userPassword: ${USER_PASSWORD}
-  allowedOrigins: http://localhost:3000, http://localhost, http://team_document
+  allowedOrigins: https://test-pebs.ch/, https://test-pebs.ch
+  server:
+    commands:
+      serve-sender-id: fcd6e222-074b-4d04-9af6-062bfcd8402e
