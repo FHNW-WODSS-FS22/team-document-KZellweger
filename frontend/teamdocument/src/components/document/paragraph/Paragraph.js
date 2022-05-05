@@ -2,6 +2,7 @@ import './Paragraph.css';
 import React from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../../hooks/messages.hook";
+import RemoveParagraphButton from "../RemoveParagraphButton";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -48,6 +49,7 @@ const Paragraph = ({id}) => {
                 <div>
                     <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
                            min="1" max={maxOrdinal}  />
+                    <RemoveParagraphButton id={paragraph.id} />
                 </div>
             </div>
             <div className="paragraphContent">

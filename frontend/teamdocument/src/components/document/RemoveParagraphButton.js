@@ -1,7 +1,6 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../hooks/messages.hook";
-import uuid from "../../uuid";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -12,6 +11,7 @@ const RemoveParagraphButton = ({id}) => {
 
     const handleRemoveParagraph = e => {
         e.preventDefault();
+        console.log(id);
         dispatch({ type: 'REMOVE_PARAGRAPH', payload: id })
 
         sendMessage({
@@ -22,7 +22,7 @@ const RemoveParagraphButton = ({id}) => {
     }
 
     return (
-        <button value="Add Paragraph" onClick={handleRemoveParagraph}>
+        <button value="Remove Paragraph" onClick={handleRemoveParagraph}>
             Remove Paragraph
         </button>
     );
