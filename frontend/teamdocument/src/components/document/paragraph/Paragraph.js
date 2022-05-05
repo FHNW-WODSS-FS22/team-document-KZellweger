@@ -1,5 +1,5 @@
 import './Paragraph.css';
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../../hooks/messages.hook";
 import RemoveParagraphButton from "../RemoveParagraphButton";
@@ -15,6 +15,16 @@ const Paragraph = ({id}) => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
     })
+    const ref = useRef()
+
+    // According to best practice https://reactjs.org/docs/hooks-effect.html
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return function cleanup() {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, []);
+
     const handleContentChange = e => {
         e.preventDefault()
 
@@ -38,17 +48,51 @@ const Paragraph = ({id}) => {
             sender: author.id
         });
     }
+    const handleClickInside = e => {
+        e.preventDefault()
+        // Paragraph is lockable if no one is holding the lock
+        if(paragraph.lockedBy === undefined) {
+            const payload =  { ...paragraph, lockedBy: author.id }
+            dispatch({ type: 'UPDATE_LOCK', payload })
+
+            sendMessage({
+                type: 'UPDATE_LOCK',
+                payload: JSON.stringify(payload),
+                sender: author.id
+            });
+        }
+    }
+
+    /**
+     * Alert if clicked on outside of element
+     */
+    const handleClickOutside = e => {
+        /**if (ref.current && !ref.current.contains(e.target) && paragraph.lockedBy === author.lockedBy) {
+            const payload =  { ...paragraph, lockedBy: null }
+            dispatch({ type: 'UPDATE_LOCK', payload })
+
+            sendMessage({
+                type: 'UPDATE_LOCK',
+                payload: JSON.stringify(payload),
+                sender: author.id
+            });
+        }**/
+    }
 
     return (
-        <div className="paragraph divider-color">
+        <div className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "locked" : ""}`} onClick={handleClickInside} ref={ref} >
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
                     <p>{paragraph.author.name}</p>
                 </div>
                 <div>
+                    <label>Locked By: </label>
+                    <p>{paragraph.lockedBy}</p>
+                </div>
+                <div>
                     <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
-                           min="1" max={maxOrdinal}  />
+                           min="1" max={maxOrdinal} readOnly={!paragraph.lockedBy === author.id}/>
                     <RemoveParagraphButton id={paragraph.id} />
                 </div>
             </div>

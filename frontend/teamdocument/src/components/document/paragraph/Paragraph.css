@@ -27,3 +27,7 @@
     min-width: 100%;
     min-height: 10rem;
 }
+
+.locked {
+    background-color: gray;
+}

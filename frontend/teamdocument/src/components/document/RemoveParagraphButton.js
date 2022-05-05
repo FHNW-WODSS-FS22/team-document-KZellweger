@@ -22,7 +22,7 @@ const RemoveParagraphButton = ({id}) => {
     }
 
     return (
-        <button value="Remove Paragraph" onClick={handleRemoveParagraph}>
+        <button value="Remove Paragraph" className="danger" onClick={handleRemoveParagraph}>
             Remove Paragraph
         </button>
     );
