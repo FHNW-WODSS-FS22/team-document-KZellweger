@@ -56,7 +56,7 @@ class DocumentProcessor {
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
-        document.paragraphs.removeIf { it.id == id }
+        document.paragraphs.removeIf { it.id == id && it.lockedBy == cmd.sender.toString() }
         return just(cmd);
     }
 
@@ -71,28 +71,27 @@ class DocumentProcessor {
     private fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
-            .find { it.id == p.id }
+            .find { it.id == p.id && it.lockedBy == cmd.sender.toString() }
             ?.content = p.content
         return just(cmd)
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
         val paragraphs = Gson().fromJson(cmd.payload, Array<Paragraph>::class.java)
-        paragraphs.forEach { updateParagraphOrdinals(it) }
+        paragraphs.forEach { updateParagraphOrdinals(cmd, it) }
         return just(cmd)
     }
 
-    private fun updateParagraphOrdinals(paragraph: Paragraph) {
+    private fun updateParagraphOrdinals(cmd: DocumentCommand, paragraph: Paragraph) {
         document.paragraphs
-            .find { paragraph.id == it.id }
+            .find { it.id == paragraph.id && it.lockedBy == cmd.sender.toString() }
             ?.ordinal = paragraph.ordinal
     }
 
     private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        println(p)
         document.paragraphs
-            .find { it.id == p.id }
+            .find { it.id == p.id && it.lockedBy == null }
             ?.lockedBy = p.lockedBy
         return just(cmd)
     }
