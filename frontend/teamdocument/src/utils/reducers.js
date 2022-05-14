@@ -13,6 +13,12 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
+    'REMOVE_PARAGRAPH': (state, action) => ({
+        ...state,
+        paragraphs: _.remove(state.paragraphs, p => p.id !== action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
     'UPDATE_PARAGRAPH': (state, action) => ({
         ...state,
         paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p),
@@ -29,6 +35,12 @@ const REDUCERS = {
         ...state,
         author: updateLocalAuthor(state.author, action.payload),
         paragraphs: updateParagraphAuthors(state.paragraphs, action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
+    'UPDATE_LOCK': (state, action) => ({
+        ...state,
+        paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p ),
         messages: _.concat(state.messages, action.type)
     }),
 
