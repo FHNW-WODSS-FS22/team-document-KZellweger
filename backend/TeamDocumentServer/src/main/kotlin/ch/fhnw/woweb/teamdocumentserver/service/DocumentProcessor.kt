@@ -7,11 +7,13 @@ import ch.fhnw.woweb.teamdocumentserver.domain.document.Document
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.just
 import java.util.*
 
 @Service
+@Transactional
 class DocumentProcessor {
 
     private val document: Document = Document()
@@ -39,9 +41,17 @@ class DocumentProcessor {
 
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: Validate Ordinal and resolve Conflict if necessary
+        if (document.paragraphs.any { it.ordinal == p.ordinal }) {
+            p.ordinal = document.paragraphs.maxOf { it.ordinal } + 1
+        }
         document.paragraphs.add(p)
-        return just(cmd)
+        val updateOrdinalsCmd = DocumentCommand(
+            id = UUID.randomUUID(),
+            payload = Gson().toJson(document.paragraphs),
+            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            type = UPDATE_PARAGRAPH_ORDINALS
+        )
+        return just(cmd, updateOrdinalsCmd)
     }
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
@@ -67,14 +77,15 @@ class DocumentProcessor {
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        // TODO: Fix ordinal update:
-        // All effected paragraphs have to be updated within a single command.
-        // Otherwise a command could leave the document in an invald state, which is not permitted.
-        document.paragraphs
-            .find { it.id == p.id }
-            ?.ordinal = p.ordinal
+        val paragraphs = Gson().fromJson(cmd.payload, Array<Paragraph>::class.java)
+        paragraphs.forEach { updateParagraphOrdinals(it) }
         return just(cmd)
+    }
+
+    private fun updateParagraphOrdinals(paragraph: Paragraph) {
+        document.paragraphs
+            .find { paragraph.id == it.id }
+            ?.ordinal = paragraph.ordinal
     }
 
     private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {

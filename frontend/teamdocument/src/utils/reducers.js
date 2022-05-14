@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 const REDUCERS = {
-    'INITIAL': (state, action) => ( {
+    'INITIAL': (state, action) => ({
         ...state,
         paragraphs: action.payload,
         messages: _.concat(state.messages, action.type)
@@ -21,7 +21,7 @@ const REDUCERS = {
 
     'UPDATE_PARAGRAPH': (state, action) => ({
         ...state,
-        paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p ),
+        paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p),
         messages: _.concat(state.messages, action.type)
     }),
 
@@ -33,7 +33,7 @@ const REDUCERS = {
 
     'UPDATE_AUTHOR': (state, action) => ({
         ...state,
-        author:  updateLocalAuthor(state.author, action.payload),
+        author: updateLocalAuthor(state.author, action.payload),
         paragraphs: updateParagraphAuthors(state.paragraphs, action.payload),
         messages: _.concat(state.messages, action.type)
     }),
@@ -44,23 +44,19 @@ const REDUCERS = {
         messages: _.concat(state.messages, action.type)
     }),
 
-    'ERROR': (state, action) => ( { ...state })
+    'ERROR': (state, action) => ({...state, error: action.payload})
 }
 
-/*TODO: Currently this SWAPS (if you enter manually on idx 1 the idx 4 they will changes places)
-        Not Sure if that is even better than reordering. Discuss in team.
-* */
-
-const updateOrder = (paragraphs, changedParagraph) => {
-    const old = paragraphs.find(p => p.id === changedParagraph.id)
-    const sibling = paragraphs.find(p => p.ordinal === changedParagraph.ordinal)
-    sibling.ordinal = old.ordinal
-    const updateParagraphs = [changedParagraph, sibling]
-    return paragraphs.map(p => updateParagraphs.find(np => np.id === p.id) || p)
+const updateOrder = (prevStateParagraphs, changedStateParagraphs) => {
+    changedStateParagraphs.forEach(pChanged => {
+        const prev = prevStateParagraphs.find(pPrev => pPrev.id === pChanged.id)
+        if (prev) prev.ordinal = pChanged.ordinal
+    })
+    return prevStateParagraphs.map(p => changedStateParagraphs.find(np => np.id === p.id) || p)
 }
 
 const updateLocalAuthor = (author, changedAuthor) => {
-    if(author.id === changedAuthor.id){
+    if (author.id === changedAuthor.id) {
         localStorage.setItem('localAuthorName', changedAuthor.name)
         return changedAuthor
     }

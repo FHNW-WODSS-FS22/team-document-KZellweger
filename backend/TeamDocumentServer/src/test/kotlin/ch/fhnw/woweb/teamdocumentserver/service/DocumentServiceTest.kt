@@ -56,6 +56,9 @@ internal class DocumentServiceTest {
             .verifyComplete()
     }
 
+    fun testProcessFails_sendsInitial() {}
+
+
     @Test
     fun loadInitialState() {
         // Given

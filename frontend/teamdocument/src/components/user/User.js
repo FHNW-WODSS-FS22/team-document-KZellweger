@@ -7,8 +7,8 @@ import {sendMessage} from "../../hooks/messages.hook";
 const User = () => {
     const dispatch = useDispatch()
     const author = useSelector(state => state.author);
+    const error = useSelector(state => state.error.isPresent);
 
-    // TODO image is not updated, thus lost after name change: Do we want images?
     const handleAuthorChange = e => {
         e.preventDefault()
         const json = {
@@ -31,7 +31,7 @@ const User = () => {
                 <img src={author.image === undefined ? blank : author.image} alt="Profile image" />
             </div>
             <div className="name">
-                <input type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
+                <input disabled={error} type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
                 <p><em className="secondary-text-color">{author.id}</em></p>
             </div>
         </div>

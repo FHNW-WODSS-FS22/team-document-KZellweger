@@ -1,12 +1,14 @@
 import './App.css';
-import React, {useEffect, useRef} from 'react'
+import React from 'react'
+import Error from "./components/error/Error";
 import Document from "./components/document/Document";
 import Navbar from "./components/navbar/Navbar";
 
 const App = () => {
   return (
     <div className="App" id="app">
-      <Navbar/>
+        <Error/>
+        <Navbar/>
       <Document/>
     </div>
   );

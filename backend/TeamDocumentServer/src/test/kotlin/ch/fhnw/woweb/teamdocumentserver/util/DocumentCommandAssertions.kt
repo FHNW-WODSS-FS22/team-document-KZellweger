@@ -47,7 +47,7 @@ object DocumentCommandAssertions {
 
     fun verifyUpdateOrdinalsCommand(cmd: DocumentCommand, expectedPayload: Paragraph): Boolean {
         assertThat(cmd.type).isEqualTo(CommandType.UPDATE_PARAGRAPH_ORDINALS)
-        val paragraph = gson.fromJson(cmd.payload, Paragraph::class.java)
+        val paragraph = gson.fromJson(cmd.payload, Array<Paragraph>::class.java)
         assertThat(paragraph)
             .usingRecursiveComparison()
             .isEqualTo(expectedPayload)

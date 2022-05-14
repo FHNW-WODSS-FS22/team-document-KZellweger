@@ -10,7 +10,6 @@ const Document = () => {
     const dispatch = useDispatch()
     const paragraphs = useSelector(state => state.paragraphs);
     const author = useSelector(state => state.author);
-
     const esRef = useRef(null);
 
     useEffect(() => {
@@ -21,16 +20,15 @@ const Document = () => {
                 if (cmd.sender !== author.id) {
                     dispatch({type: cmd.type, payload: JSON.parse(cmd.payload)})
                 }
+                dispatch({type: 'ERROR', payload: { isPresent: false }})
             }
-            eventSource.onerror = err => {
-                console.log(err)
-                dispatch({type: 'ERROR', value: err})
+            eventSource.onerror = _ => {
+                dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }})
             }
             esRef.current = eventSource;
             return () => esRef.current.close()
         }
     }, []);
-
 
     return (
         <div className="document" id="document">
@@ -44,10 +42,9 @@ const Document = () => {
                 <div className="paragraphs">
                     <h1>Paragraphs</h1>
                     {
-                        paragraphs.sort((p1, p2) => p1.ordinal - p2.ordinal)
-                            .map(p => {
-                                return <Paragraph key={p.id} id={p.id}/>
-                            })
+                        paragraphs
+                            .sort((p1, p2) => p1.ordinal - p2.ordinal)
+                            .map(p => <Paragraph key={p.id} id={p.id}/>)
                     }
                 </div>
                 <div className="messages">
@@ -58,6 +55,5 @@ const Document = () => {
         </div>
     );
 }
-
 
 export default Document

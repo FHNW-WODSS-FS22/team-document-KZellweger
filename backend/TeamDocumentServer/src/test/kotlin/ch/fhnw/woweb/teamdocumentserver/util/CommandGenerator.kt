@@ -43,7 +43,7 @@ object CommandGenerator {
 
     fun createUpdateOrdinalsCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
-            payload = Gson().toJson(p),
+            payload = Gson().toJson(listOf(p)),
             sender = UUID.randomUUID(),
             type = CommandType.UPDATE_PARAGRAPH_ORDINALS
         )

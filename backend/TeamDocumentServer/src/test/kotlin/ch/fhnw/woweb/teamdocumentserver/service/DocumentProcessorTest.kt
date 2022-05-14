@@ -52,6 +52,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyAddParagraphCommand(it, p) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, p) }
             .expectComplete()
             .verify()
 
@@ -264,6 +265,8 @@ class DocumentProcessorTest {
             .expectComplete()
             .verify()
     }
+
+    fun testUpdateFails_throws() {}
 
 
 }
