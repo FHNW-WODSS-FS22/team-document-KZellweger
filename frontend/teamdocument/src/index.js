@@ -14,9 +14,10 @@ import 'typeface-roboto'
 const localAuthorId = localStorage.getItem('localAuthorId')
 const localAuthorName = localStorage.getItem('localAuthorName')
 const localAuthorImage = localStorage.getItem('localAuthorImage')
-
+const isAuthenticated = !!localStorage.getItem('localUser')
 const initialState = (authorId, authorName, image) => {
     return {
+        isAuthenticated: isAuthenticated,
         author: {
             id: authorId,
             name: authorName,

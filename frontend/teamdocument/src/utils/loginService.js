@@ -12,7 +12,6 @@ function logout(){
 function authHeader(){
     console.log(localStorage.getItem('localUser'))
     let user = JSON.parse(localStorage.getItem('localUser'))
-    console.log(user)
     if(user && user.authdata){
         return {'Authorization': 'Basic ' + user.authdata}
     } else {

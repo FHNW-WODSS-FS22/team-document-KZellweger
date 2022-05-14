@@ -1,7 +1,12 @@
 import _ from 'lodash'
 
 const REDUCERS = {
-    'INITIAL': (state, action) => ({
+    'LOGIN' : (state, action) => ({
+       ...state,
+       isAuthenticated: action.payload
+    }),
+
+    'INITIAL': (state, action) => ( {
         ...state,
         paragraphs: action.payload,
         messages: _.concat(state.messages, action.type)

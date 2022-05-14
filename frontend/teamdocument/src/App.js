@@ -6,11 +6,11 @@ import Navbar from "./components/navbar/Navbar";
 import {
     BrowserRouter,
     Routes,
-    Route, useNavigate,
+    Route, Navigate
 } from "react-router-dom";
 import Login from "./components/login/Login";
-import {PrivateRoute} from "./components/login/PrivateRoute";
 import {DocumentWrapper} from "./components/DocumentWrapper";
+import {useSelector} from "react-redux";
 
 const App = () => {
     return (
@@ -18,6 +18,7 @@ const App = () => {
             <div className="App" id="app">
             <Error/>
             <Routes>
+
                 <Route path={'/'} element={<DocumentWrapper/>}/>
                 <Route path={'/login'} element={<Login/>}/>
             </Routes>
