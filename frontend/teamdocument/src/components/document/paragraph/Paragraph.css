@@ -29,9 +29,13 @@
 }
 
 .locked {
-    background-color: gray;
+    background-color: lightgray;
+}
+
+.locked:hover{
+    background-color: lightgray;
 }
 
 .editing {
-    background-color: greenyellow;
+    background-color: #C5CAE9;
 }
