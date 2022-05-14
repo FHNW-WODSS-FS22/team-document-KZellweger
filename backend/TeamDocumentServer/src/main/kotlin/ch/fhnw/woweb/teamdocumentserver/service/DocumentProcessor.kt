@@ -41,7 +41,7 @@ class DocumentProcessor {
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         if (document.paragraphs.any { it.ordinal == p.ordinal }) {
-            p.ordinal++
+            p.ordinal = document.paragraphs.last().ordinal + 1
         }
         document.paragraphs.add(p)
         val updateOrdinalsCmd = DocumentCommand(
