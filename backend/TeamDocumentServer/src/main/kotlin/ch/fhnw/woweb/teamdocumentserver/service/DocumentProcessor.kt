@@ -39,6 +39,7 @@ class DocumentProcessor {
         UPDATE_LOCK -> updateLock(cmd)
     }
 
+    // TODO: Conflict: Race condition when determining next ordinal
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         if (document.paragraphs.any { it.ordinal == p.ordinal }) {
@@ -54,10 +55,11 @@ class DocumentProcessor {
         return just(cmd, updateOrdinalsCmd)
     }
 
+    // TODO: Update ordinals to close Gaps
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
         document.paragraphs.removeIf { it.id == id && it.lockedBy == cmd.sender.toString() }
-        return just(cmd);
+        return just(cmd)
     }
 
     private fun updateAuthor(cmd: DocumentCommand): Flux<DocumentCommand> {

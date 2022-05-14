@@ -7,5 +7,5 @@ class Paragraph(
     var ordinal: Int,
     var content: String,
     var author: Author,
-    var lockedBy: String?
+    var lockedBy: String? = null
 )
