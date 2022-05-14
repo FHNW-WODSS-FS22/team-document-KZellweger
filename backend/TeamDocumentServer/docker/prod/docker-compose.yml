@@ -1,23 +1,20 @@
 version: '3.9'
 services:
   team_document:
-    image: zellwegerk/fhnw-teamdocument:0.0.4
+    image: zellwegerk/fhnw-teamdocument:0.0.6
     container_name: team_document
     ports:
       - "80:80"
       - "443:443"
-    networks:
-      - front-tier
-      - back-tier
     volumes:
       - ./certs:/etc/nginx/certs
     depends_on:
       - "team_document_server"
   team_document_server:
-    image: zellwegerk/fhnw-document-server:0.0.4
+    image: zellwegerk/fhnw-document-server:0.0.6
     container_name: team_document_server
-    networks:
-      - back-tier
+    ports:
+      - "8080:8080"
     environment:
       - USER_NAME=user
       - USER_PASSWORD=ThisIsJustATestServer
@@ -26,8 +23,6 @@ services:
   team_document_db:
     image: mongo:5.0
     container_name: team_document_db
-    networks:
-      - back-tier
     environment:
       - MONGO_INITDB_DATABASE=team_document_db
     volumes:
@@ -35,7 +30,3 @@ services:
 
 volumes:
   mongo-volume:
-
-networks:
-  front-tier: {}
-  back-tier: {}

@@ -48,7 +48,7 @@ class WebConfig {
                     allowCredentials = true
                     // allowedOriginPatterns = mutableListOf("*") works on localhost with dev profile
                     // TODO: It somewhat makes a difference if this list is taken from app.yaml ?????????????
-                    allowedOriginPatterns = mutableListOf("http://localhost:3000", "https://localhost")
+                    allowedOriginPatterns = mutableListOf("http://localhost:3000", "https://test-pebs.ch")
                     allowedHeaders = mutableListOf("*")
                     allowedMethods = mutableListOf("*")
                 }

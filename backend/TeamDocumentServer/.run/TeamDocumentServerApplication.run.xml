@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="TeamDocumentServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="ACTIVE_PROFILES" value="local" />
     <module name="TeamDocumentServer.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ch.fhnw.woweb.teamdocumentserver.TeamDocumentServerApplication" />
     <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
