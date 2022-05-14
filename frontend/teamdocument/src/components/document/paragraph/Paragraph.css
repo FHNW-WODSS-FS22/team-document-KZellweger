@@ -17,7 +17,25 @@
     justify-content: space-between;
 }
 
+.paragraphHeader > div {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
 .paragraphContent textarea {
     min-width: 100%;
     min-height: 10rem;
+}
+
+.locked {
+    background-color: lightgray;
+}
+
+.locked:hover{
+    background-color: lightgray;
+}
+
+.editing {
+    background-color: #C5CAE9;
 }

@@ -34,6 +34,7 @@ class DocumentProcessor {
         UPDATE_PARAGRAPH -> updateParagraph(cmd)
         UPDATE_PARAGRAPH_ORDINALS -> updateParagraphOrdinals(cmd)
         UPDATE_AUTHOR -> updateAuthor(cmd)
+        UPDATE_LOCK -> updateLock(cmd)
     }
 
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
@@ -73,6 +74,15 @@ class DocumentProcessor {
         document.paragraphs
             .find { it.id == p.id }
             ?.ordinal = p.ordinal
+        return just(cmd)
+    }
+
+    private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {
+        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        println(p)
+        document.paragraphs
+            .find { it.id == p.id }
+            ?.lockedBy = p.lockedBy
         return just(cmd)
     }
 }
