@@ -84,7 +84,7 @@ const Paragraph = ({id}) => {
     }
 
     return (
-        <div className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
+        <div tabIndex={paragraph.ordinal} className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
@@ -97,10 +97,7 @@ const Paragraph = ({id}) => {
                 <div>
                     <input value={paragraph.ordinal} type="number" readOnly={paragraph.lockedBy !== author.id} onChange={handleOrdinalChange}
                            min="1" max={maxOrdinal} />
-                    {
-                        paragraph.lockedBy === author.id &&
-                        <RemoveParagraphButton id={paragraph.id} />
-                    }
+                    <RemoveParagraphButton id={paragraph.id} isAllowedToRemove={paragraph.lockedBy === author.id}/>
                 </div>
             </div>
             <div className="paragraphContent">
