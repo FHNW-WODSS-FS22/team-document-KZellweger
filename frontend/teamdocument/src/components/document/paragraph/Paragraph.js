@@ -18,12 +18,12 @@ const Paragraph = ({id}) => {
     const ref = useRef()
 
     // According to best practice https://reactjs.org/docs/hooks-effect.html
-    useEffect(() => {
+    /**useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
         return function cleanup() {
             document.removeEventListener("mousedown", handleClickOutside);
         }
-    }, []);
+    }, []);**/
 
     const handleContentChange = e => {
         e.preventDefault()
@@ -51,9 +51,10 @@ const Paragraph = ({id}) => {
     const handleClickInside = e => {
         e.preventDefault()
         // Paragraph is lockable if no one is holding the lock
-        if(paragraph.lockedBy === undefined) {
+        if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
             const payload =  { ...paragraph, lockedBy: author.id }
             dispatch({ type: 'UPDATE_LOCK', payload })
+            console.log("locking")
 
             sendMessage({
                 type: 'UPDATE_LOCK',
@@ -67,20 +68,23 @@ const Paragraph = ({id}) => {
      * Alert if clicked on outside of element
      */
     const handleClickOutside = e => {
-        /**if (ref.current && !ref.current.contains(e.target) && paragraph.lockedBy === author.lockedBy) {
-            const payload =  { ...paragraph, lockedBy: null }
-            dispatch({ type: 'UPDATE_LOCK', payload })
+        //if (ref.current && !ref.current.contains(e.target)) {
+            console.log(`Clicked outside div: ${paragraph.id}, which is locked by: ${paragraph.lockedBy}`)
+            if(paragraph.lockedBy === author.id) {
+                const payload =  { ...paragraph, lockedBy: null }
+                dispatch({ type: 'UPDATE_LOCK', payload })
 
-            sendMessage({
-                type: 'UPDATE_LOCK',
-                payload: JSON.stringify(payload),
-                sender: author.id
-            });
-        }**/
+                sendMessage({
+                    type: 'UPDATE_LOCK',
+                    payload: JSON.stringify(payload),
+                    sender: author.id
+                });
+            }
+        //}
     }
 
     return (
-        <div className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "locked" : ""}`} onClick={handleClickInside} ref={ref} >
+        <div className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
@@ -91,13 +95,16 @@ const Paragraph = ({id}) => {
                     <p>{paragraph.lockedBy}</p>
                 </div>
                 <div>
-                    <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
-                           min="1" max={maxOrdinal} readOnly={!paragraph.lockedBy === author.id}/>
-                    <RemoveParagraphButton id={paragraph.id} />
+                    <input value={paragraph.ordinal} type="number" readOnly={paragraph.lockedBy !== author.id} onChange={handleOrdinalChange}
+                           min="1" max={maxOrdinal} />
+                    {
+                        paragraph.lockedBy === author.id &&
+                        <RemoveParagraphButton id={paragraph.id} />
+                    }
                 </div>
             </div>
             <div className="paragraphContent">
-                <textarea value={paragraph.content} onChange={handleContentChange} />
+                <textarea value={paragraph.content} readOnly={paragraph.lockedBy !== author.id} onChange={handleContentChange} />
             </div>
         </div>
     );

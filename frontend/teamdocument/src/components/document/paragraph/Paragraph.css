@@ -31,3 +31,7 @@
 .locked {
     background-color: gray;
 }
+
+.editing {
+    background-color: greenyellow;
+}
