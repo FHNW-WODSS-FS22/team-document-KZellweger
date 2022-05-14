@@ -3,13 +3,10 @@ import blank from './blank_user.png'
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../hooks/messages.hook";
-import {loginService} from "../../utils/loginService";
-import {useNavigate} from "react-router-dom";
 
 const User = () => {
     const dispatch = useDispatch()
     const author = useSelector(state => state.author);
-    const navigate = useNavigate()
     const error = useSelector(state => state.error.isPresent);
 
     const handleAuthorChange = e => {
@@ -28,11 +25,6 @@ const User = () => {
         });
     }
 
-    const logout = e => {
-        loginService.logout();
-        navigate("/login")
-    }
-
     return (
         <div className="user">
             <div className="circular">
@@ -42,7 +34,6 @@ const User = () => {
                 <input disabled={error} type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
                 <p><em className="secondary-text-color">{author.id}</em></p>
             </div>
-            <button className={'logout'} onClick={logout}>Logout</button>
         </div>
     )
 }

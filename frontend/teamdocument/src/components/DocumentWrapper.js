@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Navbar from "./navbar/Navbar";
 import Document from "./document/Document";
-import {Navigate, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
+import {Navigate} from "react-router-dom";
 
 export const DocumentWrapper = () => {
 
