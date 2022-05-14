@@ -5,6 +5,7 @@ import uuid from "../../utils/uuid";
 
 const AddButton = () => {
 
+    const error = useSelector(state => state.error);
     const author = useSelector(state => state.author);
     const ordinals = useSelector(state => {
         return state.paragraphs.map(p => p.ordinal)
@@ -31,7 +32,7 @@ const AddButton = () => {
     }
 
     return (
-        <button value="Add Paragraph" onClick={handleAddParagraph}>
+        <button disabled={error} value="Add Paragraph" onClick={handleAddParagraph}>
             Add Paragraph
         </button>
     );

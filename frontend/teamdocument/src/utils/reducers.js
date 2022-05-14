@@ -35,10 +35,6 @@ const REDUCERS = {
     'ERROR': (state, action) => ({...state, error: action.payload})
 }
 
-/*TODO: Currently this SWAPS (if you enter manually on idx 1 the idx 4 they will changes places)
-        Not Sure if that is even better than reordering. Discuss in team.
-* */
-
 const updateOrder = (prevStateParagraphs, changedStateParagraphs) => {
     changedStateParagraphs.forEach(pChanged => {
         const prev = prevStateParagraphs.find(pPrev => pPrev.id === pChanged.id)

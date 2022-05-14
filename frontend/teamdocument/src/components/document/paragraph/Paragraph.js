@@ -7,6 +7,7 @@ import {sendMessage} from "../../../hooks/messages.hook";
 /* eslint-disable react/prop-types */
 const Paragraph = ({id}) => {
 
+    const error = useSelector(state => state.error.isPresent);
     const author = useSelector(state => state.author);
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
     const paragraphs = useSelector(state => state.paragraphs);
@@ -15,6 +16,7 @@ const Paragraph = ({id}) => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
     })
+
     const handleContentChange = e => {
         e.preventDefault()
         const payload =  { ...paragraph, content: e.target.value }
@@ -52,12 +54,12 @@ const Paragraph = ({id}) => {
                     <p>{paragraph.author.name}</p>
                 </div>
                 <div>
-                    <input value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
+                    <input disabled={error} value={paragraph.ordinal} type="number" onChange={handleOrdinalChange}
                            min="1" max={maxOrdinal}  />
                 </div>
             </div>
             <div className="paragraphContent">
-                <textarea value={paragraph.content} onChange={handleContentChange} />
+                <textarea disabled={error} value={paragraph.content} onChange={handleContentChange} />
             </div>
         </div>
     );

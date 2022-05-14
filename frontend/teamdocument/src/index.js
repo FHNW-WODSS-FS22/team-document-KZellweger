@@ -24,7 +24,7 @@ const initialState = (authorId, authorName, image) => {
         paragraphs: [],
         messages: [],
         error: {
-            isPersent: false,
+            isPresent: false,
             message: true
         }
     }
