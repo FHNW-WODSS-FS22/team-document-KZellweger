@@ -6,4 +6,10 @@ spring:
 teamdocument:
   userName: User
   userPassword: 1234
-  allowedOrigins: 'http://localhost:3000'
+  allowedOrigins: 'http://localhost:3000/*'
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

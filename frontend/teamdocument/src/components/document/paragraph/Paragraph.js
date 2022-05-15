@@ -17,15 +17,6 @@ const Paragraph = ({id}) => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
     })
-    const ref = useRef()
-
-    // According to best practice https://reactjs.org/docs/hooks-effect.html
-    /**useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return function cleanup() {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-    }, []);**/
 
     const handleContentChange = e => {
         e.preventDefault()
@@ -76,19 +67,16 @@ const Paragraph = ({id}) => {
      * Alert if clicked on outside of element
      */
     const handleClickOutside = e => {
-        //if (ref.current && !ref.current.contains(e.target)) {
-            console.log(`Clicked outside div: ${paragraph.id}, which is locked by: ${paragraph.lockedBy}`)
-            if(paragraph.lockedBy === author.id) {
-                const payload =  { ...paragraph, lockedBy: null }
-                dispatch({ type: 'UPDATE_LOCK', payload })
+        if(paragraph.lockedBy === author.id) {
+            const payload =  { ...paragraph, lockedBy: null }
+            dispatch({ type: 'UPDATE_LOCK', payload })
 
-                sendMessage({
-                    type: 'UPDATE_LOCK',
-                    payload: JSON.stringify(payload),
-                    sender: author.id
-                });
-            }
-        //}
+            sendMessage({
+                type: 'UPDATE_LOCK',
+                payload: JSON.stringify(payload),
+                sender: author.id
+            });
+        }
     }
 
     return (
