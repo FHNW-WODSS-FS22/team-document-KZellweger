@@ -1,13 +1,14 @@
 import './Paragraph.css';
-import React, {useRef} from 'react'
+import React from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../../hooks/messages.hook";
+import {useMessage} from "../../../hooks/messages.hook";
 import RemoveParagraphButton from "../RemoveParagraphButton";
 
 // TODO
 /* eslint-disable react/prop-types */
 const Paragraph = ({id}) => {
 
+    const sendMessage = useMessage;
     const error = useSelector(state => state.error.isPresent);
     const author = useSelector(state => state.author);
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));

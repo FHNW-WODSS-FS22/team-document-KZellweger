@@ -1,10 +1,11 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
+import {useMessage} from "../../hooks/messages.hook";
 import uuid from "../../utils/uuid";
 
 const AddButton = () => {
 
+    const sendMessage = useMessage;
     const error = useSelector(state => state.error.isPresent);
     const author = useSelector(state => state.author);
     const ordinals = useSelector(state => {

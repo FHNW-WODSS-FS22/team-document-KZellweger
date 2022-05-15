@@ -2,9 +2,11 @@ import './User.css';
 import blank from './blank_user.png'
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
+import {useMessage} from "../../hooks/messages.hook";
 
 const User = () => {
+
+    const sendMessage = useMessage;
     const dispatch = useDispatch()
     const author = useSelector(state => state.author);
     const error = useSelector(state => state.error.isPresent);

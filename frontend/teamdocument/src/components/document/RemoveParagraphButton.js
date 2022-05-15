@@ -1,11 +1,12 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
+import {useMessage} from "../../hooks/messages.hook";
 
 // TODO
 /* eslint-disable react/prop-types */
 const RemoveParagraphButton = ({id, isAllowedToRemove}) => {
 
+    const sendMessage = useMessage;
     const dispatch = useDispatch();
     const author = useSelector(state => state.author);
 
