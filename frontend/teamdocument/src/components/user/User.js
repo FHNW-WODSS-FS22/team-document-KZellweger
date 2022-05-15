@@ -2,13 +2,13 @@ import './User.css';
 import blank from './blank_user.png'
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
+import useSendMessage from "../../hooks/useSendMessage.hook";
 
 const User = () => {
     const dispatch = useDispatch()
     const author = useSelector(state => state.author);
     const error = useSelector(state => state.error.isPresent);
-
+    const sendMessage = useSendMessage()
     const handleAuthorChange = e => {
         e.preventDefault()
         const json = {

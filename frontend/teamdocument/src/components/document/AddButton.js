@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
 import uuid from "../../utils/uuid";
+import useSendMessage from "../../hooks/useSendMessage.hook";
 
 const AddButton = () => {
 
@@ -11,6 +11,7 @@ const AddButton = () => {
         return state.paragraphs.map(p => p.ordinal)
     })
     const dispatch = useDispatch();
+    const sendMessage = useSendMessage()
 
     const handleAddParagraph = e => {
         e.preventDefault();

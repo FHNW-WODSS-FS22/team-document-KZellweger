@@ -1,8 +1,9 @@
 import './Paragraph.css';
-import React, {useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../../hooks/messages.hook";
 import RemoveParagraphButton from "../RemoveParagraphButton";
+import useDebounceMessages from "../../../hooks/debounce.hook";
+import sendMessages from "../../../utils/messageService";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -13,21 +14,31 @@ const Paragraph = ({id}) => {
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
     const paragraphs = useSelector(state => state.paragraphs);
     const dispatch = useDispatch()
+    const [message, setMessage] = useState([])
+    const accumulatedMessages = useDebounceMessages(message,100, 25)
     const maxOrdinal = useSelector(state => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
     })
 
+    useEffect(() => {
+        if(typeof accumulatedMessages!== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0){
+            console.log("Send and clean")
+            sendMessages(accumulatedMessages)
+            setMessage([]);
+        }
+    },[accumulatedMessages])
+
     const handleContentChange = e => {
         e.preventDefault()
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
-
-        sendMessage({
+        const newMessage = {
             type: 'UPDATE_PARAGRAPH',
             payload: JSON.stringify(payload),
             sender: author.id
-        });
+        }
+        setMessage([...message, newMessage])
     }
     const handleOrdinalChange = e => {
         e.preventDefault()
@@ -41,11 +52,11 @@ const Paragraph = ({id}) => {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
-        sendMessage({
-            type: 'UPDATE_PARAGRAPH_ORDINALS',
-            payload: JSON.stringify(payload),
-            sender: author.id
-        });
+        // sendMessage({
+        //     type: 'UPDATE_PARAGRAPH_ORDINALS',
+        //     payload: JSON.stringify(payload),
+        //     sender: author.id
+        // });
     }
     const handleClickInside = e => {
         e.preventDefault()
@@ -55,11 +66,11 @@ const Paragraph = ({id}) => {
             dispatch({ type: 'UPDATE_LOCK', payload })
             console.log("locking")
 
-            sendMessage({
-                type: 'UPDATE_LOCK',
-                payload: JSON.stringify(payload),
-                sender: author.id
-            });
+            // sendMessage({
+            //     type: 'UPDATE_LOCK',
+            //     payload: JSON.stringify(payload),
+            //     sender: author.id
+            // });
         }
     }
 
@@ -71,11 +82,11 @@ const Paragraph = ({id}) => {
             const payload =  { ...paragraph, lockedBy: null }
             dispatch({ type: 'UPDATE_LOCK', payload })
 
-            sendMessage({
-                type: 'UPDATE_LOCK',
-                payload: JSON.stringify(payload),
-                sender: author.id
-            });
+            // sendMessage({
+            //     type: 'UPDATE_LOCK',
+            //     payload: JSON.stringify(payload),
+            //     sender: author.id
+            // });
         }
     }
 
