@@ -111,7 +111,7 @@ class DocumentProcessor {
     private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
-            .find { it.id == p.id && it.lockedBy == null }
+            .find { it.id == p.id }
             ?.lockedBy = p.lockedBy
         return just(cmd)
     }
