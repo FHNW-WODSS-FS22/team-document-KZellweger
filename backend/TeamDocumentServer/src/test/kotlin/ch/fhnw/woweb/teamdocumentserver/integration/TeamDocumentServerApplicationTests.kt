@@ -43,16 +43,16 @@ class TeamDocumentServerApplicationTests {
 	fun testProcessCommands_persistenceAndNewSubscription() {
 		// Given
 		val cmds = listOf(createAddCommand(createParagraphPayload()))
+		val subscription = updateController?.getUpdatedDocumentSubscription()?.take(3)
 
 		// When
 		commandController?.processCommands(cmds)
 
 		// Then
-		val initialCommandSubscription = updateController?.getUpdatedDocumentSubscription()?.blockFirst()
-		val take = repository?.findAll()?.collectList()
 
-		Assertions.assertThat(take).isEqualTo(cmds)
-		Assertions.assertThat(initialCommandSubscription).isEqualTo(cmds)
+		val persistedCommands = repository?.findAll()?.collectList()?.block()
+		Assertions.assertThat(persistedCommands).containsAll(cmds)
+		Assertions.assertThat(subscription?.collectList()?.block()).containsAll(cmds)
 	}
 
 	@Test
