@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import uuid from "../../utils/uuid";
-import useSendMessage from "../../hooks/useSendMessage.hook";
+import sendMessages from "../../utils/messageService";
 
 const AddButton = () => {
 
@@ -11,7 +11,6 @@ const AddButton = () => {
         return state.paragraphs.map(p => p.ordinal)
     })
     const dispatch = useDispatch();
-    const sendMessage = useSendMessage()
 
     const handleAddParagraph = e => {
         e.preventDefault();
@@ -26,11 +25,11 @@ const AddButton = () => {
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
 
-        sendMessage({
+        sendMessages([{
             type: 'ADD_PARAGRAPH',
             payload: JSON.stringify(payload),
             sender: author.id
-        });
+        }]);
     }
 
     return (

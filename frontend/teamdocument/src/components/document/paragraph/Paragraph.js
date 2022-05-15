@@ -15,7 +15,7 @@ const Paragraph = ({id}) => {
     const paragraphs = useSelector(state => state.paragraphs);
     const dispatch = useDispatch()
     const [message, setMessage] = useState([])
-    const accumulatedMessages = useDebounceMessages(message,100, 25)
+    const accumulatedMessages = useDebounceMessages(message,150, 25)
     const maxOrdinal = useSelector(state => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
@@ -52,11 +52,11 @@ const Paragraph = ({id}) => {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
-        // sendMessage({
-        //     type: 'UPDATE_PARAGRAPH_ORDINALS',
-        //     payload: JSON.stringify(payload),
-        //     sender: author.id
-        // });
+        sendMessages({
+            type: 'UPDATE_PARAGRAPH_ORDINALS',
+            payload: JSON.stringify(payload),
+            sender: author.id
+        })
     }
     const handleClickInside = e => {
         e.preventDefault()
@@ -64,13 +64,11 @@ const Paragraph = ({id}) => {
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
             const payload =  { ...paragraph, lockedBy: author.id }
             dispatch({ type: 'UPDATE_LOCK', payload })
-            console.log("locking")
-
-            // sendMessage({
-            //     type: 'UPDATE_LOCK',
-            //     payload: JSON.stringify(payload),
-            //     sender: author.id
-            // });
+            sendMessages([{
+                type: 'UPDATE_LOCK',
+                payload: JSON.stringify(payload),
+                sender: author.id
+            }]);
         }
     }
 
@@ -81,12 +79,11 @@ const Paragraph = ({id}) => {
         if(paragraph.lockedBy === author.id) {
             const payload =  { ...paragraph, lockedBy: null }
             dispatch({ type: 'UPDATE_LOCK', payload })
-
-            // sendMessage({
-            //     type: 'UPDATE_LOCK',
-            //     payload: JSON.stringify(payload),
-            //     sender: author.id
-            // });
+            sendMessages([{
+                type: 'UPDATE_LOCK',
+                payload: JSON.stringify(payload),
+                sender: author.id
+            }]);
         }
     }
 
