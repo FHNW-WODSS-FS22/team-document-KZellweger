@@ -13,6 +13,7 @@
     "react-redux": "^7.2.8",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.0",
+    "react-test-renderer": "^17.0.2",
     "redux-thunk": "^2.4.1",
     "rxjs": "^7.5.5",
     "typeface-roboto": "^1.1.13",
@@ -21,7 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
