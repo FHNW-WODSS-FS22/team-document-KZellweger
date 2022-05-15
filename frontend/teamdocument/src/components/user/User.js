@@ -29,7 +29,7 @@ const User = () => {
     return (
         <div className="user">
             <div className="circular">
-                <img src={author.image === undefined ? blank : author.image} alt="Profile image" />
+                <img src={author.image === undefined || author.image === null ? blank : author.image} alt="Profile image" />
             </div>
             <div className="name">
                 <input disabled={error} type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
