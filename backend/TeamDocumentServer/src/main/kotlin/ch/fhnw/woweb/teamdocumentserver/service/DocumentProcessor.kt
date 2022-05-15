@@ -18,6 +18,8 @@ import kotlin.concurrent.withLock
 @Transactional
 class DocumentProcessor {
 
+    private val SERVER_SENDER_ID = UUID.randomUUID()
+
     private val document: Document = Document()
     private val lock = ReentrantLock()
 
@@ -26,7 +28,7 @@ class DocumentProcessor {
             DocumentCommand(
                 UUID.randomUUID(),
                 Gson().toJson(document.paragraphs),
-                UUID.randomUUID(),
+                SERVER_SENDER_ID,
                 INITIAL
             )
         )
@@ -52,7 +54,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            sender = SERVER_SENDER_ID, // TODO: User Server sender Id,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)
@@ -67,7 +69,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            sender = SERVER_SENDER_ID, // TODO: User Server sender Id,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)
