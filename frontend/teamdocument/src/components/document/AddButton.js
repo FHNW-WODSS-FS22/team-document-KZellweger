@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
 import uuid from "../../utils/uuid";
+import sendMessages from "../../utils/messageService";
 
 const AddButton = () => {
 
@@ -25,11 +25,11 @@ const AddButton = () => {
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
 
-        sendMessage({
+        sendMessages([{
             type: 'ADD_PARAGRAPH',
             payload: JSON.stringify(payload),
             sender: author.id
-        });
+        }]);
     }
 
     return (
