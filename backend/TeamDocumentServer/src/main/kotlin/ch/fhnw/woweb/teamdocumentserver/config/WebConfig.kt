@@ -40,6 +40,7 @@ class WebConfig {
         return MapReactiveUserDetailsService(userDetails)
     }
 
+
     @Bean
     fun corsFilter(): CorsWebFilter = CorsWebFilter(
         UrlBasedCorsConfigurationSource().apply {
@@ -48,7 +49,7 @@ class WebConfig {
                     allowCredentials = true
                     // allowedOriginPatterns = mutableListOf("*") works on localhost with dev profile
                     // TODO: It somewhat makes a difference if this list is taken from app.yaml ?????????????
-                    allowedOriginPatterns = mutableListOf("http://localhost:3000", "https://test-pebs.ch")
+                    allowedOriginPatterns = mutableListOf("http://localhost:3000","http://localhost:3000/**", "https://test-pebs.ch", "https://test-pebs.ch/**")
                     allowedHeaders = mutableListOf("*")
                     allowedMethods = mutableListOf("*")
                 }
@@ -62,6 +63,7 @@ class WebConfig {
             .authorizeExchange { exchanges: ServerHttpSecurity.AuthorizeExchangeSpec ->
                 exchanges
                     .pathMatchers(HttpMethod.OPTIONS).permitAll()
+                    .pathMatchers( "/api/v1/authentication").permitAll()
                     .anyExchange().authenticated()
             }
             .cors().disable()

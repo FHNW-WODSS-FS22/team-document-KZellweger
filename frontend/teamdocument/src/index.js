@@ -13,9 +13,11 @@ import 'typeface-roboto'
 
 const localAuthorId = localStorage.getItem('localAuthorId')
 const localAuthorName = localStorage.getItem('localAuthorName')
-
+const localAuthorImage = localStorage.getItem('localAuthorImage')
+const isAuthenticated = !!localStorage.getItem('localUser')
 const initialState = (authorId, authorName, image) => {
     return {
+        isAuthenticated: isAuthenticated,
         author: {
             id: authorId,
             name: authorName,
@@ -35,12 +37,13 @@ if (!localAuthorId) {
             const uuid = randomUUID()
             localStorage.setItem('localAuthorId', uuid)
             localStorage.setItem('localAuthorName', data.name)
+            localStorage.setItem('localAuthorImage', data.image)
             const store = createStore(reducer, initialState(uuid, data.name, data.image) , applyMiddleware(ReduxThunk))
             ReactDOM.render(<Provider store={store}><App/></Provider>, document.getElementById('app'))
         }
     )
 } else {
-    const store = createStore(reducer, initialState(localAuthorId, localAuthorName), applyMiddleware(ReduxThunk))
+    const store = createStore(reducer, initialState(localAuthorId, localAuthorName, localAuthorImage), applyMiddleware(ReduxThunk))
     ReactDOM.render(<Provider store={store}><App/></Provider>, document.getElementById('app'))
 }
 
