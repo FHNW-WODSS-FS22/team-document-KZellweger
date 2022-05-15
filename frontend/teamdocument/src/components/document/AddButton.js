@@ -5,7 +5,7 @@ import uuid from "../../utils/uuid";
 
 const AddButton = () => {
 
-    const error = useSelector(state => state.error);
+    const error = useSelector(state => state.error.isPresent);
     const author = useSelector(state => state.author);
     const ordinals = useSelector(state => {
         return state.paragraphs.map(p => p.ordinal)
@@ -14,6 +14,7 @@ const AddButton = () => {
 
     const handleAddParagraph = e => {
         e.preventDefault();
+        console.log("Blabla")
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
         console.log(max)
         const payload =  {
