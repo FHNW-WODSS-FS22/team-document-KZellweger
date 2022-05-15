@@ -7,7 +7,7 @@ import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createUpdateAuthor
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createUpdateCommand
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createUpdateOrdinalsCommand
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyAddParagraphCommand
-import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyInitialDocumentCommand
+import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyFullDocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyRemoveParagraphCommand
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyUpdateAuthorCommand
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyUpdateOrdinalsCommand
@@ -33,7 +33,7 @@ class DocumentProcessorTest {
 
         // Then
         StepVerifier.create(result)
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
@@ -52,12 +52,41 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyAddParagraphCommand(it, p) }
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, p) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p)) }
             .expectComplete()
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it, listOf(p)) }
+            .expectNextMatches { verifyFullDocumentCommand(it, listOf(p)) }
+            .expectComplete()
+            .verify()
+    }
+
+    @Test
+    @DisplayName("Add Paragraph with Ordinal Conflict")
+    fun testAddParagraph_ordinalConflict() {
+        // Given
+        val processor = DocumentProcessor()
+        val p1 = createParagraphPayload()
+        val addCmd1 = createAddCommand(p1)
+        processor.process(addCmd1)
+
+        val p2 = createParagraphPayload()
+        val addCmd2 = createAddCommand(p2)
+
+        // When
+        val result = processor.process(addCmd2)
+
+        // Then
+        StepVerifier.create(result)
+            .expectNextMatches { verifyAddParagraphCommand(it, p2) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p2)) }
+            .expectComplete()
+            .verify()
+
+        p2.ordinal++ // Conflict should have been resolved by increasing p2 ordinal
+        StepVerifier.create(processor.getFullDocument())
+            .expectNextMatches { verifyFullDocumentCommand(it, listOf(p1, p2)) }
             .expectComplete()
             .verify()
     }
@@ -69,7 +98,7 @@ class DocumentProcessorTest {
         val processor = DocumentProcessor()
         val p = createParagraphPayload()
         val addCmd = createAddCommand(p)
-        val removeCmd = createRemoveCommand(p.id)
+        val removeCmd = createRemoveCommand(p)
 
         // When
         processor.process(addCmd)
@@ -78,11 +107,12 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p)) }
             .expectComplete()
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
@@ -93,7 +123,7 @@ class DocumentProcessorTest {
         // Given
         val processor = DocumentProcessor()
         val p = createParagraphPayload()
-        val removeCmd = createRemoveCommand(p.id)
+        val removeCmd = createRemoveCommand(p)
 
         // When
         val result = assertDoesNotThrow { processor.process(removeCmd) }
@@ -101,11 +131,12 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p)) }
             .expectComplete()
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
@@ -131,7 +162,7 @@ class DocumentProcessorTest {
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it, listOf(pUpdated)) }
+            .expectNextMatches { verifyFullDocumentCommand(it, listOf(pUpdated)) }
             .expectComplete()
             .verify()
     }
@@ -155,7 +186,7 @@ class DocumentProcessorTest {
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
@@ -176,7 +207,7 @@ class DocumentProcessorTest {
         val result = processor.process(updateAuthorCmd)
 
         // Then
-        val pExpected = Paragraph(pInitial.id, pInitial.ordinal, pInitial.content, updatedAuthor)
+        val pExpected = Paragraph(pInitial.id, pInitial.ordinal, pInitial.content, updatedAuthor, updatedAuthor.id.toString())
 
         StepVerifier.create(result)
             .expectNextMatches { verifyUpdateAuthorCommand(it, updatedAuthor) }
@@ -184,7 +215,7 @@ class DocumentProcessorTest {
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it, listOf(pExpected)) }
+            .expectNextMatches { verifyFullDocumentCommand(it, listOf(pExpected)) }
             .expectComplete()
             .verify()
     }
@@ -207,7 +238,7 @@ class DocumentProcessorTest {
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
@@ -232,12 +263,12 @@ class DocumentProcessorTest {
 
         // Then
         StepVerifier.create(result)
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, p1Updated) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p1Updated)) }
             .expectComplete()
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it, listOf(p2, p1Updated)) }
+            .expectNextMatches { verifyFullDocumentCommand(it, listOf(p2, p1Updated)) }
             .expectComplete()
             .verify()
     }
@@ -256,17 +287,14 @@ class DocumentProcessorTest {
 
         // Then
         StepVerifier.create(result)
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, pUpdated) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(pUpdated)) }
             .expectComplete()
             .verify()
 
         StepVerifier.create(processor.getFullDocument())
-            .expectNextMatches { verifyInitialDocumentCommand(it) }
+            .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
     }
-
-    fun testUpdateFails_throws() {}
-
 
 }

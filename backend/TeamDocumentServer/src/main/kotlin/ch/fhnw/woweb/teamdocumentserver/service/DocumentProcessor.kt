@@ -11,12 +11,15 @@ import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.just
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 @Service
 @Transactional
 class DocumentProcessor {
 
     private val document: Document = Document()
+    private val lock = ReentrantLock()
 
     fun getFullDocument(): Flux<DocumentCommand> {
         return just(
@@ -39,7 +42,8 @@ class DocumentProcessor {
         UPDATE_LOCK -> updateLock(cmd)
     }
 
-    private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
+    // Needs lock because of potential ordinals issues and update ordinals command
+    private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         if (document.paragraphs.any { it.ordinal == p.ordinal }) {
             p.ordinal = document.paragraphs.maxOf { it.ordinal } + 1
@@ -54,12 +58,23 @@ class DocumentProcessor {
         return just(cmd, updateOrdinalsCmd)
     }
 
-    private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
+    // Needs lock because of Ordinal fixes (Closing gaps and update command)
+    private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
-        document.paragraphs.removeIf { it.id == id }
-        return just(cmd);
+        document.paragraphs.removeIf { it.id == id && it.lockedBy == cmd.sender.toString() }
+        document.paragraphs.sortBy { it.ordinal }
+        document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
+        val updateOrdinalsCmd = DocumentCommand(
+            id = UUID.randomUUID(),
+            payload = Gson().toJson(document.paragraphs),
+            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            type = UPDATE_PARAGRAPH_ORDINALS
+        )
+        return just(cmd, updateOrdinalsCmd)
     }
 
+    // Does not need lock, because all updates for author will come from same thread
+    // Editing the document with the same user on multiple devices results in last one wins principle
     private fun updateAuthor(cmd: DocumentCommand): Flux<DocumentCommand> {
         val a = Gson().fromJson(cmd.payload, Author::class.java)
         document.paragraphs
@@ -68,29 +83,33 @@ class DocumentProcessor {
         return just(cmd)
     }
 
+    // Does not need lock ass list access is synchronized by using synchronized list
     private fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
-            .find { it.id == p.id }
+            .find { it.id == p.id && it.lockedBy == cmd.sender.toString() }
             ?.content = p.content
         return just(cmd)
     }
 
-    private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> {
+    // Needs lock because concurrent updates are possible
+    // The paragraph that triggered the update will be locked by the user
+    // But the sibling paragraph it will be swapped with might not be.
+    private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val paragraphs = Gson().fromJson(cmd.payload, Array<Paragraph>::class.java)
-        paragraphs.forEach { updateParagraphOrdinals(it) }
+        paragraphs.forEach { updateParagraphOrdinals(cmd, it) }
         return just(cmd)
     }
 
-    private fun updateParagraphOrdinals(paragraph: Paragraph) {
+    private fun updateParagraphOrdinals(cmd: DocumentCommand, paragraph: Paragraph) {
         document.paragraphs
-            .find { paragraph.id == it.id }
+            .find { it.id == paragraph.id && it.lockedBy == cmd.sender.toString() }
             ?.ordinal = paragraph.ordinal
     }
 
+    // Does not need explicit lock because list access is synchronized
     private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        println(p)
         document.paragraphs
             .find { it.id == p.id }
             ?.lockedBy = p.lockedBy

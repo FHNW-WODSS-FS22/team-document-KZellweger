@@ -29,7 +29,7 @@ internal class DocumentServiceTest {
         val subscription = service.subscribe()
 
         // Then
-        DocumentCommandAssertions.verifyInitialDocumentCommand(subscription.blockFirst())
+        DocumentCommandAssertions.verifyFullDocumentCommand(subscription.blockFirst())
         Mockito.verify(processor).getFullDocument()
         Mockito.verifyNoInteractions(repository)
     }
@@ -51,7 +51,7 @@ internal class DocumentServiceTest {
 
         // Then
         StepVerifier.create(service.subscribe().take(2))
-            .consumeNextWith { DocumentCommandAssertions.verifyInitialDocumentCommand(it, listOf(p)) }
+            .consumeNextWith { DocumentCommandAssertions.verifyFullDocumentCommand(it, listOf(p)) }
             .consumeNextWith { DocumentCommandAssertions.verifyAddParagraphCommand(it, p2) }
             .verifyComplete()
     }

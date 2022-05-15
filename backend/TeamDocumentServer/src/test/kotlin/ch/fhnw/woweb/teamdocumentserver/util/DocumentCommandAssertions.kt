@@ -12,13 +12,9 @@ object DocumentCommandAssertions {
 
     private val gson = Gson()
 
-    fun verifyInitialDocumentCommand(cmd: DocumentCommand?, expectedContent: List<Paragraph> = emptyList()): Boolean {
+    fun verifyFullDocumentCommand(cmd: DocumentCommand?, expectedContent: List<Paragraph> = emptyList()): Boolean {
         assertThat(cmd?.type).isEqualTo(CommandType.INITIAL)
-        val paragraphs: Array<Paragraph> = gson.fromJson(cmd?.payload, Array<Paragraph>::class.java)
-        assertThat(paragraphs)
-            .usingRecursiveFieldByFieldElementComparator()
-            .containsAll(expectedContent)
-        return true
+        return verifyParagraphList(cmd, expectedContent)
     }
 
     fun verifyAddParagraphCommand(cmd: DocumentCommand?, expectedPayload: Paragraph): Boolean {
@@ -45,13 +41,9 @@ object DocumentCommandAssertions {
         return true
     }
 
-    fun verifyUpdateOrdinalsCommand(cmd: DocumentCommand, expectedPayload: Paragraph): Boolean {
+    fun verifyUpdateOrdinalsCommand(cmd: DocumentCommand, expectedPayload: List<Paragraph> = emptyList()): Boolean {
         assertThat(cmd.type).isEqualTo(CommandType.UPDATE_PARAGRAPH_ORDINALS)
-        val paragraph = gson.fromJson(cmd.payload, Array<Paragraph>::class.java)
-        assertThat(paragraph)
-            .usingRecursiveComparison()
-            .isEqualTo(expectedPayload)
-        return true
+        return verifyParagraphList(cmd, expectedPayload)
     }
 
     fun verifyUpdateAuthorCommand(cmd: DocumentCommand, expectedPayload: Author): Boolean {
@@ -59,7 +51,14 @@ object DocumentCommandAssertions {
         val paragraph = gson.fromJson(cmd.payload, Author::class.java)
         assertThat(paragraph)
             .usingRecursiveComparison()
-            .isEqualTo(expectedPayload)
+        return true
+    }
+
+    private fun verifyParagraphList(cmd: DocumentCommand?, expectedPayload: List<Paragraph> = emptyList()): Boolean {
+        val paragraphs: Array<Paragraph> = gson.fromJson(cmd?.payload, Array<Paragraph>::class.java)
+        assertThat(paragraphs)
+            .usingRecursiveFieldByFieldElementComparator()
+            .containsAll(expectedPayload)
         return true
     }
 

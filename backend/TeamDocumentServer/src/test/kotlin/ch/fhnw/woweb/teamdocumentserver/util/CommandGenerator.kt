@@ -5,14 +5,13 @@ import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Author
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import com.google.gson.Gson
-import java.util.*
 
 object CommandGenerator {
 
     fun createInitialCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(listOf(p)),
-            sender = UUID.randomUUID(),
+            sender = p.author.id,
             type = CommandType.INITIAL
         )
     }
@@ -20,15 +19,15 @@ object CommandGenerator {
     fun createAddCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(p),
-            sender = UUID.randomUUID(),
+            sender = p.author.id,
             type = CommandType.ADD_PARAGRAPH
         )
     }
 
-    fun createRemoveCommand(id: UUID): DocumentCommand {
+    fun createRemoveCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
-            payload = id.toString(),
-            sender = UUID.randomUUID(),
+            payload = p.id.toString(),
+            sender = p.author.id,
             type = CommandType.REMOVE_PARAGRAPH
         )
     }
@@ -36,7 +35,7 @@ object CommandGenerator {
     fun createUpdateCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(p),
-            sender = UUID.randomUUID(),
+            sender = p.author.id,
             type = CommandType.UPDATE_PARAGRAPH
         )
     }
@@ -44,7 +43,7 @@ object CommandGenerator {
     fun createUpdateOrdinalsCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(listOf(p)),
-            sender = UUID.randomUUID(),
+            sender = p.author.id,
             type = CommandType.UPDATE_PARAGRAPH_ORDINALS
         )
     }
@@ -52,7 +51,7 @@ object CommandGenerator {
     fun createUpdateAuthorCommand(a: Author): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(a),
-            sender = UUID.randomUUID(),
+            sender = a.id,
             type = CommandType.UPDATE_AUTHOR
         )
     }
