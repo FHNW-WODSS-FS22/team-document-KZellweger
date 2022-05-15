@@ -55,4 +55,12 @@ object CommandGenerator {
             type = CommandType.UPDATE_AUTHOR
         )
     }
+
+    fun createLockCommand(p: Paragraph): DocumentCommand {
+        return DocumentCommand(
+            payload = Gson().toJson(p),
+            sender = p.author.id,
+            type = CommandType.UPDATE_LOCK
+        )
+    }
 }

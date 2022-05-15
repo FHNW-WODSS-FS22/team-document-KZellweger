@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/message")
-class MessageController(
+class CommandController(
     val service: DocumentService
 ) {
 
     @PostMapping
-    fun message(@RequestBody commands: List<DocumentCommand>): ResponseEntity<Void> {
-        println(commands)
+    fun processCommands(@RequestBody commands: List<DocumentCommand>): ResponseEntity<Void> {
         service.process(commands)
         return ResponseEntity(HttpStatus.OK)
     }
