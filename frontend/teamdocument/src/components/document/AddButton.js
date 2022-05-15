@@ -5,7 +5,7 @@ import uuid from "../../utils/uuid";
 
 const AddButton = () => {
 
-    const error = useSelector(state => state.error);
+    const error = useSelector(state => state.error.isPresent);
     const author = useSelector(state => state.author);
     const ordinals = useSelector(state => {
         return state.paragraphs.map(p => p.ordinal)
