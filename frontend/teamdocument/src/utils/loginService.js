@@ -1,23 +1,11 @@
 
 export const loginService = {
     login,
-    logout,
-    authHeader
+    logout
 }
 
 function logout(){
     localStorage.removeItem('localUser')
-}
-
-function authHeader(){
-    console.log(localStorage.getItem('localUser'))
-    let user = JSON.parse(localStorage.getItem('localUser'))
-    if(user && user.authdata){
-        return {'Authorization': 'Basic ' + user.authdata}
-    } else {
-        return {}
-    }
-
 }
 
 function login(username, password){
