@@ -58,12 +58,19 @@ class DocumentProcessor {
         return just(cmd, updateOrdinalsCmd)
     }
 
-    // TODO: Update ordinals to close Gaps
     // Needs lock because of Ordinal fixes (Closing gaps and update command)
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
         document.paragraphs.removeIf { it.id == id && it.lockedBy == cmd.sender.toString() }
-        return just(cmd)
+        document.paragraphs.sortBy { it.ordinal }
+        document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
+        val updateOrdinalsCmd = DocumentCommand(
+            id = UUID.randomUUID(),
+            payload = Gson().toJson(document.paragraphs),
+            sender = UUID.randomUUID(), // TODO: User Server sender Id,
+            type = UPDATE_PARAGRAPH_ORDINALS
+        )
+        return just(cmd, updateOrdinalsCmd)
     }
 
     // Does not need lock, because all updates for author will come from same thread

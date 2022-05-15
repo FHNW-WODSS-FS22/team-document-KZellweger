@@ -13,7 +13,8 @@ object PayloadGenerator {
             id = id,
             ordinal = ordinal,
             content = content,
-            author = createAuthorPayload(authorId)
+            author = createAuthorPayload(authorId),
+            lockedBy = authorId.toString()
         )
     }
 
