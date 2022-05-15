@@ -13,7 +13,8 @@ const User = () => {
         e.preventDefault()
         const json = {
             id: author.id,
-            name: author.name
+            name: author.name,
+            image: author.image
         }
         const payload = { ...json , name: e.target.value }
         dispatch({type: 'UPDATE_AUTHOR', payload})
