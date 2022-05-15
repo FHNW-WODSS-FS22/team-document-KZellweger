@@ -52,11 +52,11 @@ const Paragraph = ({id}) => {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
-        sendMessages({
+        sendMessages([{
             type: 'UPDATE_PARAGRAPH_ORDINALS',
             payload: JSON.stringify(payload),
             sender: author.id
-        })
+        }])
     }
     const handleClickInside = e => {
         e.preventDefault()

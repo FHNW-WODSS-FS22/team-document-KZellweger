@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-let counter = 0;
+
 function useDebounceMessages(message, delay, maxElements) {
     // State and setters for debounced value
     const [messages, setMessages] = useState();
+    let counter = 0;
     useEffect(
         () => {
             // Update debounced value after delay
@@ -15,16 +16,7 @@ function useDebounceMessages(message, delay, maxElements) {
                 // This is how we prevent debounced value from updating if value is changed ...
                 // .. within the delay period. Timeout gets cleared and restarted.
                 return () => {
-                    if(counter < maxElements){
-                        console.log("clear timeout", counter)
-                        counter = counter +1
                         clearTimeout(handler);
-                    } else {
-                        console.log("reset counter after ", counter)
-                        setTimeout(() => {
-                            counter = 0
-                        },10)
-                    }
                 };
             }
         },
