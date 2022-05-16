@@ -1,26 +1,7 @@
 import {resetDb} from "../../utils/requestUtil";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 describe('Paragraph Suite', () => {
-    beforeEach(() => {
-        resetDb();
-        cy.wait(1000);
-        cy.visit('localhost:3000');
-        /* ==== Generated with Cypress Studio ==== */
-        // Login to the application
-        cy.get(':nth-child(1) > .form-control').clear();
-        cy.get(':nth-child(1) > .form-control').type('user');
-        cy.get(':nth-child(2) > .form-control').clear();
-        cy.get(':nth-child(2) > .form-control').type('1234');
-        cy.get('.btn').click();
-        // Needs to wait, else actions in test might be executed before INIT
-        cy.wait(500);
-        /* ==== End Cypress Studio ==== */
-    })
-
-    afterEach(() => {;
-        cy.get('.logout').click();
-    })
-
     it('Adds a paragraph', () => {
         cy.get('.paragraphs').children('div').should('have.length', 0);
         cy.get('.add').click();
@@ -66,5 +47,30 @@ describe('Paragraph Suite', () => {
             cy.get(`[tabindex="${i}"] > .paragraphHeader > :nth-child(3) > .remove`).click();
         }
         cy.get('.paragraphs').children('div').should('have.length', 0);
+    })
+
+    it('Swaps 2 paragraphs', () => {
+        const upper = 3;
+        for(let i = 1; i < upper + 1; i++) {
+            cy.get('.add').click();
+            cy.get(`[tabindex="${i}"] > .paragraphHeader`).click();
+            cy.get(`[tabindex="${i}"] > .paragraphContent > textarea`).click();
+            cy.get(`[tabindex="${i}"] > .paragraphContent > textarea`).type(i.toString());
+            cy.wait(100);
+        }
+        // Swap 3 with 1
+        cy.get('[tabindex="3"] > .paragraphHeader').click();
+        cy.get('[tabindex="3"] > .paragraphHeader > :nth-child(3) > input').clear();
+        cy.get('[tabindex="3"] > .paragraphHeader > :nth-child(3) > input').type('1').type('{enter}');
+        cy.wait(100);
+        // Write 1 to the new 1
+        cy.get('[tabindex="1"] > .paragraphContent > textarea').click();
+        cy.get('[tabindex="1"] > .paragraphContent > textarea').type('1');
+    })
+
+    it('Swaps i paragraphs', () => {
+        const upper = 50;
+        for(let i = 1; i < upper + 1; i++) {
+        }
     })
 })
