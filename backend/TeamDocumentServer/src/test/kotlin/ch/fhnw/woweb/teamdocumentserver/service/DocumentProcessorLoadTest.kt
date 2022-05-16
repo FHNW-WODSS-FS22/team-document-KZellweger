@@ -3,6 +3,7 @@ package ch.fhnw.woweb.teamdocumentserver.service
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator
+import ch.fhnw.woweb.teamdocumentserver.util.TeamDocumentServerTestProperties
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ internal class DocumentProcessorLoadTest {
     private val MAX_MS_PER_COMMAND = 4L
     private val MAX_MS_TOTAL = NUMBER_OF_COMMANDS * MAX_MS_PER_COMMAND
 
-    private val processor: DocumentProcessor = DocumentProcessor()
+    private val processor: DocumentProcessor = DocumentProcessor(TeamDocumentServerTestProperties.create())
     private val author = PayloadGenerator.createAuthorPayload()
 
     @Test

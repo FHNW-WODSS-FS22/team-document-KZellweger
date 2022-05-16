@@ -19,6 +19,7 @@ import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyUpd
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyUpdateParagraphCommand
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createAuthorPayload
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createParagraphPayload
+import ch.fhnw.woweb.teamdocumentserver.util.TeamDocumentServerTestProperties
 import com.google.gson.Gson
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
@@ -29,7 +30,7 @@ import java.util.*
 
 class DocumentProcessorTest {
 
-    private val processor = DocumentProcessor()
+    private val processor = DocumentProcessor(TeamDocumentServerTestProperties.create())
 
     @Test
     @DisplayName("Empty document is generated with Processor creation")
