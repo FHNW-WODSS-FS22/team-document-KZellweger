@@ -14,6 +14,31 @@ const AddButton = () => {
     const sendMessages = useSendMessagesHook(dispatch);
 
     const handleAddParagraph = e => {
+
+        if (e.shiftKey) {
+
+            console.log("SHIFTGESICHT")
+
+            const headers = new Headers()
+            const user = JSON.parse(localStorage.getItem('localUser'))
+            if (user && user.authdata) {
+                headers.append('Authorization', 'Basic ' + user.authdata)
+            }
+
+            return fetch(process.env.REACT_APP_BACKEND_BASE + '/message/restore', {
+                method: 'POST',
+                headers: headers,
+            }).then(response => {
+                if (response.status < 200 || response.status > 299) {
+                    console.log("Dispatchy")
+                    dispatch({type: 'ERROR', payload: { isPresent: true, message: "An error has occurred. \n Some of your changes may not have been saved." }})
+                }
+            })
+
+
+
+        }
+
         e.preventDefault();
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
         console.log(max)

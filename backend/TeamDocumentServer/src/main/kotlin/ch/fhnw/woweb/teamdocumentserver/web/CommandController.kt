@@ -25,4 +25,14 @@ class CommandController(
         }
     }
 
+    @PostMapping("/restore")
+    fun restoreLastDeleted(): ResponseEntity<Void> {
+        return try {
+            service.restoreLastDeleted()
+            ResponseEntity(HttpStatus.OK)
+        } catch (e: Exception) {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
 }

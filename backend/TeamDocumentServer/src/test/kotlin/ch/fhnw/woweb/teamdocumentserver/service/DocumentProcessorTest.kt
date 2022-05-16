@@ -394,8 +394,8 @@ class DocumentProcessorTest {
         // Given
         val addCmd = DocumentCommand(
             payload = "INVALID",
-            sender= UUID.randomUUID(),
-            type= CommandType.ADD_PARAGRAPH
+            sender = UUID.randomUUID(),
+            type = CommandType.ADD_PARAGRAPH
         )
 
         // When
