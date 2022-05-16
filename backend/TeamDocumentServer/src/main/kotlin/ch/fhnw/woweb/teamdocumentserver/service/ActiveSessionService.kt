@@ -25,7 +25,7 @@ class ActiveSessionService(
     fun unregister(id: UUID): DocumentCommand {
     activeUsers.remove(id)
         return DocumentCommand(
-            payload = id.toString(),
+            payload = Gson().toJson(id),
             sender = id,
             type = CommandType.REMOVE_CLIENT
         )

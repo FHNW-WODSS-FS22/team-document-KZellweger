@@ -54,7 +54,7 @@ class DocumentProcessor(
         val update : MutableList<DocumentCommand> = mutableListOf()
         println("Remove Client Processor call")
         document.paragraphs
-            .filter { it.lockedBy.equals(cmd.payload) }
+            .filter { it.lockedBy.equals(Gson().fromJson(cmd.payload, String::class.java)) }
             .map { paragraph ->
                 paragraph.lockedBy = null
                 update.add(
