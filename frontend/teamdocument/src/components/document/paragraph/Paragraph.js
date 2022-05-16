@@ -1,9 +1,9 @@
 import './Paragraph.css';
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import RemoveParagraphButton from "../RemoveParagraphButton";
 import useDebounceMessages from "../../../hooks/debounce.hook";
-import sendMessages from "../../../utils/messageService";
+import useSendMessagesHook from "../../../hooks/useSendMessages.hook";
 
 // TODO
 /* eslint-disable react/prop-types */
@@ -14,6 +14,9 @@ const Paragraph = ({id}) => {
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
     const paragraphs = useSelector(state => state.paragraphs);
     const dispatch = useDispatch()
+
+    const sendMessages = useSendMessagesHook(dispatch)
+
     const [message, setMessage] = useState([])
     const accumulatedMessages = useDebounceMessages(message,150, 25)
     const maxOrdinal = useSelector(state => {

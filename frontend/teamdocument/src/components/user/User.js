@@ -3,10 +3,11 @@ import blank from './blank_user.png'
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import useDebounceMessages from "../../hooks/debounce.hook";
-import sendMessages from "../../utils/messageService";
+import useSendMessagesHook from "../../hooks/useSendMessages.hook";
 
 const User = () => {
     const dispatch = useDispatch()
+    const sendMessages = useSendMessagesHook(dispatch);
     const author = useSelector(state => state.author);
     const error = useSelector(state => state.error.isPresent);
     const [message, setMessage] = useState([])
