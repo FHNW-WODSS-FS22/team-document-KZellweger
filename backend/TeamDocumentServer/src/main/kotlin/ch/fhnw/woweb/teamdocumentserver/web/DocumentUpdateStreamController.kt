@@ -4,9 +4,11 @@ import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.service.DocumentService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Flux
+import java.util.*
 
 @RestController
 @RequestMapping("api/v1/document")
@@ -15,7 +17,8 @@ class DocumentUpdateStreamController(
 )
 {
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun getUpdatedDocumentSubscription(): Flux<DocumentCommand> {
-        return service.subscribe()
+    fun getUpdatedDocumentSubscription(@RequestHeader("X-ClientId") clientId : UUID): Flux<DocumentCommand> {
+        println("Client ID: $clientId")
+        return service.subscribe(clientId)
     }
 }

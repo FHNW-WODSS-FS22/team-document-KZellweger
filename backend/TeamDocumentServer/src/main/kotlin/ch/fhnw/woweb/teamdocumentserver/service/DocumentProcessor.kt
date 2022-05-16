@@ -41,6 +41,29 @@ class DocumentProcessor {
         UPDATE_PARAGRAPH_ORDINALS -> updateParagraphOrdinals(cmd)
         UPDATE_AUTHOR -> updateAuthor(cmd)
         UPDATE_LOCK -> updateLock(cmd)
+        REMOVE_CLIENT -> removeClient(cmd)
+        else -> {
+            println(cmd)
+            Flux.empty()
+        }
+    }
+
+    private fun removeClient(cmd: DocumentCommand): Flux<DocumentCommand> {
+        val update : MutableList<DocumentCommand> = mutableListOf()
+        println("Remove Client Processor call")
+        document.paragraphs
+            .filter { it.lockedBy.equals(cmd.payload) }
+            .map { paragraph ->
+                paragraph.lockedBy = null
+                update.add(
+                    DocumentCommand(
+                    payload = Gson().toJson(paragraph),
+                    sender = SERVER_SENDER_ID,
+                    type = UPDATE_LOCK
+                ))
+             }
+        update.add(0,cmd)
+        return Flux.fromIterable(update)
     }
 
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
@@ -52,7 +75,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = SERVER_SENDER_ID, // TODO: User Server sender Id,
+            sender = SERVER_SENDER_ID,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)
@@ -66,7 +89,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = SERVER_SENDER_ID, // TODO: User Server sender Id,
+            sender = SERVER_SENDER_ID,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)

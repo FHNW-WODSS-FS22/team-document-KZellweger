@@ -28,8 +28,7 @@ class DocumentService(
             .merge(getFullDocument(), activeSessionService.getActiveUsers(), getUpdateStream())
             .onErrorStop()
             .doOnCancel {
-                val unregisterCmd = activeSessionService.unregister(id)
-                sink.tryEmitNext(unregisterCmd)
+                process(activeSessionService.unregister(id))
             }
     }
 
@@ -52,9 +51,6 @@ class DocumentService(
     }
 
     private fun process(cmd: DocumentCommand) {
-        if (i++ % 25 == 0) {
-            throw RuntimeException()
-        }
         processor.process(cmd)
             .flatMap { repository.save(it) }
             .map { sink.tryEmitNext(it) }
