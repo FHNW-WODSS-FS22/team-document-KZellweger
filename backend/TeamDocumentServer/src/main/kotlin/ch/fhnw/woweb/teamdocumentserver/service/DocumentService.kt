@@ -2,6 +2,7 @@ package ch.fhnw.woweb.teamdocumentserver.service
 
 import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.*
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
+import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
@@ -25,19 +26,6 @@ class DocumentService(
             .onErrorStop()
     }
 
-    fun process(messages: List<DocumentCommand>) {
-        messages.forEach { process(it) }
-    }
-
-    fun restoreLastDeleted() {
-        repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
-            .map { Gson().fromJson(it?.payload, UUID::class.java) }
-            .flatMap { repository.findFirstByTypeAndCorrelationIdOrderByCreatedAtDesc(UPDATE_PARAGRAPH, it) }
-            .map { DocumentCommand(payload = it.payload, sender = UUID.randomUUID(), type = ADD_PARAGRAPH) }
-            .map { process(it) }
-            .subscribe()
-    }
-
     private fun getFullDocument(): Flux<DocumentCommand> {
         return processor.getFullDocument()
     }
@@ -46,12 +34,36 @@ class DocumentService(
         return sink.asFlux().log()
     }
 
+
+    fun process(messages: List<DocumentCommand>) {
+        messages.forEach { process(it) }
+    }
+
     private fun process(cmd: DocumentCommand) {
         processor.process(cmd)
             .flatMap { repository.save(it) }
             .map { sink.tryEmitNext(it) }
             .log()
             .subscribe()
+    }
+
+    fun restoreLastDeleted() {
+        repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
+            .map { Gson().fromJson(it?.payload, UUID::class.java) }
+            .flatMap { repository.findFirstByTypeAndCorrelationIdOrderByCreatedAtDesc(UPDATE_PARAGRAPH, it) }
+            .map { DocumentCommand(payload = payload(it.payload), sender = UUID.randomUUID(), type = ADD_PARAGRAPH) }
+            .map { process(it) }
+            .subscribe()
+    }
+
+    fun payload(it: String): String {
+        val p = Gson().fromJson(it, Paragraph::class.java)
+        val up = Paragraph(
+            ordinal = p.ordinal,
+            content = p.content,
+            author = p.author
+        )
+        return Gson().toJson(up)
     }
 
     @PostConstruct
