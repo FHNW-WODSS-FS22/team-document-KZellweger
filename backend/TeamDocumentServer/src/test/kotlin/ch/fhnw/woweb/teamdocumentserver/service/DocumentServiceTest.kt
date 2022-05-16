@@ -5,6 +5,7 @@ import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createInitialCommand
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createParagraphPayload
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import reactor.core.publisher.Flux.just
@@ -56,8 +57,27 @@ internal class DocumentServiceTest {
             .verifyComplete()
     }
 
-    fun testProcessFails_sendsInitial() {}
+    @Test
+    fun testProcessFails() {
+        // Given
+        val p = createParagraphPayload()
+        val initialCmd = createInitialCommand(p)
+        val p2 = createParagraphPayload()
+        val addCmd = CommandGenerator.createAddCommand(p2)
+        val e = RuntimeException()
 
+        Mockito.`when`(processor.getFullDocument()).thenReturn(just(initialCmd))
+        Mockito.`when`(processor.process(addCmd)).thenThrow(e)
+
+        // When
+        Assertions.assertThatThrownBy { service.process(listOf(addCmd)) }.isEqualTo(e)
+
+        // Then
+        Mockito.verifyNoMoreInteractions(repository)
+        StepVerifier.create(service.subscribe().take(1))
+            .consumeNextWith { DocumentCommandAssertions.verifyFullDocumentCommand(it, listOf(p)) }
+            .verifyComplete()
+    }
 
     @Test
     fun loadInitialState() {

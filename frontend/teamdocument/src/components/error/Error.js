@@ -9,7 +9,7 @@ const Error = () => {
         <div className={"modal " + (error.isPresent ? "show-modal" : "")}>
             <div className="modal-content">
                 <h1>Error</h1>
-                <h3>{error.message}</h3>
+                <p>{error.message}</p>
             </div>
         </div>
     </div>

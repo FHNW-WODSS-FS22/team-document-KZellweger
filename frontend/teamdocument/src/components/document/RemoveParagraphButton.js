@@ -1,13 +1,14 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import sendMessages from "../../utils/messageService";
+import useSendMessagesHook from "../../utils/sendMessagesService";
 
-// TODO
 /* eslint-disable react/prop-types */
 const RemoveParagraphButton = ({id, isAllowedToRemove}) => {
 
     const dispatch = useDispatch();
     const author = useSelector(state => state.author);
+    const sendMessages = useSendMessagesHook(dispatch);
+
     const handleRemoveParagraph = e => {
         e.preventDefault();
         if (isAllowedToRemove) {

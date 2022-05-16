@@ -8,7 +8,6 @@ import reactor.core.publisher.Sinks
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import javax.annotation.PostConstruct
 
-
 @Service
 class DocumentService(
     private val processor: DocumentProcessor,
@@ -18,14 +17,16 @@ class DocumentService(
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
-        return Flux.merge(getInitialState(), getUpdateStream()).onErrorStop()
+        return Flux
+            .merge(getFullDocument(), getUpdateStream())
+            .onErrorStop()
     }
 
     fun process(messages: List<DocumentCommand>) {
         messages.forEach { process(it) }
     }
 
-    private fun getInitialState(): Flux<DocumentCommand> {
+    private fun getFullDocument(): Flux<DocumentCommand> {
         return processor.getFullDocument()
     }
 

@@ -1,4 +1,7 @@
 spring:
+  mongodb:
+    embedded:
+      version: 3.4.5
   data:
     mongodb:
       uri: mongodb://localhost:27017/team_document_db
@@ -7,3 +10,4 @@ teamdocument:
   userName: "User"
   userPassword: "1234"
   allowedOrigins: http://localhost:3000, http://localhost:80, http://team_document:80
+  serverId: fcd6e222-074b-4d04-9af6-062bfcd8402e

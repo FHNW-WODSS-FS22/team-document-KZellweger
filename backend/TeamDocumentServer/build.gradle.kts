@@ -27,6 +27,7 @@ dependencies {
 	implementation("com.google.code.gson:gson")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
 }
 
 tasks.getByName<Jar>("jar") {

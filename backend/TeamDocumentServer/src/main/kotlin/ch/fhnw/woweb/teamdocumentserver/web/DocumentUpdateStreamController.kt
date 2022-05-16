@@ -10,12 +10,12 @@ import reactor.core.publisher.Flux
 
 @RestController
 @RequestMapping("api/v1/document")
-class DocumentStreamController(
+class DocumentUpdateStreamController(
     val service: DocumentService
 )
 {
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun getUpdatedDocument(): Flux<DocumentCommand> {
+    fun getUpdatedDocumentSubscription(): Flux<DocumentCommand> {
         return service.subscribe()
     }
 }
