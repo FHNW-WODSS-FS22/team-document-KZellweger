@@ -20,6 +20,7 @@ import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions.verifyUpd
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createAuthorPayload
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createParagraphPayload
 import com.google.gson.Gson
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -384,6 +385,21 @@ class DocumentProcessorTest {
             .expectNextMatches { verifyFullDocumentCommand(it) }
             .expectComplete()
             .verify()
+    }
+
+    @Test
+    @DisplayName("Exception on invalid payload")
+    fun testProcessFails() {
+        // Given
+        val addCmd = DocumentCommand(
+            payload = "INVALID",
+            sender= UUID.randomUUID(),
+            type= CommandType.ADD_PARAGRAPH
+        )
+
+        // When
+        // Then
+        Assertions.assertThatThrownBy { processor.process(addCmd) }
     }
 
 

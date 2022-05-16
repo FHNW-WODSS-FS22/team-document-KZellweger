@@ -11,8 +11,10 @@ const useSendMessages = (dispatch) => {
             headers: headers,
             body: JSON.stringify(messages)
         }).then(response => {
-            // console.log("Response for " + response?.url + " with status: " + response?.status);
-        }).catch(error => dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }}) )
+            if (response.status < 200 || response.status > 299) {
+                dispatch({type: 'ERROR', payload: { isPresent: true, isBlocking: true, message: "An error occured and your changes could not be saved." }})
+            }
+        })
     }
 
 }
