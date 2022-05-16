@@ -53,7 +53,6 @@ const Paragraph = ({id}) => {
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
             const payload =  { ...paragraph, lockedBy: author.id }
             dispatch({ type: 'UPDATE_LOCK', payload })
-            console.log("locking")
 
             sendMessage({
                 type: 'UPDATE_LOCK',

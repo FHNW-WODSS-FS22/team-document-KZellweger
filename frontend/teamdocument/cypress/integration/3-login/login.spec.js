@@ -5,8 +5,11 @@
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
 describe('Login Suite', () => {
-    it('Login to the application', () => {
+    beforeEach(() => {
         cy.visit('localhost:3000');
+    })
+
+    it('Login to the application', () => {
         /* ==== Generated with Cypress Studio ==== */
         cy.get(':nth-child(1) > .form-control').clear();
         cy.get(':nth-child(1) > .form-control').type('user');
@@ -20,7 +23,6 @@ describe('Login Suite', () => {
     })
 
     it('Login to the application and logout', () => {
-        cy.visit('localhost:3000')
         /* ==== Generated with Cypress Studio ==== */
         cy.get(':nth-child(1) > .form-control').clear();
         cy.get(':nth-child(1) > .form-control').type('user');
@@ -35,7 +37,6 @@ describe('Login Suite', () => {
     })
 
     it('Login with wrong credentials', () => {
-        cy.visit('localhost:3000')
         /* ==== Generated with Cypress Studio ==== */
         cy.get(':nth-child(1) > .form-control').clear();
         cy.get(':nth-child(1) > .form-control').type('user');

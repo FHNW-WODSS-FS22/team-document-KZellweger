@@ -2,6 +2,7 @@ package ch.fhnw.woweb.teamdocumentserver.service
 
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
@@ -23,6 +24,12 @@ class DocumentService(
 
     fun process(messages: List<DocumentCommand>) {
         messages.forEach { process(it) }
+    }
+
+    //@Profile("e2e")
+    fun resetDb() {
+        processor.resetDocument()
+        repository.deleteAll()
     }
 
     private fun getInitialState(): Flux<DocumentCommand> {

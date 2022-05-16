@@ -14,9 +14,7 @@ const AddButton = () => {
 
     const handleAddParagraph = e => {
         e.preventDefault();
-        console.log("Blabla")
-        const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
-        console.log(max)
+        const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0;
         const payload =  {
             id: uuid(),
             author: author,
@@ -33,7 +31,7 @@ const AddButton = () => {
     }
 
     return (
-        <button disabled={error} value="Add Paragraph" onClick={handleAddParagraph}>
+        <button disabled={error} className={"add"} value="Add Paragraph" onClick={handleAddParagraph}>
             Add Paragraph
         </button>
     );

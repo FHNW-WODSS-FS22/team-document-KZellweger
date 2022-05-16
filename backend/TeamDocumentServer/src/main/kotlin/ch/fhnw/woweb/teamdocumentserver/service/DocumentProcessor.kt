@@ -42,6 +42,10 @@ class DocumentProcessor {
         UPDATE_LOCK -> updateLock(cmd)
     }
 
+    fun resetDocument() {
+        document.paragraphs.removeAll(document.paragraphs)
+    }
+
     // Needs lock because of potential ordinals issues and update ordinals command
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
