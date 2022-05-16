@@ -17,8 +17,12 @@ class CommandController(
 
     @PostMapping
     fun processCommands(@RequestBody commands: List<DocumentCommand>): ResponseEntity<Void> {
-        service.process(commands)
-        return ResponseEntity(HttpStatus.OK)
+        return try {
+            service.process(commands)
+            ResponseEntity(HttpStatus.OK)
+        } catch (e: Exception) {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
 }

@@ -8,8 +8,9 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
-internal class MessageControllerTest {
+internal class CommandControllerTest {
 
     private val documentService = Mockito.mock(DocumentService::class.java)
     private val controller = CommandController(documentService)
@@ -49,15 +50,18 @@ internal class MessageControllerTest {
     }
 
     @Test
-    fun testProcessMessages_expectionIsRethrown() {
+    fun testProcessMessages_exceptionReturnsInternalServerError() {
         // Given
         val cmds = listOf<DocumentCommand>()
         val e = java.lang.IllegalArgumentException()
         Mockito.doThrow(e).`when`(documentService).process(cmds)
 
         // When
+        val result = controller.processCommands(cmds)
+
         // Then
-        Assertions.assertThatThrownBy { controller.processCommands(cmds) }.isEqualTo(e)
+        val expectedResponse = ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Assertions.assertThat(result).isEqualTo(expectedResponse)
     }
 
 }
