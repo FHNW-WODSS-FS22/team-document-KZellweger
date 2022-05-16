@@ -12,7 +12,8 @@ const useSendMessages = (dispatch) => {
             body: JSON.stringify(messages)
         }).then(response => {
             if (response.status < 200 || response.status > 299) {
-                dispatch({type: 'ERROR', payload: { isPresent: true, isBlocking: true, message: "An error occured and your changes could not be saved." }})
+                console.log("Dispatchy")
+                dispatch({type: 'ERROR', payload: { isPresent: true, message: "An error occured and your changes could not be saved." }})
             }
         })
     }
