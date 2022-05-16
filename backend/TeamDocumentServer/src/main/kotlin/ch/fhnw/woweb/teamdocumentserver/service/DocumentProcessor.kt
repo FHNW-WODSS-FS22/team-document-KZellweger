@@ -101,7 +101,10 @@ class DocumentProcessor(
         val a = Gson().fromJson(cmd.payload, Author::class.java)
         document.paragraphs
             .filter { it.author.id == a.id }
-            .map { paragraph -> paragraph.author.name = a.name }
+            .map { paragraph ->
+                paragraph.author.name = a.name
+                paragraph.lockedBy?.name= a.name
+            }
         return just(cmd)
     }
 

@@ -33,6 +33,7 @@ const Paragraph = ({id}) => {
 
     const handleContentChange = e => {
         e.preventDefault()
+        console.log(paragraph)
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
         const newMessage = {
@@ -42,6 +43,7 @@ const Paragraph = ({id}) => {
         }
         setMessage([...message, newMessage])
     }
+
     const handleOrdinalChange = e => {
         e.preventDefault()
         if (isNaN(e.target.valueAsNumber)) {
@@ -53,6 +55,7 @@ const Paragraph = ({id}) => {
         if (sibling) {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
+        console.log(payload)
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
         sendMessages([{
             type: 'UPDATE_PARAGRAPH_ORDINALS',
@@ -64,6 +67,7 @@ const Paragraph = ({id}) => {
         e.preventDefault()
         // Paragraph is lockable if no one is holding the lock
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
+            console.log(paragraph)
             const payload =  { ...paragraph, lockedBy: author }
             dispatch({ type: 'UPDATE_LOCK', payload })
             sendMessages([{

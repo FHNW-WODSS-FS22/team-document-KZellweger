@@ -48,7 +48,7 @@ const REDUCERS = {
     'UPDATE_LOCK': (state, action) => ({
         ...state,
         paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p ),
-        otherAuthors: _.map(state.otherAuthors, a => a.id === action.payload.author.id ? action.payload.author : a),
+        otherAuthors: _.map(state.otherAuthors, a => (action.payload.lockedBy !== null && action.payload.lockedBy !== undefined) && (a.id === action.payload.lockedBy.id) ? action.payload.lockedBy : a),
         messages: _.concat(state.messages, action.type)
     }),
 
@@ -60,6 +60,7 @@ const REDUCERS = {
 
     'REMOVE_CLIENT': (state, action) => ({
         ...state,
+        otherAuthors: state.otherAuthors.filter((author) => author.id !== action.payload),
         messages: _.concat(state.messages, action.type)
     }),
 
@@ -87,7 +88,7 @@ const updateParagraphAuthors = (paragraphs, changedAuthor) => {
     const updatedParagraphs = paragraphs.filter(p => {
         return p.author.id === changedAuthor.id
     }).map(p => {
-        return {...p, 'author': changedAuthor}
+        return {...p, 'author': changedAuthor, 'lockedBy': changedAuthor}
     })
     return paragraphs.map(p => updatedParagraphs.find(up => up.id === p.id) || p)
 }
