@@ -2,7 +2,7 @@ import './Paragraph.css';
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import RemoveParagraphButton from "../RemoveParagraphButton";
-import useDebounceMessages from "../../../hooks/debounce.hook";
+import useDebounceMessages from "../../../hooks/useDebounceMessages.hook";
 import useSendMessagesHook from "../../../hooks/useSendMessages.hook";
 
 // TODO

@@ -2,7 +2,7 @@ import './User.css';
 import blank from './blank_user.png'
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import useDebounceMessages from "../../hooks/debounce.hook";
+import useDebounceMessages from "../../hooks/useDebounceMessages.hook";
 import useSendMessagesHook from "../../hooks/useSendMessages.hook";
 
 const User = () => {

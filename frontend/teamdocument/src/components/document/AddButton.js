@@ -15,7 +15,6 @@ const AddButton = () => {
 
     const handleAddParagraph = e => {
         e.preventDefault();
-        console.log("Blabla")
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
         console.log(max)
         const payload =  {
@@ -30,7 +29,7 @@ const AddButton = () => {
             type: 'ADD_PARAGRAPH',
             payload: JSON.stringify(payload),
             sender: author.id
-        }]);
+        }])
     }
 
     return (

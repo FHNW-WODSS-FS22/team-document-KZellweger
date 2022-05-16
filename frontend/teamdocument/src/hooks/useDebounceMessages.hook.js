@@ -9,7 +9,6 @@ function useDebounceMessages(message, delay, maxElements) {
             // Update debounced value after delay
             if(message !== null){
                 const handler = setTimeout(() => {
-                    console.log("Set message")
                     setMessages(message);
                 }, delay);
                 // Cancel the timeout if value changes (also on delay change or unmount)
