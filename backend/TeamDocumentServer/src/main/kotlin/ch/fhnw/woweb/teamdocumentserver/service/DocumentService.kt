@@ -40,7 +40,7 @@ class DocumentService(
     }
 
     private fun process(cmd: DocumentCommand) {
-        if (i++ % 5 == 0) {
+        if (i++ % 25 == 0) {
             throw RuntimeException()
         }
         processor.process(cmd)

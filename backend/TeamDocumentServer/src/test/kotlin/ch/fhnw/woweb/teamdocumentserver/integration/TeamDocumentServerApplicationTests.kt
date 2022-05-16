@@ -13,6 +13,7 @@ import ch.fhnw.woweb.teamdocumentserver.web.DocumentUpdateStreamController
 import com.google.gson.Gson
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo
@@ -25,6 +26,7 @@ import kotlin.math.roundToLong
 
 @SpringBootTest
 @AutoConfigureDataMongo
+@Disabled
 class TeamDocumentServerApplicationTests {
 
     @Autowired
