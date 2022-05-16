@@ -11,9 +11,12 @@ const Document = () => {
     const dispatch = useDispatch()
     const paragraphs = useSelector(state => state.paragraphs);
     const author = useSelector(state => state.author);
+    const error = useSelector(state => state.error.isPresent);
     const esRef = useRef(null);
 
     useEffect(() => {
+        esRef.current?.close()
+        esRef.current = null;
         if (!esRef.current) {
             const user = JSON.parse(localStorage.getItem('localUser'))
             const eventSource = new EventSourcePolyfill(process.env.REACT_APP_BACKEND_BASE + '/document',{
@@ -26,11 +29,13 @@ const Document = () => {
             }
             eventSource.onmessage = msg => {
                 const cmd = JSON.parse(msg.data)
-                if (cmd.sender !== author.id) {
+                if (cmd.sender !== author.id || error) {
                     dispatch({type: cmd.type, payload: JSON.parse(cmd.payload)})
                 }
             }
             eventSource.onerror = err => {
+                if (eventSource.readyState)
+
                 console.log(err)
                 if(err.error && err.error.message && err.error.message.includes("No activity within 45000")){
                     console.log("Ignore this one since it is not relevant", err)
@@ -41,7 +46,7 @@ const Document = () => {
             esRef.current = eventSource;
             return () => esRef.current.close()
         }
-    }, []);
+    }, [error]);
 
     return (
         <div className="document" id="document">

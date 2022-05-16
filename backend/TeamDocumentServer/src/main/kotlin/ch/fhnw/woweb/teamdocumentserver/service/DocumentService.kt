@@ -15,6 +15,7 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
+    var i = 0;
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
@@ -25,7 +26,7 @@ class DocumentService(
         try {
             messages.forEach { process(it) }
         } catch (e: Exception) {
-            publishFullDocumentState()
+            // TODO: Generate patch command
             throw e;
         }
     }
@@ -39,6 +40,9 @@ class DocumentService(
     }
 
     private fun process(cmd: DocumentCommand) {
+        if (i++ % 5 == 0) {
+            throw RuntimeException()
+        }
         processor.process(cmd)
             .flatMap { repository.save(it) }
             .map { sink.tryEmitNext(it) }
