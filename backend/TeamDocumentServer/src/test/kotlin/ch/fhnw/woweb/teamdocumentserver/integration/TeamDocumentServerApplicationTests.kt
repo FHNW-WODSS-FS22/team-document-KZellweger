@@ -8,12 +8,12 @@ import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createAddCommand
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createLockCommand
 import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createUpdateCommands
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createParagraphPayload
+import ch.fhnw.woweb.teamdocumentserver.util.TeamDocumentServerTestProperties
 import ch.fhnw.woweb.teamdocumentserver.web.CommandController
 import ch.fhnw.woweb.teamdocumentserver.web.DocumentUpdateStreamController
 import com.google.gson.Gson
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo
@@ -26,7 +26,6 @@ import kotlin.math.roundToLong
 
 @SpringBootTest
 @AutoConfigureDataMongo
-@Disabled
 class TeamDocumentServerApplicationTests {
 
     @Autowired
@@ -83,7 +82,7 @@ class TeamDocumentServerApplicationTests {
         commandController?.processCommands(lockCmds)
 
         // N Updates
-        val updateCmds = createUpdateCommands(p1, 16)
+        val updateCmds = createUpdateCommands(p1, 512)
         commandController?.processCommands(updateCmds)
 
         // Unlock
@@ -100,7 +99,7 @@ class TeamDocumentServerApplicationTests {
         val persistedCommands = repository?.findAll()?.collectList()?.block()
         Assertions.assertThat(persistedCommands).containsAll(allCmds)
 
-        val proc = DocumentProcessor()
+        val proc = DocumentProcessor(TeamDocumentServerTestProperties.create())
         allCmds.forEach { proc.process(it) }
         val expectedDocument = proc.getFullDocument().blockFirst()
         val subscriptionDocument = updateController?.getUpdatedDocumentSubscription()?.blockFirst()
@@ -108,7 +107,7 @@ class TeamDocumentServerApplicationTests {
         Assertions.assertThat(subscriptionDocument)
             .usingRecursiveComparison()
             .ignoringFields("id")
-            .ignoringFields("sender") // TODO: Remove when sender is loaded from config
+            .ignoringFields("sender")
             .isEqualTo(expectedDocument)
     }
 

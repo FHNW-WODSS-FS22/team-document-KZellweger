@@ -1,4 +1,4 @@
-const useSendMessages = (dispatch) => {
+const sendMessages = (dispatch) => {
     return (messages) => {
         const headers = new Headers()
         const user = JSON.parse(localStorage.getItem('localUser'))
@@ -16,7 +16,6 @@ const useSendMessages = (dispatch) => {
             }
         })
     }
-
 }
 
-export default useSendMessages;
+export default sendMessages;

@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
+import ch.fhnw.woweb.teamdocumentserver.config.TeamDocumentServerProperties
 import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.*
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Author
@@ -16,8 +17,9 @@ import kotlin.concurrent.withLock
 
 @Service
 @Transactional
-class DocumentProcessor {
-    private val SERVER_SENDER_ID = UUID.randomUUID()
+class DocumentProcessor(
+    val properties: TeamDocumentServerProperties
+) {
 
     private val document: Document = Document()
     private val lock = ReentrantLock()
@@ -27,7 +29,7 @@ class DocumentProcessor {
             DocumentCommand(
                 UUID.randomUUID(),
                 Gson().toJson(document.paragraphs),
-                SERVER_SENDER_ID,
+                properties.serverId,
                 INITIAL
             )
         )
@@ -57,11 +59,11 @@ class DocumentProcessor {
                 paragraph.lockedBy = null
                 update.add(
                     DocumentCommand(
-                    payload = Gson().toJson(paragraph),
-                    sender = SERVER_SENDER_ID,
-                    type = UPDATE_LOCK
-                ))
-             }
+                        payload = Gson().toJson(paragraph),
+                        sender = properties.serverId,
+                        type = UPDATE_LOCK
+                    ))
+            }
         update.add(0,cmd)
         return Flux.fromIterable(update)
     }
@@ -75,7 +77,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = SERVER_SENDER_ID,
+            sender = properties.serverId,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)
@@ -89,7 +91,7 @@ class DocumentProcessor {
         val updateOrdinalsCmd = DocumentCommand(
             id = UUID.randomUUID(),
             payload = Gson().toJson(document.paragraphs),
-            sender = SERVER_SENDER_ID,
+            sender = properties.serverId,
             type = UPDATE_PARAGRAPH_ORDINALS
         )
         return just(cmd, updateOrdinalsCmd)

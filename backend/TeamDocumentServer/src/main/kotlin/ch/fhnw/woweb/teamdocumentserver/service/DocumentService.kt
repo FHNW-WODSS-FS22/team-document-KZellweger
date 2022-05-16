@@ -9,7 +9,6 @@ import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import java.util.*
 import javax.annotation.PostConstruct
 
-
 @Service
 class DocumentService(
     private val activeSessionService: ActiveSessionService,
@@ -17,7 +16,6 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
-    var i = 0;
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(id: UUID): Flux<DocumentCommand> {
@@ -32,14 +30,8 @@ class DocumentService(
             }
     }
 
-
     fun process(messages: List<DocumentCommand>) {
-        try {
-            messages.forEach { process(it) }
-        } catch (e: Exception) {
-            // TODO: Generate patch command
-            throw e;
-        }
+        messages.forEach { process(it) }
     }
 
     private fun getFullDocument(): Flux<DocumentCommand> {
@@ -57,14 +49,6 @@ class DocumentService(
             .log()
             .subscribe()
     }
-
-    private fun publishFullDocumentState() {
-        getFullDocument()
-            .map { sink.tryEmitNext(it) }
-            .log()
-            .subscribe()
-    }
-
 
     @PostConstruct
     fun loadInitialState() {

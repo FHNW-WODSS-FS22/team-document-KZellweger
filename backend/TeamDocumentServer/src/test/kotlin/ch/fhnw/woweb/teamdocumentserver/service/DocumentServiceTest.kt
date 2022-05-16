@@ -6,14 +6,12 @@ import ch.fhnw.woweb.teamdocumentserver.util.CommandGenerator.createInitialComma
 import ch.fhnw.woweb.teamdocumentserver.util.DocumentCommandAssertions
 import ch.fhnw.woweb.teamdocumentserver.util.PayloadGenerator.createParagraphPayload
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import reactor.core.publisher.Flux.just
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-@Disabled
 internal class DocumentServiceTest {
 
     private val processor = Mockito.mock(DocumentProcessor::class.java)
@@ -80,7 +78,6 @@ internal class DocumentServiceTest {
             .consumeNextWith { DocumentCommandAssertions.verifyFullDocumentCommand(it, listOf(p)) }
             .verifyComplete()
     }
-
 
     @Test
     fun loadInitialState() {
