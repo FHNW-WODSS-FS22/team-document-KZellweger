@@ -12,35 +12,20 @@ import javax.annotation.PostConstruct
 
 @Service
 class DocumentService(
-    private val activeSessionService: ActiveSessionService,
     private val processor: DocumentProcessor,
     private val repository: DocumentCommandRepository
 ) {
 
-    var i = 0;
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(id: UUID): Flux<DocumentCommand> {
-        val cmd = activeSessionService.register(id)
-        sink.tryEmitNext(cmd)
-
         return Flux
-            .merge(getFullDocument(), activeSessionService.getActiveUsers(), getUpdateStream())
+            .merge(getFullDocument(), getUpdateStream())
             .onErrorStop()
-            .doOnCancel {
-                val unregisterCmd = activeSessionService.unregister(id)
-                sink.tryEmitNext(unregisterCmd)
-            }
     }
 
-
     fun process(messages: List<DocumentCommand>) {
-        try {
-            messages.forEach { process(it) }
-        } catch (e: Exception) {
-            // TODO: Generate patch command
-            throw e;
-        }
+        messages.forEach { process(it) }
     }
 
     private fun getFullDocument(): Flux<DocumentCommand> {
@@ -52,23 +37,12 @@ class DocumentService(
     }
 
     private fun process(cmd: DocumentCommand) {
-        if (i++ % 25 == 0) {
-            throw RuntimeException()
-        }
         processor.process(cmd)
             .flatMap { repository.save(it) }
             .map { sink.tryEmitNext(it) }
             .log()
             .subscribe()
     }
-
-    private fun publishFullDocumentState() {
-        getFullDocument()
-            .map { sink.tryEmitNext(it) }
-            .log()
-            .subscribe()
-    }
-
 
     @PostConstruct
     fun loadInitialState() {
