@@ -54,9 +54,12 @@ class TeamDocumentServerApplicationTests {
         val subscription = updateController?.getUpdatedDocumentSubscription()?.take(3)
 
         // When
-        commandController?.processCommands(cmds)
+        thread {
+            commandController?.processCommands(cmds)
+        }
 
         // Then
+        sleep(500) // Give enough time for the repository to persist the data
         val persistedCommands = repository?.findAll()?.collectList()?.block()
         Assertions.assertThat(persistedCommands).containsAll(cmds)
         Assertions.assertThat(subscription?.collectList()?.block()).containsAll(cmds)
