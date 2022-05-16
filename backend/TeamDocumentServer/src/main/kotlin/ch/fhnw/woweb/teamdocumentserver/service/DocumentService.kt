@@ -1,8 +1,8 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
-import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.*
+import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.REMOVE_PARAGRAPH
+import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.UPDATE_PARAGRAPH
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
-import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
 import com.google.gson.Gson
 import org.springframework.stereotype.Service
@@ -51,19 +51,9 @@ class DocumentService(
         repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
             .map { Gson().fromJson(it?.payload, UUID::class.java) }
             .flatMap { repository.findFirstByTypeAndCorrelationIdOrderByCreatedAtDesc(UPDATE_PARAGRAPH, it) }
-            .map { DocumentCommand(payload = payload(it.payload), sender = UUID.randomUUID(), type = ADD_PARAGRAPH) }
+            .flatMap { processor.toAddCommand(it) }
             .map { process(it) }
             .subscribe()
-    }
-
-    fun payload(it: String): String {
-        val p = Gson().fromJson(it, Paragraph::class.java)
-        val up = Paragraph(
-            ordinal = p.ordinal,
-            content = p.content,
-            author = p.author
-        )
-        return Gson().toJson(up)
     }
 
     @PostConstruct
