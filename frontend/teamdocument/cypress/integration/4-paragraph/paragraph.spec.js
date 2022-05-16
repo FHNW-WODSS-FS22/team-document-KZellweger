@@ -2,6 +2,8 @@ import {resetDb} from "../../utils/requestUtil";
 
 describe('Paragraph Suite', () => {
     beforeEach(() => {
+        resetDb();
+        cy.wait(1000);
         cy.visit('localhost:3000');
         /* ==== Generated with Cypress Studio ==== */
         // Login to the application
@@ -11,14 +13,11 @@ describe('Paragraph Suite', () => {
         cy.get(':nth-child(2) > .form-control').type('1234');
         cy.get('.btn').click();
         // Needs to wait, else actions in test might be executed before INIT
-        cy.wait(1000);
+        cy.wait(500);
         /* ==== End Cypress Studio ==== */
     })
 
-    afterEach(() => {
-        resetDb();
-        cy.wait(3000);
-        cy.reload();
+    afterEach(() => {;
         cy.get('.logout').click();
     })
 
@@ -63,8 +62,8 @@ describe('Paragraph Suite', () => {
         for(let i = 0; i < upper; i++) {
             cy.get('.add').click();
         }
-        for(let i = upper - 1; i > 0; i--) {
-            cy.get('.remove').click({ multiple: true });
+        for(let i = upper; i > 0; i--) {
+            cy.get(`[tabindex="${i}"] > .paragraphHeader > :nth-child(3) > .remove`).click();
         }
         cy.get('.paragraphs').children('div').should('have.length', 0);
     })
