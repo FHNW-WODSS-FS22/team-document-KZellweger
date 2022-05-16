@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import uuid from "../../utils/uuid";
-import useSendMessagesHook from "../../hooks/useSendMessages.hook";
+import useSendMessagesHook from "../../utils/sendMessagesService";
 
 const AddButton = () => {
 

@@ -8,7 +8,6 @@ import reactor.core.publisher.Sinks
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import javax.annotation.PostConstruct
 
-
 @Service
 class DocumentService(
     private val processor: DocumentProcessor,

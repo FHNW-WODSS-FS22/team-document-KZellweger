@@ -106,7 +106,7 @@ class TeamDocumentServerApplicationTests {
         Assertions.assertThat(subscriptionDocument)
             .usingRecursiveComparison()
             .ignoringFields("id")
-            .ignoringFields("sender") // TODO: Remove when sender is loaded from config
+            .ignoringFields("sender")
             .isEqualTo(expectedDocument)
     }
 

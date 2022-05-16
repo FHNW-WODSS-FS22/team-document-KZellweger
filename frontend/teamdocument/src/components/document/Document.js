@@ -17,7 +17,6 @@ const Document = () => {
     useEffect(() => {
         esRef.current?.close()
         esRef.current = null;
-        if (!esRef.current) {
             const user = JSON.parse(localStorage.getItem('localUser'))
             const eventSource = new EventSourcePolyfill(process.env.REACT_APP_BACKEND_BASE + '/document',{
                 headers: {
@@ -35,17 +34,15 @@ const Document = () => {
             }
             eventSource.onerror = err => {
                 if (eventSource.readyState)
-
-                console.log(err)
                 if(err.error && err.error.message && err.error.message.includes("No activity within 45000")){
-                    console.log("Ignore this one since it is not relevant", err)
+                    console.info("Error due to inactivity was ignored.", err)
                 } else {
+                    console.error("An error occured. Attempting to reconnect to server.", err)
                     dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }})
                 }
             }
             esRef.current = eventSource;
-            return () => esRef.current.close()
-        }
+            return () => esRef.current?.close()
     }, [error]);
 
     return (

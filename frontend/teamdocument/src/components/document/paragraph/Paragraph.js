@@ -3,9 +3,8 @@ import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import RemoveParagraphButton from "../RemoveParagraphButton";
 import useDebounceMessages from "../../../hooks/useDebounceMessages.hook";
-import useSendMessagesHook from "../../../hooks/useSendMessages.hook";
+import useSendMessagesHook from "../../../utils/sendMessagesService";
 
-// TODO
 /* eslint-disable react/prop-types */
 const Paragraph = ({id}) => {
 
