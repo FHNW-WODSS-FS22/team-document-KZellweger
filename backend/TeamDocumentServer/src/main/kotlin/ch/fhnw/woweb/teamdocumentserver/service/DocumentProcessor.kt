@@ -54,7 +54,7 @@ class DocumentProcessor(
         val update : MutableList<DocumentCommand> = mutableListOf()
         println("Remove Client Processor call")
         document.paragraphs
-            .filter { it.lockedBy.equals(Gson().fromJson(cmd.payload, String::class.java)) }
+            .filter { it.lockedBy?.id == Gson().fromJson(cmd.payload, UUID::class.java) }
             .map { paragraph ->
                 paragraph.lockedBy = null
                 update.add(
@@ -85,7 +85,7 @@ class DocumentProcessor(
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
-        document.paragraphs.removeIf { it.id == id && it.lockedBy == cmd.sender.toString() }
+        document.paragraphs.removeIf { it.id == id && it.lockedBy?.id == cmd.sender }
         document.paragraphs.sortBy { it.ordinal }
         document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
         val updateOrdinalsCmd = DocumentCommand(
@@ -108,7 +108,7 @@ class DocumentProcessor(
     private fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
-            .find { it.id == p.id && it.lockedBy == cmd.sender.toString() }
+            .find { it.id == p.id && it.lockedBy?.id == cmd.sender }
             ?.content = p.content
         return just(cmd)
     }
@@ -121,7 +121,7 @@ class DocumentProcessor(
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand, paragraph: Paragraph) {
         document.paragraphs
-            .find { it.id == paragraph.id && it.lockedBy == cmd.sender.toString() }
+            .find { it.id == paragraph.id && it.lockedBy?.id == cmd.sender }
             ?.ordinal = paragraph.ordinal
     }
 

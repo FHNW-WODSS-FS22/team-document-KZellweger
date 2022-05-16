@@ -64,7 +64,7 @@ const Paragraph = ({id}) => {
         e.preventDefault()
         // Paragraph is lockable if no one is holding the lock
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
-            const payload =  { ...paragraph, lockedBy: author.id }
+            const payload =  { ...paragraph, lockedBy: author }
             dispatch({ type: 'UPDATE_LOCK', payload })
             sendMessages([{
                 type: 'UPDATE_LOCK',
@@ -78,7 +78,9 @@ const Paragraph = ({id}) => {
      * Alert if clicked on outside of element
      */
     const handleClickOutside = e => {
-        if(paragraph.lockedBy === author.id) {
+        console.log("on blur?")
+        e.preventDefault()
+        if(isLockedByLocalAuthor()) {
             const payload =  { ...paragraph, lockedBy: null }
             dispatch({ type: 'UPDATE_LOCK', payload })
             sendMessages([{
@@ -89,8 +91,16 @@ const Paragraph = ({id}) => {
         }
     }
 
+    const isLockedByLocalAuthor = () => {
+        return paragraph.lockedBy !== undefined && paragraph.lockedBy !== null && paragraph.lockedBy.id === author.id;
+    }
+
+    const isLocked = () => {
+        return !(paragraph.lockedBy === undefined || paragraph.lockedBy === null)
+    }
+
     return (
-        <div tabIndex={paragraph.ordinal} className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
+        <div tabIndex={paragraph.ordinal} className={`paragraph divider-color ${isLockedByLocalAuthor() ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
@@ -98,16 +108,16 @@ const Paragraph = ({id}) => {
                 </div>
                 <div>
                     <label>Locked By: </label>
-                    <p>{paragraph.lockedBy}</p>
+                    <p>{isLocked() ? paragraph.lockedBy.name : ''}</p>
                 </div>
                 <div>
-                    <input value={paragraph.ordinal} type="number" disabled={error} readOnly={paragraph.lockedBy !== author.id} onChange={handleOrdinalChange}
+                    <input value={paragraph.ordinal} type="number" disabled={error} readOnly={isLocked() && !isLockedByLocalAuthor()} onChange={handleOrdinalChange}
                            min="1" max={maxOrdinal} />
-                    <RemoveParagraphButton id={paragraph.id} isAllowedToRemove={paragraph.lockedBy === author.id}/>
+                    <RemoveParagraphButton id={paragraph.id} isAllowedToRemove={isLockedByLocalAuthor()}/>
                 </div>
             </div>
             <div className="paragraphContent">
-                <textarea value={paragraph.content} disabled={error} readOnly={paragraph.lockedBy !== author.id} onChange={handleContentChange} />
+                <textarea value={paragraph.content} disabled={error} readOnly={isLocked() && !isLockedByLocalAuthor()} onChange={handleContentChange} />
             </div>
         </div>
     );
