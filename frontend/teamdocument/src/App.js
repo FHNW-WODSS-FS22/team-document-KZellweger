@@ -10,7 +10,6 @@ import {
 } from "react-router-dom";
 import Login from "./components/login/Login";
 import {DocumentWrapper} from "./components/DocumentWrapper";
-import {useSelector} from "react-redux";
 
 const App = () => {
     return (
