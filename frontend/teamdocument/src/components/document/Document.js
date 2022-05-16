@@ -26,6 +26,7 @@ const Document = () => {
                 if (cmd.sender !== author.id) {
                     dispatch({type: cmd.type, payload: JSON.parse(cmd.payload)})
                 }
+                dispatch({type: 'ERROR', payload: { isPresent: false, message: "" }})
             }
             eventSource.onerror = err => {
                 console.log(err)
