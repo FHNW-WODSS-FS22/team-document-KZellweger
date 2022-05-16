@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
-import java.util.*
 import javax.annotation.PostConstruct
 
 
@@ -18,7 +17,7 @@ class DocumentService(
 
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
-    fun subscribe(id: UUID): Flux<DocumentCommand> {
+    fun subscribe(): Flux<DocumentCommand> {
         return Flux
             .merge(getFullDocument(), getUpdateStream())
             .onErrorStop()
