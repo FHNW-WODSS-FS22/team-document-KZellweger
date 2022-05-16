@@ -18,6 +18,7 @@ import kotlin.concurrent.withLock
 @Transactional
 class DocumentProcessor {
 
+
     private val SERVER_SENDER_ID = UUID.randomUUID()
 
     private val document: Document = Document()

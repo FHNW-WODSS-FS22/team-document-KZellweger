@@ -18,14 +18,19 @@ class DocumentService(
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
     fun subscribe(): Flux<DocumentCommand> {
-        return Flux.merge(getInitialState(), getUpdateStream()).onErrorStop()
+        return Flux.merge(getFullDocument(), getUpdateStream()).onErrorStop()
     }
 
     fun process(messages: List<DocumentCommand>) {
-        messages.forEach { process(it) }
+        try {
+            messages.forEach { process(it) }
+        } catch (e: Exception) {
+            publishFullDocumentState()
+            throw e;
+        }
     }
 
-    private fun getInitialState(): Flux<DocumentCommand> {
+    private fun getFullDocument(): Flux<DocumentCommand> {
         return processor.getFullDocument()
     }
 
@@ -40,6 +45,14 @@ class DocumentService(
             .log()
             .subscribe()
     }
+
+    private fun publishFullDocumentState() {
+        getFullDocument()
+            .map { sink.tryEmitNext(it) }
+            .log()
+            .subscribe()
+    }
+
 
     @PostConstruct
     fun loadInitialState() {
