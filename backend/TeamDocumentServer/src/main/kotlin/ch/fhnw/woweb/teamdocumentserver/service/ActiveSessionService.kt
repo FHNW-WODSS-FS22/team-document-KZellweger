@@ -23,7 +23,7 @@ class ActiveSessionService(
     }
 
     fun unregister(id: UUID): DocumentCommand {
-    activeUsers.remove(id)
+        activeUsers.remove(id)
         return DocumentCommand(
             payload = Gson().toJson(id),
             sender = id,
@@ -32,7 +32,7 @@ class ActiveSessionService(
     }
 
 
-    fun getActiveUsers(): Mono<DocumentCommand> {
+    fun getActiveUsersCommand(): Mono<DocumentCommand> {
         val serializedIds = Gson().toJson(activeUsers.distinct())
         return Mono.just(
             DocumentCommand(

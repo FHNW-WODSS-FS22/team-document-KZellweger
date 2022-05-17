@@ -23,10 +23,10 @@ class DocumentService(
         sink.tryEmitNext(cmd)
 
         return Flux
-            .merge(getFullDocument(), activeSessionService.getActiveUsers(), getUpdateStream())
+            .merge(getFullDocument(), activeSessionService.getActiveUsersCommand(), getUpdateStream())
             .onErrorStop()
             .doOnCancel {
-                process(activeSessionService.unregister(id))
+               process(activeSessionService.unregister(id))
             }
     }
 
