@@ -15,6 +15,9 @@ const AddButton = () => {
 
     const handleAddParagraph = e => {
         e.preventDefault();
+        if (e.shiftKey) {
+            return sendMessages(null, '/restore')
+        }
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
         const payload =  {
             id: uuid(),
@@ -23,9 +26,9 @@ const AddButton = () => {
             content: ''
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
-
-        sendMessages([{
+        return sendMessages([{
             type: 'ADD_PARAGRAPH',
+            correlationId: payload.id,
             payload: JSON.stringify(payload),
             sender: author.id
         }])

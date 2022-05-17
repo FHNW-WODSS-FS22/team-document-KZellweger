@@ -37,7 +37,8 @@ const Paragraph = ({id}) => {
         const newMessage = {
             type: 'UPDATE_PARAGRAPH',
             payload: JSON.stringify(payload),
-            sender: author.id
+            sender: author.id,
+            correlationId: paragraph.id
         }
         setMessage([...message, newMessage])
     }

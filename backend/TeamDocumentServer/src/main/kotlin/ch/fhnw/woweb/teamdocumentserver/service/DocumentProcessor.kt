@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Flux.just
+import reactor.core.publisher.Mono
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -134,5 +135,15 @@ class DocumentProcessor(
             .find { it.id == p.id }
             ?.lockedBy = p.lockedBy
         return just(cmd)
+    }
+
+    fun toAddCommand(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
+        val paragraphToRestore = Gson().fromJson(commandToUndo.payload, Paragraph::class.java)
+        val sanitizedParagraph = Paragraph(
+            ordinal = 1,
+            content = paragraphToRestore.content,
+            author = paragraphToRestore.author
+        )
+        return Mono.just(DocumentCommand(payload = Gson().toJson(sanitizedParagraph), sender = UUID.randomUUID(), type = ADD_PARAGRAPH))
     }
 }
