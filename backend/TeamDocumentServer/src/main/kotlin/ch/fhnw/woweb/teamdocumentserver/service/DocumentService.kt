@@ -38,9 +38,6 @@ class DocumentService(
         repository.deleteAll()
     }
 
-    private fun getInitialState(): Flux<DocumentCommand> {
-
-    }
     private fun getFullDocument(): Flux<DocumentCommand> {
         return processor.getFullDocument()
     }
