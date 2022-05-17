@@ -1,7 +1,6 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
-import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.REMOVE_PARAGRAPH
-import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.UPDATE_PARAGRAPH
+import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType.*
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
 import com.google.gson.Gson
@@ -50,7 +49,7 @@ class DocumentService(
     fun restoreLastDeleted() {
         repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
             .map { Gson().fromJson(it?.payload, UUID::class.java) }
-            .flatMap { repository.findFirstByTypeAndCorrelationIdOrderByCreatedAtDesc(UPDATE_PARAGRAPH, it) }
+            .flatMap { repository.findFirstByTypeInAndCorrelationIdOrderByCreatedAtDesc(listOf(UPDATE_PARAGRAPH, ADD_PARAGRAPH), it) }
             .flatMap { processor.toAddCommand(it) }
             .map { process(it) }
             .subscribe()

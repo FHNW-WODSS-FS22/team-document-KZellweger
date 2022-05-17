@@ -31,6 +31,7 @@ const AddButton = () => {
 
         return sendMessages([{
             type: 'ADD_PARAGRAPH',
+            correlationId: payload.id,
             payload: JSON.stringify(payload),
             sender: author.id
         }])
