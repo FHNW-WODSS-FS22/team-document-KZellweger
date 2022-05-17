@@ -18,9 +18,7 @@ const AddButton = () => {
         if (e.shiftKey) {
             return sendMessages(null, '/restore')
         }
-
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
-        console.log(max)
         const payload =  {
             id: uuid(),
             author: author,
@@ -28,7 +26,6 @@ const AddButton = () => {
             content: ''
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
-
         return sendMessages([{
             type: 'ADD_PARAGRAPH',
             correlationId: payload.id,
