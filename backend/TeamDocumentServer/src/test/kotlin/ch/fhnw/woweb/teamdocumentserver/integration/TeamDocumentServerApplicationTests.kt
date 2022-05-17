@@ -79,7 +79,7 @@ class TeamDocumentServerApplicationTests {
         commandController?.processCommands(addCmds)
 
         // Lock
-        val lockedP1 = Paragraph(p1.id, p1.ordinal, p1.content, p1.author, p1.author.id.toString())
+        val lockedP1 = Paragraph(p1.id, p1.ordinal, p1.content, p1.author, p1.author)
         val lockCmds = listOf(createLockCommand(lockedP1))
         commandController?.processCommands(lockCmds)
 
@@ -157,8 +157,3 @@ class TeamDocumentServerApplicationTests {
     }
 
 }
-
-
-
-
-

@@ -54,7 +54,7 @@ object CommandGenerator {
                         ordinal = p.ordinal,
                         content = paragraphContent,
                         author = p.author,
-                        lockedBy = p.author.id.toString()
+                        lockedBy = p.author
                     )
                 )
             )

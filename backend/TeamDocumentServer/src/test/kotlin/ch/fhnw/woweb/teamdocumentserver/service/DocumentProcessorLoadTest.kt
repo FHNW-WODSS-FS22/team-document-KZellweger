@@ -73,7 +73,7 @@ internal class DocumentProcessorLoadTest {
             ordinal = 1,
             content = paragraphContent.get(),
             author = author,
-            lockedBy = sender.toString()
+            lockedBy = author
         )))
 
         // When
@@ -87,7 +87,7 @@ internal class DocumentProcessorLoadTest {
                         ordinal = i,
                         content = paragraphContent.get(),
                         author = author,
-                        lockedBy = sender.toString()
+                        lockedBy = author
                     )))
                 }
             }

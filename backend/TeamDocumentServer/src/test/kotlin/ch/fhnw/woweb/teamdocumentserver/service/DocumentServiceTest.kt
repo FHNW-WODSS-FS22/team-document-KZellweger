@@ -42,7 +42,7 @@ internal class DocumentServiceTest {
     }
 
     @Test
-    @Disabled //TODO: Kevin is to stupid and needs to do FE now
+    @Disabled
     fun process() {
         // Given
         val p = createParagraphPayload()
@@ -60,7 +60,7 @@ internal class DocumentServiceTest {
         service.process(listOf(addCmd))
 
         // Then
-        StepVerifier.create(service.subscribe(clientId).take(2))
+        StepVerifier.create(service.subscribe(clientId).take(4))
             .consumeNextWith { DocumentCommandAssertions.verifyFullDocumentCommand(it, listOf(p)) }
             .consumeNextWith { DocumentCommandAssertions.verifyAddParagraphCommand(it, p2) }
             .verifyComplete()

@@ -229,7 +229,7 @@ class DocumentProcessorTest {
         val result = processor.process(updateAuthorCmd)
 
         // Then
-        val pExpected = Paragraph(pInitial.id, pInitial.ordinal, pInitial.content, updatedAuthor, updatedAuthor.id.toString())
+        val pExpected = Paragraph(pInitial.id, pInitial.ordinal, pInitial.content, updatedAuthor, updatedAuthor)
 
         StepVerifier.create(result)
             .expectNextMatches { verifyUpdateAuthorCommand(it, updatedAuthor) }
@@ -321,7 +321,7 @@ class DocumentProcessorTest {
     fun testUpdateLock_lockUnlocked() {
         // Given
         val pUnlocked = createParagraphPayload(lockedBy = null)
-        val pLocked =  Paragraph(pUnlocked.id, pUnlocked.ordinal, pUnlocked.content, pUnlocked.author, pUnlocked.author.id.toString())
+        val pLocked =  Paragraph(pUnlocked.id, pUnlocked.ordinal, pUnlocked.content, pUnlocked.author, pUnlocked.author)
         val addCmd = createAddCommand(pUnlocked)
         val lockCmd = createLockCommand(pLocked)
         processor.process(addCmd)
@@ -346,7 +346,7 @@ class DocumentProcessorTest {
     fun testUpdateLock_unlockLocked() {
         // Given
         val pUnlocked = createParagraphPayload(lockedBy = null)
-        val pLocked =  Paragraph(pUnlocked.id, pUnlocked.ordinal, pUnlocked.content, pUnlocked.author, pUnlocked.author.id.toString())
+        val pLocked =  Paragraph(pUnlocked.id, pUnlocked.ordinal, pUnlocked.content, pUnlocked.author, pUnlocked.author)
         val addCmd = createAddCommand(pLocked)
         val unlockCmd = createLockCommand(pUnlocked)
         processor.process(addCmd)
