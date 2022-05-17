@@ -12,7 +12,6 @@ const RemoveParagraphButton = ({id, isAllowedToRemove}) => {
     const handleRemoveParagraph = e => {
         e.preventDefault();
         if (isAllowedToRemove) {
-            console.log(id);
             dispatch({ type: 'REMOVE_PARAGRAPH', payload: id })
 
             sendMessages([{

@@ -13,16 +13,23 @@ import javax.annotation.PostConstruct
 
 @Service
 class DocumentService(
+    private val activeSessionService: ActiveSessionService,
     private val processor: DocumentProcessor,
     private val repository: DocumentCommandRepository
 ) {
 
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
-    fun subscribe(): Flux<DocumentCommand> {
+    fun subscribe(id: UUID): Flux<DocumentCommand> {
+        val cmd = activeSessionService.register(id)
+        sink.tryEmitNext(cmd)
+
         return Flux
-            .merge(getFullDocument(), getUpdateStream())
+            .merge(getFullDocument(), activeSessionService.getActiveUsersCommand(), getUpdateStream())
             .onErrorStop()
+            .doOnCancel {
+               process(activeSessionService.unregister(id))
+            }
     }
 
     private fun getFullDocument(): Flux<DocumentCommand> {

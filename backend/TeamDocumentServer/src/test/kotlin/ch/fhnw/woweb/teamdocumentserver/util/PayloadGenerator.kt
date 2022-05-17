@@ -7,8 +7,9 @@ import java.util.*
 object PayloadGenerator {
 
     private val authorId = UUID.randomUUID()
+    private val author = createAuthorPayload(authorId)
 
-    fun createParagraphPayload(ordinal: Int = 0, content: String = "CONTENTO", lockedBy: String? = authorId.toString(), id: UUID = UUID.randomUUID()): Paragraph {
+    fun createParagraphPayload(ordinal: Int = 0, content: String = "CONTENTO", lockedBy: Author? = author, id: UUID = UUID.randomUUID()): Paragraph {
         return Paragraph(
             id = id,
             ordinal = ordinal,

@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataM
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import java.lang.Thread.sleep
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
 import kotlin.math.roundToLong
@@ -37,6 +38,8 @@ class TeamDocumentServerApplicationTests {
     @Autowired
     var repository: DocumentCommandRepository? = null
 
+    val clientId: UUID = UUID.randomUUID()
+
     @BeforeEach
     fun beforeEach() {
         // Make sure repository is always empty at start of test
@@ -52,15 +55,14 @@ class TeamDocumentServerApplicationTests {
     fun testProcessCommands_persistenceAndNewSubscription() {
         // Given
         val cmds = listOf(createAddCommand(createParagraphPayload()))
-        val subscription = updateController?.getUpdatedDocumentSubscription()?.take(3)
-
+        val subscription = updateController?.getUpdatedDocumentSubscription(clientId)?.take(5)
         // When
         thread {
             commandController?.processCommands(cmds)
         }
 
         // Then
-        sleep(500) // Give enough time for the repository to persist the data
+        sleep(1000) // Give enough time for the repository to persist the data
         val persistedCommands = repository?.findAll()?.collectList()?.block()
         Assertions.assertThat(persistedCommands).containsAll(cmds)
         Assertions.assertThat(subscription?.collectList()?.block()).containsAll(cmds)
@@ -77,7 +79,7 @@ class TeamDocumentServerApplicationTests {
         commandController?.processCommands(addCmds)
 
         // Lock
-        val lockedP1 = Paragraph(p1.id, p1.ordinal, p1.content, p1.author, p1.author.id.toString())
+        val lockedP1 = Paragraph(p1.id, p1.ordinal, p1.content, p1.author, p1.author)
         val lockCmds = listOf(createLockCommand(lockedP1))
         commandController?.processCommands(lockCmds)
 
@@ -102,7 +104,7 @@ class TeamDocumentServerApplicationTests {
         val proc = DocumentProcessor(TeamDocumentServerTestProperties.create())
         allCmds.forEach { proc.process(it) }
         val expectedDocument = proc.getFullDocument().blockFirst()
-        val subscriptionDocument = updateController?.getUpdatedDocumentSubscription()?.blockFirst()
+        val subscriptionDocument = updateController?.getUpdatedDocumentSubscription(clientId)?.blockFirst()
 
         Assertions.assertThat(subscriptionDocument)
             .usingRecursiveComparison()
@@ -137,7 +139,7 @@ class TeamDocumentServerApplicationTests {
         // Then
         lock.await()
         val time = System.currentTimeMillis() - start
-        val initialDocumentCommand = updateController?.getUpdatedDocumentSubscription()?.blockFirst()
+        val initialDocumentCommand = updateController?.getUpdatedDocumentSubscription(clientId)?.blockFirst()
         // 50 ms per Command: nUser * addCmd, nUser * lockCmd, nUpdates * updateCmd
         // This purposefully includes threading overhead as the overhead applies when requests are processed.
         Assertions.assertThat(time).isLessThan(nUpdates * nUsers * nUsers * 40L)
@@ -156,8 +158,3 @@ class TeamDocumentServerApplicationTests {
     }
 
 }
-
-
-
-
-

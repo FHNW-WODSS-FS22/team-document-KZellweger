@@ -9,12 +9,14 @@ const REDUCERS = {
     'INITIAL': (state, action) => ( {
         ...state,
         paragraphs: action.payload,
+        otherAuthors: _.map(state.otherAuthors, a => a.id === action.payload.author.id ? action.payload.author : a),
         messages: _.concat(state.messages, action.type)
     }),
 
     'ADD_PARAGRAPH': (state, action) => ({
         ...state,
         paragraphs: _.concat(state.paragraphs, action.payload),
+        otherAuthors: _.map(state.otherAuthors, a => a.id === action.payload.author.id ? action.payload.author : a),
         messages: _.concat(state.messages, action.type)
     }),
 
@@ -46,8 +48,22 @@ const REDUCERS = {
     'UPDATE_LOCK': (state, action) => ({
         ...state,
         paragraphs: _.map(state.paragraphs, p => p.id === action.payload.id ? action.payload : p ),
+        otherAuthors: _.map(state.otherAuthors, a => (action.payload.lockedBy !== null && action.payload.lockedBy !== undefined) && (a.id === action.payload.lockedBy.id) ? action.payload.lockedBy : a),
         messages: _.concat(state.messages, action.type)
     }),
+
+    'ADD_CLIENTS': (state, action) => ({
+        ...state,
+        otherAuthors: addOtherAuthors(state.otherAuthors, action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
+    'REMOVE_CLIENT': (state, action) => ({
+        ...state,
+        otherAuthors: state.otherAuthors.filter((author) => author.id !== action.payload),
+        messages: _.concat(state.messages, action.type)
+    }),
+
 
     'ERROR': (state, action) => ({...state, error: action.payload})
 }
@@ -72,9 +88,20 @@ const updateParagraphAuthors = (paragraphs, changedAuthor) => {
     const updatedParagraphs = paragraphs.filter(p => {
         return p.author.id === changedAuthor.id
     }).map(p => {
-        return {...p, 'author': changedAuthor}
+        return {...p, 'author': changedAuthor, 'lockedBy': changedAuthor}
     })
     return paragraphs.map(p => updatedParagraphs.find(up => up.id === p.id) || p)
+}
+
+const addOtherAuthors = (otherAuthors, newAuthorIds) => {
+    const newAuthors = newAuthorIds
+        .filter(id => !_.find(otherAuthors, ['id', id]))
+        .map( id => ({
+            'id': id,
+            'name': undefined,
+            'image': undefined
+        }))
+    return _.concat(otherAuthors,newAuthors)
 }
 
 const reducer = (state, action) => _.get(REDUCERS, action.type, _.identity)(state, action)
