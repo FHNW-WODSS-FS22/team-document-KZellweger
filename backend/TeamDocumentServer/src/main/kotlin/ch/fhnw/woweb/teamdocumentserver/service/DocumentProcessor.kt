@@ -140,7 +140,7 @@ class DocumentProcessor(
     fun toAddCommand(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
         val paragraphToRestore = Gson().fromJson(commandToUndo.payload, Paragraph::class.java)
         val sanitizedParagraph = Paragraph(
-            ordinal = paragraphToRestore.ordinal,
+            ordinal = 1,
             content = paragraphToRestore.content,
             author = paragraphToRestore.author
         )
