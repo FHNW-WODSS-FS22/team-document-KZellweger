@@ -108,6 +108,7 @@ class TeamDocumentServerApplicationTests {
             .usingRecursiveComparison()
             .ignoringFields("id")
             .ignoringFields("sender")
+            .ignoringFields("createdAt")
             .isEqualTo(expectedDocument)
     }
 
