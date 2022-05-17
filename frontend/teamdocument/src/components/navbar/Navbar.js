@@ -1,6 +1,8 @@
 import './Navbar.css';
 import React from 'react';
 import Logout from "./Logout";
+import {useSelector} from "react-redux";
+import Paragraph from "../document/paragraph/Paragraph";
 
 const Navbar = () => {
     return (

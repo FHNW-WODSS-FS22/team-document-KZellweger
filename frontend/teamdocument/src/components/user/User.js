@@ -10,16 +10,17 @@ const User = () => {
     const sendMessages = useSendMessagesHook(dispatch);
     const author = useSelector(state => state.author);
     const error = useSelector(state => state.error.isPresent);
+    const otherAuthors = useSelector(state => state.otherAuthors);
+
     const [message, setMessage] = useState([])
-    const accumulatedMessages = useDebounceMessages(message,100, 25)
+    const accumulatedMessages = useDebounceMessages(message, 100)
 
     useEffect(() => {
-        if(typeof accumulatedMessages!== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0){
-            console.log("Send and clean")
+        if (typeof accumulatedMessages !== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0) {
             sendMessages(accumulatedMessages)
             setMessage([]);
         }
-    },[accumulatedMessages])
+    }, [accumulatedMessages])
 
     const handleAuthorChange = e => {
         e.preventDefault()
@@ -28,7 +29,7 @@ const User = () => {
             name: author.name,
             image: author.image
         }
-        const payload = { ...json , name: e.target.value }
+        const payload = {...json, name: e.target.value}
         dispatch({type: 'UPDATE_AUTHOR', payload})
         const newMessage = {
             type: 'UPDATE_AUTHOR',
@@ -39,13 +40,26 @@ const User = () => {
     }
 
     return (
-        <div className="user">
-            <div className="circular">
-                <img src={author.image === undefined ? blank : author.image} alt="Profile image" />
+        <div className="userContainer">
+            <div className="user">
+                <div className="circular">
+                    <img src={author.image === undefined ? blank : author.image} alt="Profile image"/>
+                </div>
+                <div className="name">
+                    <input disabled={error} type="text" value={author.name} className="divider-color"
+                           onChange={handleAuthorChange}/>
+                    <p><em className="secondary-text-color">{author.id}</em></p>
+                </div>
             </div>
-            <div className="name">
-                <input disabled={error} type="text" value={author.name} className="divider-color" onChange={handleAuthorChange}/>
-                <p><em className="secondary-text-color">{author.id}</em></p>
+            <div className="otherUser">
+                {
+                    otherAuthors
+                        .filter(a => a.id !== author.id)
+                        .map(a =>
+                            <div className="circular" key={a.id} id={a.id}>
+                                <img src={a.image === undefined ? blank : a.image} alt="Profile image"/>
+                            </div>)
+                }
             </div>
         </div>
     )

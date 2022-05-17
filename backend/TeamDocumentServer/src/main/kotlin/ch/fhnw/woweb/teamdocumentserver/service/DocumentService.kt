@@ -6,20 +6,28 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
 import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
+import java.util.*
 import javax.annotation.PostConstruct
 
 @Service
 class DocumentService(
+    private val activeSessionService: ActiveSessionService,
     private val processor: DocumentProcessor,
     private val repository: DocumentCommandRepository
 ) {
 
     val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
 
-    fun subscribe(): Flux<DocumentCommand> {
+    fun subscribe(id: UUID): Flux<DocumentCommand> {
+        val cmd = activeSessionService.register(id)
+        sink.tryEmitNext(cmd)
+
         return Flux
-            .merge(getFullDocument(), getUpdateStream())
+            .merge(getFullDocument(), activeSessionService.getActiveUsersCommand(), getUpdateStream())
             .onErrorStop()
+            .doOnCancel {
+               process(activeSessionService.unregister(id))
+            }
     }
 
     fun process(messages: List<DocumentCommand>) {

@@ -20,7 +20,8 @@ const Document = () => {
             const user = JSON.parse(localStorage.getItem('localUser'))
             const eventSource = new EventSourcePolyfill(process.env.REACT_APP_BACKEND_BASE + '/document',{
                 headers: {
-                    'Authorization': 'Basic ' + user.authdata
+                    'Authorization': 'Basic ' + user.authdata,
+                    'X-ClientId' : author.id
                 }
             });
             eventSource.onopen = _ => {

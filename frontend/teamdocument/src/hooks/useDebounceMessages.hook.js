@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 
-function useDebounceMessages(message, delay, maxElements) {
+function useDebounceMessages(message, delay) {
     // State and setters for debounced value
     const [messages, setMessages] = useState();
-    let counter = 0;
     useEffect(
         () => {
             // Update debounced value after delay
-            if(message !== null){
+            if (message !== null) {
                 const handler = setTimeout(() => {
                     setMessages(message);
                 }, delay);
@@ -15,7 +14,7 @@ function useDebounceMessages(message, delay, maxElements) {
                 // This is how we prevent debounced value from updating if value is changed ...
                 // .. within the delay period. Timeout gets cleared and restarted.
                 return () => {
-                        clearTimeout(handler);
+                    clearTimeout(handler);
                 };
             }
         },

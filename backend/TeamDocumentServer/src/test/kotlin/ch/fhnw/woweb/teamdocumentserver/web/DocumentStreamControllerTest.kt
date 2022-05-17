@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import reactor.core.publisher.Flux
+import java.util.*
 
 internal class DocumentStreamControllerTest {
 
@@ -16,10 +17,11 @@ internal class DocumentStreamControllerTest {
     fun testSubscriptionInitialized() {
         // Given
         val subscription = Flux.empty<DocumentCommand>()
-        Mockito.`when`(documentService.subscribe()).thenReturn(subscription)
+        val clientId = UUID.randomUUID()
+        Mockito.`when`(documentService.subscribe(clientId)).thenReturn(subscription)
 
         // When
-        val result = controller.getUpdatedDocumentSubscription()
+        val result = controller.getUpdatedDocumentSubscription(clientId)
 
         // Then
         Assertions.assertThat(result).isSameAs(subscription)
@@ -29,11 +31,12 @@ internal class DocumentStreamControllerTest {
     fun testSubscriptionFails_exceptionIsRethrown() {
         // Given
         val e = java.lang.IllegalArgumentException()
-        Mockito.doThrow(e).`when`(documentService).subscribe()
+        val clientId = UUID.randomUUID()
+        Mockito.doThrow(e).`when`(documentService).subscribe(clientId)
 
         // When
         // Then
-        Assertions.assertThatThrownBy { controller.getUpdatedDocumentSubscription() }.isEqualTo(e)
+        Assertions.assertThatThrownBy { controller.getUpdatedDocumentSubscription(clientId) }.isEqualTo(e)
     }
 
 }

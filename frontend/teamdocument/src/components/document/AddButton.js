@@ -16,7 +16,6 @@ const AddButton = () => {
     const handleAddParagraph = e => {
         e.preventDefault();
         const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
-        console.log(max)
         const payload =  {
             id: uuid(),
             author: author,
