@@ -33,7 +33,6 @@ class DocumentService(
         return sink.asFlux().log()
     }
 
-
     fun process(messages: List<DocumentCommand>) {
         messages.forEach { process(it) }
     }

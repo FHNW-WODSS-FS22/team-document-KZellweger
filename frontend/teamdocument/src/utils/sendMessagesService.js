@@ -1,16 +1,16 @@
 
 const sendMessages = (dispatch) => {
-    return (body, subPath = '', method = 'POST') => {
-
+    return (body, subPath = '') => {
         const headers = new Headers()
         const user = JSON.parse(localStorage.getItem('localUser'))
         if (user && user.authdata) {
             headers.append('Authorization', 'Basic ' + user.authdata)
         }
-        headers.append('Content-Type', 'application/json')
-
+        if (body) {
+            headers.append('Content-Type', 'application/json')
+        }
         return fetch(process.env.REACT_APP_BACKEND_BASE + '/message' + subPath, {
-            method: method,
+            method: 'POST',
             headers: headers,
             body: body ? JSON.stringify(body) : null
         }).then(response => {
