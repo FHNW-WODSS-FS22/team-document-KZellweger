@@ -9,15 +9,28 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/message")
-class MessageController(
+class CommandController(
     val service: DocumentService
 ) {
 
     @PostMapping
-    fun message(@RequestBody commands: List<DocumentCommand>): ResponseEntity<Void> {
-        println(commands)
-        service.process(commands)
-        return ResponseEntity(HttpStatus.OK)
+    fun processCommands(@RequestBody commands: List<DocumentCommand>): ResponseEntity<Void> {
+        return try {
+            service.process(commands)
+            ResponseEntity(HttpStatus.OK)
+        } catch (e: Exception) {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    @PostMapping("/restore")
+    fun restoreLastDeleted(): ResponseEntity<Void> {
+        return try {
+            service.restoreLastDeleted()
+            ResponseEntity(HttpStatus.OK)
+        } catch (e: Exception) {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     //@Profile("e2e")

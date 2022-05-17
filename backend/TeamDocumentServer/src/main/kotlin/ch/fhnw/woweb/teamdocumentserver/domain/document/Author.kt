@@ -4,5 +4,6 @@ import java.util.*
 
 class Author(
     val id: UUID,
-    var name: String
+    var name: String,
+    var image: String? = null
 )

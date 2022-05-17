@@ -54,6 +54,23 @@ object DocumentCommandAssertions {
         return true
     }
 
+    fun verifyUpdateLockCommand(cmd: DocumentCommand, expectedPayload: Paragraph): Boolean {
+        assertThat(cmd.type).isEqualTo(CommandType.UPDATE_LOCK)
+        val paragraph = gson.fromJson(cmd.payload, Paragraph::class.java)
+        assertThat(paragraph)
+            .usingRecursiveComparison()
+            .isEqualTo(expectedPayload)
+        return true
+    }
+
+    fun verifyAddClientCommand(cmd: DocumentCommand, expectedPayload: List<UUID>) {
+        assertThat(cmd.type).isEqualTo(CommandType.ADD_CLIENTS)
+        val payload = gson.fromJson(cmd.payload, Array<UUID>::class.java)
+        assertThat(payload)
+            .containsAll(expectedPayload)
+            .hasSize(expectedPayload.size)
+    }
+
     private fun verifyParagraphList(cmd: DocumentCommand?, expectedPayload: List<Paragraph> = emptyList()): Boolean {
         val paragraphs: Array<Paragraph> = gson.fromJson(cmd?.payload, Array<Paragraph>::class.java)
         assertThat(paragraphs)
@@ -61,5 +78,7 @@ object DocumentCommandAssertions {
             .containsAll(expectedPayload)
         return true
     }
+
+
 
 }

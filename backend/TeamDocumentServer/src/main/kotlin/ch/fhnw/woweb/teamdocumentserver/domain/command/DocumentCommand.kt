@@ -10,5 +10,7 @@ data class DocumentCommand(
     val id: UUID? = UUID.randomUUID(),
     val payload: String,
     val sender: UUID,
-    val type: CommandType
+    val type: CommandType,
+    val correlationId: UUID? = null,
+    val createdAt: Long = System.currentTimeMillis()
 )

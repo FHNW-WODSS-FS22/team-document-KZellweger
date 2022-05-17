@@ -1,7 +1,7 @@
 import React from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../hooks/messages.hook";
 import uuid from "../../utils/uuid";
+import useSendMessagesHook from "../../utils/sendMessagesService";
 
 const AddButton = () => {
 
@@ -11,10 +11,14 @@ const AddButton = () => {
         return state.paragraphs.map(p => p.ordinal)
     })
     const dispatch = useDispatch();
+    const sendMessages = useSendMessagesHook(dispatch);
 
     const handleAddParagraph = e => {
         e.preventDefault();
-        const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0;
+        if (e.shiftKey) {
+            return sendMessages(null, '/restore')
+        }
+        const max =  Number.isFinite(Math.max(...ordinals)) ? Math.max(...ordinals) : 0
         const payload =  {
             id: uuid(),
             author: author,
@@ -22,12 +26,12 @@ const AddButton = () => {
             content: ''
         }
         dispatch({ type: 'ADD_PARAGRAPH', payload })
-
-        sendMessage({
+        return sendMessages([{
             type: 'ADD_PARAGRAPH',
+            correlationId: payload.id,
             payload: JSON.stringify(payload),
             sender: author.id
-        });
+        }])
     }
 
     return (

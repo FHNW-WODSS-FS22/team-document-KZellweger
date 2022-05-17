@@ -5,6 +5,7 @@ import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Author
 import ch.fhnw.woweb.teamdocumentserver.domain.document.Paragraph
 import com.google.gson.Gson
+import java.util.*
 
 object CommandGenerator {
 
@@ -40,6 +41,27 @@ object CommandGenerator {
         )
     }
 
+
+    fun createUpdateCommands(p: Paragraph, n: Int): MutableList<DocumentCommand> {
+        val updateCmds = mutableListOf<DocumentCommand>()
+        var paragraphContent = ""
+        for (i in 1..n) {
+            paragraphContent += i
+            updateCmds.add(
+                createUpdateCommand(
+                    Paragraph(
+                        id = p.id,
+                        ordinal = p.ordinal,
+                        content = paragraphContent,
+                        author = p.author,
+                        lockedBy = p.author
+                    )
+                )
+            )
+        }
+        return updateCmds
+    }
+
     fun createUpdateOrdinalsCommand(p: Paragraph): DocumentCommand {
         return DocumentCommand(
             payload = Gson().toJson(listOf(p)),
@@ -55,4 +77,28 @@ object CommandGenerator {
             type = CommandType.UPDATE_AUTHOR
         )
     }
+
+    fun createLockCommand(p: Paragraph): DocumentCommand {
+        return DocumentCommand(
+            payload = Gson().toJson(p),
+            sender = p.author.id,
+            type = CommandType.UPDATE_LOCK
+        )
+    }
+
+    fun createAddClientCommand(ids: List<UUID> = listOf(UUID.randomUUID())): DocumentCommand{
+        return DocumentCommand(
+            payload = Gson().toJson(ids),
+            sender = UUID.randomUUID(),
+            type = CommandType.ADD_CLIENTS
+        )
+    }
+    fun createRemoveClientCommand(id: UUID = UUID.randomUUID()): DocumentCommand{
+        return DocumentCommand(
+            payload = id.toString(),
+            sender = id,
+            type = CommandType.REMOVE_CLIENT
+        )
+    }
+
 }
