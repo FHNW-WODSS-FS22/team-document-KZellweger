@@ -6,6 +6,7 @@ import useDebounceMessages from "../../hooks/useDebounceMessages.hook";
 import useSendMessagesHook from "../../utils/sendMessagesService";
 
 const User = () => {
+
     const dispatch = useDispatch()
     const sendMessages = useSendMessagesHook(dispatch);
     const author = useSelector(state => state.author);
@@ -57,7 +58,7 @@ const User = () => {
                         .filter(a => a.id !== author.id)
                         .map(a =>
                             <div className="circular" key={a.id} id={a.id}>
-                                <img src={a.image === undefined ? blank : a.image} alt="Profile image"/>
+                                <img src={a.image ? blank : a.image} alt="Profile image"/>
                             </div>)
                 }
             </div>
