@@ -58,7 +58,7 @@ const User = () => {
                         .filter(a => a.id !== author.id)
                         .map(a =>
                             <div className="circular" key={a.id} id={a.id}>
-                                <img src={a.image ? blank : a.image} alt="Profile image"/>
+                                <img src={a.image ? blank : a.image} alt="Profile image" title={a.name ? a.name : "UNKNOWN"}/>
                             </div>)
                 }
             </div>
