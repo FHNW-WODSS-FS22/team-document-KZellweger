@@ -33,7 +33,6 @@ const Document = () => {
                 }
             }
             eventSource.onerror = err => {
-                if (eventSource.readyState)
                 if(err.error && err.error.message && err.error.message.includes("No activity within 45000")){
                     console.info("Error due to inactivity was ignored.", err)
                 } else {
