@@ -17,7 +17,7 @@ const Paragraph = ({id}) => {
     const sendMessages = useSendMessagesHook(dispatch)
 
     const [message, setMessage] = useState([])
-    const accumulatedMessages = useDebounceMessages(message,150, 25)
+    const accumulatedMessages = useDebounceMessages(message,150)
     const maxOrdinal = useSelector(state => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
@@ -25,7 +25,6 @@ const Paragraph = ({id}) => {
 
     useEffect(() => {
         if(typeof accumulatedMessages!== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0){
-            console.log("Send and clean")
             sendMessages(accumulatedMessages)
             setMessage([]);
         }
@@ -33,7 +32,6 @@ const Paragraph = ({id}) => {
 
     const handleContentChange = e => {
         e.preventDefault()
-        console.log(paragraph)
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
         const newMessage = {
@@ -55,7 +53,6 @@ const Paragraph = ({id}) => {
         if (sibling) {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
-        console.log(payload)
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
         sendMessages([{
             type: 'UPDATE_PARAGRAPH_ORDINALS',
@@ -67,7 +64,6 @@ const Paragraph = ({id}) => {
         e.preventDefault()
         // Paragraph is lockable if no one is holding the lock
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
-            console.log(paragraph)
             const payload =  { ...paragraph, lockedBy: author }
             dispatch({ type: 'UPDATE_LOCK', payload })
             sendMessages([{
@@ -82,7 +78,6 @@ const Paragraph = ({id}) => {
      * Alert if clicked on outside of element
      */
     const handleClickOutside = e => {
-        console.log("on blur?")
         e.preventDefault()
         if(isLockedByLocalAuthor()) {
             const payload =  { ...paragraph, lockedBy: null }

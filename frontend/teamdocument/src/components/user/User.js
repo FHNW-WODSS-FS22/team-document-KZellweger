@@ -13,11 +13,10 @@ const User = () => {
     const otherAuthors = useSelector(state => state.otherAuthors);
 
     const [message, setMessage] = useState([])
-    const accumulatedMessages = useDebounceMessages(message, 100, 25)
+    const accumulatedMessages = useDebounceMessages(message, 100)
 
     useEffect(() => {
         if (typeof accumulatedMessages !== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0) {
-            console.log("Send and clean")
             sendMessages(accumulatedMessages)
             setMessage([]);
         }

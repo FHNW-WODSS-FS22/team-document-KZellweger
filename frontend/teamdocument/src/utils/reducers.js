@@ -94,7 +94,6 @@ const updateParagraphAuthors = (paragraphs, changedAuthor) => {
 }
 
 const addOtherAuthors = (otherAuthors, newAuthorIds) => {
-    console.log(otherAuthors)
     const newAuthors = newAuthorIds
         .filter(id => !_.find(otherAuthors, ['id', id]))
         .map( id => ({
