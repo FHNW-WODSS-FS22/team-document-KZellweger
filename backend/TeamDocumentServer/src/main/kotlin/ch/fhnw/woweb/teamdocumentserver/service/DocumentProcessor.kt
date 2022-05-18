@@ -109,7 +109,7 @@ class DocumentProcessor(
             ?.ordinal = paragraph.ordinal
     }
 
-    private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> {
+    private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
             .find { it.id == p.id }
