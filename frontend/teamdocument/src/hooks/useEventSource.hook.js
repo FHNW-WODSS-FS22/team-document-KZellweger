@@ -19,7 +19,7 @@ const useEventSource = () => {
             }
         });
         eventSource.onopen = _ => {
-            dispatch({type: 'ERROR', payload: { isPresent: false, message: "" }})
+            dispatch({type: 'ERROR', payload: { isPresent: false, display: 'NONE', message: "" }})
         }
         eventSource.onmessage = msg => {
             const cmd = JSON.parse(msg.data)
@@ -32,7 +32,7 @@ const useEventSource = () => {
                 console.info("Error due to inactivity was ignored.", err)
             } else {
                 console.error("An error occured. Attempting to reconnect to server.", err)
-                dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }})
+                dispatch({type: 'ERROR', payload: { isPresent: true, display: 'DIALOG', message: "Server is not available." }})
             }
         }
         esRef.current = eventSource;

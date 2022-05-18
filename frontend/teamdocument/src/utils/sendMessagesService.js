@@ -15,7 +15,7 @@ const sendMessages = (dispatch) => {
             body: body ? JSON.stringify(body) : null
         }).then(response => {
             if (response.status < 200 || response.status > 299) {
-                dispatch({type: 'ERROR', payload: { isPresent: true, message: "An error has occurred. \n Some of your changes may not have been saved." }})
+                dispatch({type: 'ERROR', payload: { isPresent: true, display: 'NONE', message: "An error has occurred. \n Some of your changes may not have been saved." }})
             }
         })
     }

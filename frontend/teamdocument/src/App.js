@@ -3,12 +3,13 @@ import React from 'react'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Login from "./components/login/Login";
 import {DocumentWrapper} from "./components/DocumentWrapper";
+import Error from "./components/error/Error";
 
 const App = () => {
     return (
         <BrowserRouter>
             <div className="App" id="app">
-            {/*<Error/>*/}
+            <Error/>
             <Routes>
                 <Route path={'/'} element={<DocumentWrapper/>}/>
                 <Route path={'/login'} element={<Login/>}/>
