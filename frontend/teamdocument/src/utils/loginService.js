@@ -20,15 +20,15 @@ function login(username, password){
                 }
 
                 const error = (data && data.message) || response.statusText;
-                return Promise.reject(error)
+                return Promise.reject(error);
             }
             return data;
         })
     }).then(user => {
-        if(user){
-            user.authdata = window.btoa(username + ':' + password)
-            localStorage.setItem('localUser', JSON.stringify(user))
+        if(user) {
+            user.authdata = window.btoa(username + ':' + password);
+            localStorage.setItem('localUser', JSON.stringify(user));
         }
-    })
+    });
 
 }
