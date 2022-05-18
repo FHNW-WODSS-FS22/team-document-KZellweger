@@ -28,13 +28,12 @@ const useEventSource = () => {
             }
         }
         eventSource.onerror = err => {
-            if (eventSource.readyState)
-                if(err.error && err.error.message && err.error.message.includes("No activity within 45000")){
-                    console.info("Error due to inactivity was ignored.", err)
-                } else {
-                    console.error("An error occured. Attempting to reconnect to server.", err)
-                    dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }})
-                }
+            if(err.error && err.error.message && err.error.message.includes("No activity within 45000")){
+                console.info("Error due to inactivity was ignored.", err)
+            } else {
+                console.error("An error occured. Attempting to reconnect to server.", err)
+                dispatch({type: 'ERROR', payload: { isPresent: true, message: "Server is not available." }})
+            }
         }
         esRef.current = eventSource;
         return () => esRef.current?.close()
