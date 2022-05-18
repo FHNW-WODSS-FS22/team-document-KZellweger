@@ -68,31 +68,14 @@ class DocumentProcessor(
 
     private fun addParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
-        if (document.paragraphs.any { it.ordinal == p.ordinal }) {
-            p.ordinal = document.paragraphs.maxOf { it.ordinal } + 1
-        }
         document.paragraphs.add(p)
-        val updateOrdinalsCmd = DocumentCommand(
-            id = UUID.randomUUID(),
-            payload = Gson().toJson(document.paragraphs),
-            sender = properties.serverId,
-            type = UPDATE_PARAGRAPH_ORDINALS
-        )
-        return just(cmd, updateOrdinalsCmd)
+        return Flux.merge(just(cmd), resolveOrdinalsConflicts())
     }
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
         document.paragraphs.removeIf { it.id == id && it.lockedBy?.id == cmd.sender }
-        document.paragraphs.sortBy { it.ordinal }
-        document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
-        val updateOrdinalsCmd = DocumentCommand(
-            id = UUID.randomUUID(),
-            payload = Gson().toJson(document.paragraphs),
-            sender = properties.serverId,
-            type = UPDATE_PARAGRAPH_ORDINALS
-        )
-        return just(cmd, updateOrdinalsCmd)
+        return Flux.merge(just(cmd), resolveOrdinalsConflicts())
     }
 
     private fun updateAuthor(cmd: DocumentCommand): Flux<DocumentCommand> {
@@ -111,7 +94,7 @@ class DocumentProcessor(
         document.paragraphs
             .find { it.id == p.id && it.lockedBy?.id == cmd.sender }
             ?.content = p.content
-        return just(cmd)
+        return Flux.merge(just(cmd), resolveOrdinalsConflicts())
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
@@ -132,6 +115,26 @@ class DocumentProcessor(
             .find { it.id == p.id }
             ?.lockedBy = p.lockedBy
         return just(cmd)
+    }
+    
+    private fun resolveOrdinalsConflicts(): Flux<DocumentCommand> {
+        if (hasOrdinalsConflict()) {
+            return Flux.empty()
+        }
+        document.paragraphs.sortBy { it.ordinal }
+        document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
+        return just(DocumentCommand(
+            id = UUID.randomUUID(),
+            payload = Gson().toJson(document.paragraphs),
+            sender = properties.serverId,
+            type = UPDATE_PARAGRAPH_ORDINALS
+        ))
+    }
+
+    private fun hasOrdinalsConflict(): Boolean {
+        val ordinals = document.paragraphs.map { it.ordinal }
+        return ordinals.maxOf { it }  > ordinals.size
+                || ordinals.distinct().count() == document.paragraphs.size
     }
 
     fun toAddCommand(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
