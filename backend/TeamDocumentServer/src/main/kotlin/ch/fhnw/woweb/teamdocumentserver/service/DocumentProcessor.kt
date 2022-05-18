@@ -45,10 +45,7 @@ class DocumentProcessor(
         UPDATE_AUTHOR -> updateAuthor(cmd)
         UPDATE_LOCK -> updateLock(cmd)
         REMOVE_CLIENT -> removeClient(cmd)
-        else -> {
-            println(cmd)
-            Flux.empty()
-        }
+        ADD_CLIENTS -> Flux.empty()
     }
 
     private fun removeClient(cmd: DocumentCommand): Flux<DocumentCommand> {
