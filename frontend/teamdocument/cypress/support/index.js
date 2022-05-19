@@ -31,7 +31,7 @@ beforeEach(() => {
     cy.get(':nth-child(2) > .form-control').type('1234');
     cy.get('.btn').click();
     // Needs to wait, else actions in test might be executed before INIT
-    cy.wait(500);
+    cy.wait(1500);
     /* ==== End Cypress Studio ==== */
 })
 

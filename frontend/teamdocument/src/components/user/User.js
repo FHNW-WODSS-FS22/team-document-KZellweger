@@ -48,12 +48,12 @@ const User = () => {
         <div className="userContainer">
             <div className="user">
                 <div className="circular">
-                    <img src={imageIsNullOrUndefined(author.image) ? blank : author.image} alt="Profile image"/>
+                    <img src={imageIsNullOrUndefined(author.image) ? blank : author.image} className="user-icon" alt="Profile image"/>
                 </div>
                 <div className="name">
-                    <input disabled={error} type="text" value={author.name} className="divider-color"
+                    <input disabled={error} type="text" value={author.name} className="username-primary divider-color"
                            onChange={handleAuthorChange}/>
-                    <p><em className="secondary-text-color">{author.id}</em></p>
+                    <p><em className="username-secondary secondary-text-color">{author.id}</em></p>
                 </div>
             </div>
             <div className="otherUser">

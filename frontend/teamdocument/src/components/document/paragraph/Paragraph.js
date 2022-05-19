@@ -104,7 +104,7 @@ const Paragraph = ({id}) => {
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
-                    <p>{paragraph.author.name}</p>
+                    <p className={"author-name"}>{paragraph.author.name}</p>
                 </div>
                 <div>
                     <label>Locked By: </label>

@@ -54,23 +54,34 @@ describe('Paragraph Suite', () => {
         for(let i = 1; i < upper + 1; i++) {
             cy.get('.add').click();
             cy.get(`[tabindex="${i}"] > .paragraphHeader`).click();
-            cy.get(`[tabindex="${i}"] > .paragraphContent > textarea`).click();
-            cy.get(`[tabindex="${i}"] > .paragraphContent > textarea`).type(i.toString());
+            cy.get(`[tabindex="${i}"] textarea`).click();
+            cy.get(`[tabindex="${i}"] textarea`).type(i.toString());
             cy.wait(100);
         }
         // Swap 3 with 1
+        // TODO find out why it doesn't swap
         cy.get('[tabindex="3"] > .paragraphHeader').click();
-        cy.get('[tabindex="3"] > .paragraphHeader > :nth-child(3) > input').clear();
-        cy.get('[tabindex="3"] > .paragraphHeader > :nth-child(3) > input').type('1').type('{enter}');
-        cy.wait(100);
+        cy.get('[tabindex="3"] > .paragraphHeader input').clear();
+        cy.wait(500);
+        cy.get('[tabindex="3"] > .paragraphHeader input').type('1', {delay: 500}).trigger('change');
+        cy.wait(500);
         // Write 1 to the new 1
-        cy.get('[tabindex="1"] > .paragraphContent > textarea').click();
-        cy.get('[tabindex="1"] > .paragraphContent > textarea').type('1');
+        cy.get('[tabindex="1"] > .paragraphHeader').click();
+        cy.get('[tabindex="1"] textarea').click();
+        cy.get('[tabindex="1"] textarea').type('1');
+        /* ==== Generated with Cypress Studio ==== */
     })
 
-    it('Swaps i paragraphs', () => {
-        const upper = 50;
-        for(let i = 1; i < upper + 1; i++) {
-        }
+    it('Restores a deleted paragraph', () => {
+        /* ==== Generated with Cypress Studio ==== */
+        cy.get('.add').click();
+        cy.get('textarea').click();
+        cy.get('textarea').type('This gets restored', {delay: 250});
+        // Simulate long waiting
+        cy.wait(1000);
+        cy.get('.remove').click();
+        cy.get('.add').click({shiftKey: true});
+        /* ==== End Cypress Studio ==== */
+        cy.get('textarea').should('contain.text', 'This gets restored');
     })
 })
