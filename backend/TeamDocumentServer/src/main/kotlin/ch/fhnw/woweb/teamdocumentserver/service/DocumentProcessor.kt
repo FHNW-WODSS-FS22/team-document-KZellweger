@@ -110,10 +110,20 @@ class DocumentProcessor(
     }
 
     private fun updateLock(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
-        val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        val p1 = Gson().fromJson(cmd.payload, Paragraph::class.java)
+        val p2 = document.paragraphs.find { it.id == p1.id }
+
+        if (p2?.lockedBy != null && p1.lockedBy == null && cmd.sender != p2?.lockedBy?.id) {
+            return just(DocumentCommand(
+                payload = Gson().toJson(p2?.lockedBy),
+                sender = properties.serverId,
+                type = UPDATE_LOCK
+            ))
+        }
+
         document.paragraphs
-            .find { it.id == p.id }
-            ?.lockedBy = p.lockedBy
+            .find { it.id == p1.id }
+            ?.lockedBy = p1.lockedBy
         return just(cmd)
     }
     
