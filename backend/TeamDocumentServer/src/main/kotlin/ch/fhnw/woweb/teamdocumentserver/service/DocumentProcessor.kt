@@ -50,7 +50,6 @@ class DocumentProcessor(
 
     private fun removeClient(cmd: DocumentCommand): Flux<DocumentCommand> {
         val update : MutableList<DocumentCommand> = mutableListOf()
-        println("Remove Client Processor call")
         document.paragraphs
             .filter { it.lockedBy?.id == Gson().fromJson(cmd.payload, UUID::class.java) }
             .map { paragraph ->
@@ -94,7 +93,7 @@ class DocumentProcessor(
         document.paragraphs
             .find { it.id == p.id && it.lockedBy?.id == cmd.sender }
             ?.content = p.content
-        return Flux.merge(just(cmd), resolveOrdinalsConflicts())
+        return Flux.merge(just(cmd))
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
@@ -128,7 +127,7 @@ class DocumentProcessor(
     }
     
     private fun resolveOrdinalsConflicts(): Flux<DocumentCommand> {
-        if (hasOrdinalsConflict()) {
+        if (!hasOrdinalsConflict()) {
             return Flux.empty()
         }
         document.paragraphs.sortBy { it.ordinal }
@@ -143,14 +142,15 @@ class DocumentProcessor(
 
     private fun hasOrdinalsConflict(): Boolean {
         val ordinals = document.paragraphs.map { it.ordinal }
-        return ordinals.maxOf { it }  > ordinals.size
-                || ordinals.distinct().count() == document.paragraphs.size
+        return ordinals.isEmpty()
+                || ordinals.maxOf { it }  > ordinals.size
+                || ordinals.distinct().count() != document.paragraphs.size
     }
 
     fun toAddCommand(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
         val paragraphToRestore = Gson().fromJson(commandToUndo.payload, Paragraph::class.java)
         val sanitizedParagraph = Paragraph(
-            ordinal = 1,
+            ordinal = paragraphToRestore.ordinal,
             content = paragraphToRestore.content,
             author = paragraphToRestore.author
         )
