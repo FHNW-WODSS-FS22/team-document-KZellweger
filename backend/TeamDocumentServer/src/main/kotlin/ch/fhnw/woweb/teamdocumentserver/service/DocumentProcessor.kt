@@ -104,7 +104,7 @@ class DocumentProcessor(
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand, paragraph: Paragraph) {
         document.paragraphs
-            .find { it.id == paragraph.id && it.lockedBy?.id == cmd.sender }
+            .find { it.id == paragraph.id }
             ?.ordinal = paragraph.ordinal
     }
 
