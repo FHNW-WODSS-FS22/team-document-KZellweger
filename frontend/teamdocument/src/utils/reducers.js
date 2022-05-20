@@ -9,7 +9,7 @@ const REDUCERS = {
     'INITIAL': (state, action) => ( {
         ...state,
         paragraphs: action.payload,
-        otherAuthors: _.map(state.otherAuthors, a => a.id === action.payload.author.id ? action.payload.author : a),
+        otherAuthors: _.map(state.otherAuthors, a => a.id === action?.payload?.author?.id ? action.payload.author : a),
         messages: _.concat(state.messages, action.type)
     }),
 
