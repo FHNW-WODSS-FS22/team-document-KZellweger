@@ -1,4 +1,27 @@
+import {resetDb} from "../../utils/requestUtil";
+
 describe('User Suite', () => {
+    beforeEach(() => {
+        resetDb();
+        cy.wait(1000);
+        cy.visit('localhost:3000');
+        /* ==== Generated with Cypress Studio ==== */
+        // Login to the application
+        cy.get(':nth-child(1) > .form-control').clear();
+        cy.get(':nth-child(1) > .form-control').type('user');
+        cy.get(':nth-child(2) > .form-control').clear();
+        cy.get(':nth-child(2) > .form-control').type('1234');
+        cy.get('.btn').click();
+        // Needs to wait, else actions in test might be executed before INIT
+        cy.wait(1500);
+        /* ==== End Cypress Studio ==== */
+    })
+
+    afterEach(() => {
+        resetDb();
+        cy.wait(1000);
+        cy.get('.logout').click();
+    })
 
     it('Displays a user', () => {
         cy.get('.username-primary').should('have.length.at.least', 1);
@@ -25,7 +48,7 @@ describe('User Suite', () => {
         // Check name after update
         cy.get('.username-primary').type('New Username', {delay: 250});
         cy.wait(1500);
-        cy.get('.author-name').should('have.value', 'New Username');
+        cy.get('.author-name').should('contain.text', 'New Username');
     })
 
     it('Changes a user name on all paragraph', () => {
@@ -44,7 +67,7 @@ describe('User Suite', () => {
 
        for(let i = 1; i < 4; i++) {
             // Check name after update
-            cy.get(`[tabindex="${i}"] .author-name`).should('have.value', 'New Username');
+            cy.get(`[tabindex="${i}"] .author-name`).should('contain.text', 'New Username');
         }
 
     })
