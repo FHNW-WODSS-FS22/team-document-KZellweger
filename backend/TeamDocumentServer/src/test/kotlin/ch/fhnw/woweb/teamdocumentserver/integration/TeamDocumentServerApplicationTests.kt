@@ -109,6 +109,11 @@ class TeamDocumentServerApplicationTests {
         val expectedDocument = proc.getFullDocument().blockFirst()
         val subscriptionDocument = updateController?.getUpdatedDocumentSubscription(clientId)?.blockFirst()
 
+        val e = Gson().fromJson(expectedDocument?.payload, Array<Paragraph>::class.java)
+        val s = Gson().fromJson(subscriptionDocument?.payload, Array<Paragraph>::class.java)
+
+        Assertions.assertThat(subscriptionDocument?.payload).isEqualTo(expectedDocument?.payload)
+
         Assertions.assertThat(subscriptionDocument)
             .usingRecursiveComparison()
             .ignoringFields("id")
@@ -118,6 +123,7 @@ class TeamDocumentServerApplicationTests {
     }
 
     @Test
+    @DirtiesContext
     fun multiUser_updateContentLoad() {
         // Given
         val nUpdates = 512
@@ -161,6 +167,7 @@ class TeamDocumentServerApplicationTests {
     }
 
     @Test
+    @DirtiesContext
     fun multiUser_updateOrdinalsLoad() {
         // Given
         val nUpdates = 512
