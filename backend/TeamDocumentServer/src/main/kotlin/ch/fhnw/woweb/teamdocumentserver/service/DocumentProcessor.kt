@@ -142,8 +142,8 @@ class DocumentProcessor(
 
     private fun hasOrdinalsConflict(): Boolean {
         val ordinals = document.paragraphs.map { it.ordinal }
-        return ordinals.isEmpty()
-                || ordinals.maxOf { it }  > ordinals.size
+        return ordinals.isNotEmpty()
+                && ordinals.maxOf { it }  > ordinals.size
                 || ordinals.distinct().count() != document.paragraphs.size
     }
 
