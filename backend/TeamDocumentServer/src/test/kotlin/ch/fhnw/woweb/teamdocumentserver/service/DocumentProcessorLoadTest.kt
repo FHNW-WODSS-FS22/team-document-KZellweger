@@ -105,4 +105,63 @@ internal class DocumentProcessorLoadTest {
         assertThat(paragraphs).hasSize(1)
         assertThat(paragraphs[0].content).isEqualTo(paragraphContent.get())
     }
+
+    @Test
+    fun testUpdateOrdinalsCommandLoad() {
+        // Given
+        // Processor is initialized
+        val start = System.currentTimeMillis()
+        val paragraphContent: AtomicReference<String> = AtomicReference("");
+        val paragraphIds = mutableListOf<UUID>()
+
+        for (i in 1..12) {
+            val pId = UUID.randomUUID()
+            paragraphIds.add(pId)
+            processor.process(CommandGenerator.createAddCommand(Paragraph(
+                id = pId,
+                ordinal = i,
+                content = paragraphContent.get(),
+                author = author,
+                lockedBy = null
+            )))
+        }
+
+        // When
+        runBlocking {
+            for (i in 1..NUMBER_OF_COMMANDS) {
+                launch {
+                    delay((Math.random() * 1000).roundToLong())
+                    processor.process(CommandGenerator.createUpdateOrdinalsCommand(listOf(
+                        Paragraph(
+                            id = paragraphIds[i % paragraphIds.size],
+                            ordinal = i,
+                            content = paragraphContent.get(),
+                            author = author,
+                            lockedBy = author
+                        ),
+                        Paragraph(
+                            id = paragraphIds[i % paragraphIds.size],
+                            ordinal = i,
+                            content = paragraphContent.get(),
+                            author = author,
+                            lockedBy = author
+                        )), author.id)
+                    )
+                }
+            }
+        }
+
+        // Then
+        // Expected time is kept
+        val totalTime = System.currentTimeMillis() - start
+        assertThat(totalTime).isLessThan(MAX_MS_TOTAL)
+
+        // Conflicts are resolved
+        val result = processor.getFullDocument().blockFirst()
+        val paragraphs: Array<Paragraph> = Gson().fromJson(result?.payload, Array<Paragraph>::class.java)
+
+        val expectedOrdinals: List<Int> = (1..paragraphIds.size).toList()
+        assertThat(paragraphs.map { it.ordinal } ).containsAll(expectedOrdinals).hasSize(paragraphIds.size)
+    }
+
 }

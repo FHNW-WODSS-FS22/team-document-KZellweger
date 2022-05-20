@@ -79,7 +79,6 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyAddParagraphCommand(it, p) }
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p)) }
             .expectComplete()
             .verify()
 
@@ -133,7 +132,6 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf()) }
             .expectComplete()
             .verify()
 
@@ -156,7 +154,6 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
-            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf()) }
             .expectComplete()
             .verify()
 
@@ -270,7 +267,7 @@ class DocumentProcessorTest {
         // Given
         val p1 = createParagraphPayload()
         val addCmd1 = createAddCommand(p1)
-        val p2 = createParagraphPayload(1, "This is different.")
+        val p2 = createParagraphPayload(2, "This is different.")
         val addCmd2 = createAddCommand(p2)
 
         val p1Updated = createParagraphPayload(id = p1.id, ordinal = 1)
