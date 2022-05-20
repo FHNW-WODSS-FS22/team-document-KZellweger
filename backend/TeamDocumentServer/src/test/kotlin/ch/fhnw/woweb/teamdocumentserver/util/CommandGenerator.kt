@@ -41,7 +41,6 @@ object CommandGenerator {
         )
     }
 
-
     fun createUpdateCommands(p: Paragraph, n: Int): MutableList<DocumentCommand> {
         val updateCmds = mutableListOf<DocumentCommand>()
         var paragraphContent = ""
@@ -68,6 +67,22 @@ object CommandGenerator {
             sender = p.author.id,
             type = CommandType.UPDATE_PARAGRAPH_ORDINALS
         )
+    }
+
+    fun createUpdateOrdinalsCommand(p: List<Paragraph>, sender: UUID): DocumentCommand {
+        return DocumentCommand(
+            payload = Gson().toJson(p),
+            sender = sender,
+            type = CommandType.UPDATE_PARAGRAPH_ORDINALS
+        )
+    }
+
+    fun createUpdateOrdinalsCommands(p: Paragraph, n: Int): List<DocumentCommand> {
+        val cmds = mutableListOf<DocumentCommand>()
+        for (i in 1..n) {
+            cmds.add(createUpdateOrdinalsCommand(listOf(p), p.author.id))
+        }
+        return cmds;
     }
 
     fun createUpdateAuthorCommand(a: Author): DocumentCommand {

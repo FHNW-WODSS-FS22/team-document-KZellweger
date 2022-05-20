@@ -99,7 +99,7 @@ class DocumentProcessor(
     private fun updateParagraphOrdinals(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val paragraphs = Gson().fromJson(cmd.payload, Array<Paragraph>::class.java)
         paragraphs.forEach { updateParagraphOrdinals(cmd, it) }
-        return just(cmd)
+        return Flux.merge(just(cmd), resolveOrdinalsConflicts())
     }
 
     private fun updateParagraphOrdinals(cmd: DocumentCommand, paragraph: Paragraph) {
