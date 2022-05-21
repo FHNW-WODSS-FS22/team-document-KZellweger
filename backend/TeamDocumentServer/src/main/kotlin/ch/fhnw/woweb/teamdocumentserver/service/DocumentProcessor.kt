@@ -137,7 +137,7 @@ class DocumentProcessor(
         ))
     }
 
-    fun toAddCommand(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
+    fun undo(commandToUndo: DocumentCommand): Mono<DocumentCommand> {
         val paragraphToRestore = Gson().fromJson(commandToUndo.payload, Paragraph::class.java)
         val sanitizedParagraph = Paragraph(
             ordinal = paragraphToRestore.ordinal,

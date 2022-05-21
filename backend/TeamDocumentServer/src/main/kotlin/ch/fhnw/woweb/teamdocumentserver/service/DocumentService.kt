@@ -55,7 +55,7 @@ class DocumentService(
         repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
             .map { Gson().fromJson(it?.payload, UUID::class.java) }
             .flatMap { repository.findFirstByTypeInAndCorrelationIdOrderByCreatedAtDesc(listOf(UPDATE_PARAGRAPH, ADD_PARAGRAPH), it) }
-            .flatMap { processor.toAddCommand(it) }
+            .flatMap { processor.undo(it) }
             .map { process(it) }
             .subscribe()
     }
