@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Sinks
-import reactor.util.concurrent.Queues.SMALL_BUFFER_SIZE
 import java.util.*
 import javax.annotation.PostConstruct
 
@@ -18,7 +17,7 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
-    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(SMALL_BUFFER_SIZE, false)
+    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(4200000, false)
 
     fun subscribe(id: UUID): Flux<DocumentCommand> {
         val cmd = activeSessionService.register(id)

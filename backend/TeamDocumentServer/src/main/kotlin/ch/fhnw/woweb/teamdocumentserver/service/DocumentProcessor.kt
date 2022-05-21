@@ -73,7 +73,7 @@ class DocumentProcessor(
 
     private fun removeParagraph(cmd: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val id = Gson().fromJson(cmd.payload, UUID::class.java)
-        document.paragraphs.removeIf { it.id == id && it.lockedBy?.id == cmd.sender }
+        document.paragraphs.removeIf { it.id == id }
         return Flux.merge(just(cmd), resolveOrdinalsConflicts())
     }
 
@@ -91,7 +91,7 @@ class DocumentProcessor(
     private fun updateParagraph(cmd: DocumentCommand): Flux<DocumentCommand> {
         val p = Gson().fromJson(cmd.payload, Paragraph::class.java)
         document.paragraphs
-            .find { it.id == p.id && it.lockedBy?.id == cmd.sender }
+            .find { it.id == p.id }
             ?.content = p.content
         return Flux.merge(just(cmd))
     }
@@ -127,9 +127,6 @@ class DocumentProcessor(
     }
     
     private fun resolveOrdinalsConflicts(): Flux<DocumentCommand> {
-        if (!hasOrdinalsConflict()) {
-            return Flux.empty()
-        }
         document.paragraphs.sortBy { it.ordinal }
         document.paragraphs.forEachIndexed { i: Int, p: Paragraph -> p.ordinal = i + 1 }
         return just(DocumentCommand(
