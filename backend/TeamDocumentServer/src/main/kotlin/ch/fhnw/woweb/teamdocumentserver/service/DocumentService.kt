@@ -31,12 +31,6 @@ class DocumentService(
             }
     }
 
-    //@Profile("e2e")
-    fun resetDb() {
-        processor.resetDocument()
-        repository.deleteAll()
-    }
-
     private fun getFullDocument(): Flux<DocumentCommand> {
         return processor.getFullDocument()
     }

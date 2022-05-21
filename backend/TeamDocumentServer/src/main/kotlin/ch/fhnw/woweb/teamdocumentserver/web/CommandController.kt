@@ -32,12 +32,4 @@ class CommandController(
             ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
-
-    //@Profile("e2e")
-    @DeleteMapping
-    fun resetDb(): ResponseEntity<Void> {
-        service.resetDb()
-        return ResponseEntity(HttpStatus.NO_CONTENT)
-    }
-
 }
