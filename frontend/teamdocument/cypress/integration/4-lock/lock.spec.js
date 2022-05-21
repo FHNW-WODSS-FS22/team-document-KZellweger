@@ -18,16 +18,37 @@ describe('User Suite', () => {
         /* ==== End Cypress Studio ==== */
     })
 
-    it('Locks a paragraph', () => {
-        for(let j = 0; j < 1; j++) {
-            let user = new User();
+    afterEach(() => {
+        resetDb();
+        cy.wait(1000);
+        cy.get('.logout').click();
+    })
 
-            for(let i = 0; i < 1; i++) {
-                user.addParagraph();
-                cy.wait(500);
-                user.updateParagraphContent(user.selectRandomParagraph());
-                cy.wait(500);
-            }
-        }
+    it('Locks a paragraph', () => {
+        cy.get('.add').click();
+        cy.get('[tabindex="1"]').should("have.class", "locked");
+        cy.get('[tabindex="1"]').click();
+        cy.get('[tabindex="1"]').should("have.class", "editing");
+    })
+
+    it('Releases a lock', () => {
+        cy.get('.add').click();
+        cy.get('[tabindex="1"]').should("have.class", "locked");
+        cy.get('[tabindex="1"]').click();
+        cy.get('[tabindex="1"]').should("have.class", "editing");
+        cy.get('.messages').click();
+        cy.get('[tabindex="1"]').should("have.class", "locked");
+    })
+
+    it('Moves the lock', () => {
+        cy.get('.add').click();
+        cy.get('.add').click();
+        cy.get('[tabindex="1"]').click();
+        cy.get('[tabindex="1"]').should("have.class", "editing");
+        cy.get('[tabindex="2"]').should("have.class", "locked");
+        // Swap
+        cy.get('[tabindex="2"]').click();
+        cy.get('[tabindex="1"]').should("have.class", "locked");
+        cy.get('[tabindex="2"]').should("have.class", "editing");
     })
 })
