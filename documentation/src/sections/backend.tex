@@ -53,40 +53,59 @@ Letztlich beinhaltet das Package config die technische Konfiguration der Applika
 
 Die Backendapplikation bietet eine HTTP-Schnittstelle, welche von Frontendapplikationen verwendet werden kann.
 Die Schnittstelle ermöglich es, sich im System anzumelden, Dokumente zu laden und Änderungen an Dokumenten zu laden und speichern.
-Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle folgende Endpunkte:
-
-\begin{itemize}
-    \item Authentication: GET  /api/v1/authentication
-    \item Document: GET  api/v1/document
-    \item Message: POST /api/v1/message
-    \item Message: POST /api/v1/message/restore
-\end{itemize}
-
-\begin{tabularx}{\textwidth}{|p{4.75cm}|l|l|l|p{3.15cm}|}
-    \hline
-    \textbf{Aktion}            & \textbf{HTTP} & \textbf{Pfad}        & \textbf{Body} & \textbf{Response} \\
-    \hline
-    An-/Abmelden        & GET           & /api/v1/authentication     & -             &        \\
-    \hline
-    Aktuelles Dokument laden und Änderungen abonnieren    & GET           & /api/v1/document  & -             & EventStream von DocumentCommands     \\
-    \hline
-    Änderungen speichern    & POST          & /api/entity-name     & [DocumentCommand]     & EntityDto         \\
-    \hline
-    Änderung rückgängig machen & POST           & /api/entity-name     & EntityDto     & EntityDto         \\
-    \hline
-\end{tabularx}\label{tab:apimethods}
+Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle die drei Bereiche ''Authentication'', ''Document'' und ''Message''.
 
 \subsubsection{API Authentication}
 
 Macht Authentifizierung
 
+\begin{tabbing}
+Left \= Middle \= Right \= Right \kill
+Endpunkt:  \> \> \> /api/v1/authentication\\
+Methode \>  \> \> GET\\
+Headers:  \> \>   \> Authentication: Basic \\
+Response Code:  \> \>  \> 200, 401 oder 500 \\
+Response Body:  \> \>  \> application/json \\
+\end{tabbing}
+
 \subsubsection{API Document}
 
 Liefert den Initialen Status und Updates
 
+\begin{tabbing}
+    Left \= Middle \= Right \= Right \kill
+    Endpunkt:  \> \> \> api/v1/document\\
+    Methode \>  \> \> GET\\
+    Headers:  \> \>   \> Authentication: Basic\\
+    \> \>   \> X-ClientId: text\\
+    Response Code:  \> \>  \> 200, 401 oder 500 \\
+    Response Body:  \> \>  \> text/event-stream \\
+\end{tabbing}
+
+
 \subsubsection{API Message}
 
 Verarbeitet Updates
+
+\begin{tabbing}
+    Left \= Middle \= Right \= Right \kill
+    Endpunkt:  \> \> \> /api/v1/message\\
+    Methode \>  \> \> POST\\
+    Headers:  \> \>   \> Authentication: Basic\\
+    \> \>   \> Content-Type: application/json\\
+    Body:  \> \>  \> DocumentCommand\\
+    Response Code:  \> \>  \> 200, 401 oder 500 \\
+\end{tabbing}
+
+Stellt den zuletzt gelöschten Paragraphen wieder her.
+
+\begin{tabbing}
+    Left \= Middle \= Right \= Right \kill
+    Endpunkt:  \> \> \> /api/v1/message/restore\\
+    Methode \>  \> \> POST\\
+    Headers:  \> \>   \> Authentication: Basic\\
+    Response Code:  \> \>  \> 200, 401 oder 500 \\
+\end{tabbing}
 
 \clearpage
 
