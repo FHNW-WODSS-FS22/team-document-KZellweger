@@ -51,6 +51,45 @@ Letztlich beinhaltet das Package config die technische Konfiguration der Applika
 
 \subsection{API}
 
+Die Backendapplikation bietet eine HTTP-Schnittstelle, welche von Frontendapplikationen verwendet werden kann.
+Die Schnittstelle ermöglich es, sich im System anzumelden, Dokumente zu laden und Änderungen an Dokumenten zu laden und speichern.
+Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle folgende Endpunkte:
+
+\begin{itemize}
+    \item Authentication: GET  /api/v1/authentication
+    \item Document: GET  api/v1/document
+    \item Message: POST /api/v1/message
+    \item Message: POST /api/v1/message/restore
+\end{itemize}
+
+\begin{tabularx}{\textwidth}{|p{4.75cm}|l|l|l|p{3.15cm}|}
+    \hline
+    \textbf{Aktion}            & \textbf{HTTP} & \textbf{Pfad}        & \textbf{Body} & \textbf{Response} \\
+    \hline
+    An-/Abmelden        & GET           & /api/v1/authentication     & -             &        \\
+    \hline
+    Aktuelles Dokument laden und Änderungen abonnieren    & GET           & /api/v1/document  & -             & EventStream von DocumentCommands     \\
+    \hline
+    Änderungen speichern    & POST          & /api/entity-name     & [DocumentCommand]     & EntityDto         \\
+    \hline
+    Änderung rückgängig machen & POST           & /api/entity-name     & EntityDto     & EntityDto         \\
+    \hline
+\end{tabularx}\label{tab:apimethods}
+
+\subsubsection{API Authentication}
+
+Macht Authentifizierung
+
+\subsubsection{API Document}
+
+Liefert den Initialen Status und Updates
+
+\subsubsection{API Message}
+
+Verarbeitet Updates
+
+\clearpage
+
 \subsection{Komponenten}
 
 \subsection{Sequenz}
