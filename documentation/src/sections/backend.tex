@@ -3,7 +3,7 @@
 
 \subsection{Aufbau}
 
-Der Aufbau der Serverapplikation orientiert sich am Konzept der Onion-Architecture.
+Der Aufbau der Serverapplikation lehnt sich am Konzept der Onion-Architecture an.
 In Onion Architecture wird die Applikation in Layer aufgeteilt.
 
 \begin{figure}[h]
@@ -17,6 +17,8 @@ In Onion Architecture wird die Applikation in Layer aufgeteilt.
 Um zu garantieren, dass keine ungewollten Abhängigkeiten zwischen Layern bestehen, können die Layer in eigene Module verpackt und Abhängigkeiten über Interfaces abstrahiert werden.
 Dies erhöht jedoch die interne Komplexität der Applikation.
 Die Umsetzung wird aufgrund der geringen Projektgrösse deshalb nicht in unabhängigen Modulen realisiert, sondern über die Package Struktur gelöst.
+Angesichts dieser Entscheidung wird weiter darauf verzichtet, Abhängigkeiten zwischen Modulen über Interfaces zu abstrahieren.
+Da es nie mehrere Implementationen einer Componente geben wird, bringt der Einsatz von Interfaces keinen grossen Mehrwert.
 Bei der Implementation wird dabei konsequent darauf geachtet, die einzelnen Layer so zu halten das diese als eigenständige Module extrahiert werden können.
 Für die Verwaltung der Komponenten der Serverapplikation wird folgende Packagestruktur definiert:
 
@@ -291,8 +293,13 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
 
 \subsection{Sequenz}
 
+\subsubsection{Subscription Öffnen und Schliessen}
+
+\subsubsection{DocumentCommand verarbeiten}
+
 \clearpage
 
 \subsection{State- und Konfliktmanagment}
+
 
 \clearpage
