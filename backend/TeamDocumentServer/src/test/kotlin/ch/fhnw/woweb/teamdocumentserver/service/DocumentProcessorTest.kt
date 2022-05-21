@@ -79,6 +79,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyAddParagraphCommand(it, p) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p)) }
             .expectComplete()
             .verify()
 
@@ -132,6 +133,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it) }
             .expectComplete()
             .verify()
 
@@ -154,6 +156,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyRemoveParagraphCommand(it, p.id) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it) }
             .expectComplete()
             .verify()
 
@@ -281,6 +284,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p1Updated)) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(p2, p1Updated)) }
             .expectComplete()
             .verify()
 
@@ -304,6 +308,7 @@ class DocumentProcessorTest {
         // Then
         StepVerifier.create(result)
             .expectNextMatches { verifyUpdateOrdinalsCommand(it, listOf(pUpdated)) }
+            .expectNextMatches { verifyUpdateOrdinalsCommand(it) }
             .expectComplete()
             .verify()
 
