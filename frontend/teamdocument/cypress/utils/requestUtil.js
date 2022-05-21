@@ -43,6 +43,16 @@ const addParagraphByAPI = (author) => {
     return payload;
 }
 
+const lockParagraphByAPI = (author, paragraph) => {
+    requestUrl(backendUrl, [{
+        type: 'UPDATE_LOCK',
+        payload: JSON.stringify(paragraph),
+        sender: author.id
+    }], "POST", 200);
+
+    return paragraph;
+}
+
 const updateParagraphContentByAPI = (author, paragraph, newContent) => {
     let pContent = paragraph.content;
     pContent += newContent;
@@ -70,6 +80,7 @@ export {
     resetDb,
     requestUrl,
     addParagraphByAPI,
+    lockParagraphByAPI,
     updateParagraphContentByAPI,
     removeParagraphByAPI
 }

@@ -1,5 +1,5 @@
 import randomUUID from "../../src/utils/uuid";
-import {addParagraphByAPI, removeParagraphByAPI, updateParagraphContentByAPI} from "./requestUtil";
+import {addParagraphByAPI, lockParagraphByAPI, removeParagraphByAPI, updateParagraphContentByAPI} from "./requestUtil";
 import country_list from "./countries";
 
 class User {
@@ -19,8 +19,8 @@ class User {
         }
     }
 
-    rename() {
-        this.name = randomUUID();
+    rename(name) {
+        this.name = name;
     }
 
     add(paragraph) {
@@ -59,6 +59,16 @@ class User {
     updateParagraphContent(paragraph) {
         let newContent = this.buildRandomSentence();
         let updated = updateParagraphContentByAPI(this.selfToJson(), paragraph, newContent);
+        this.update(updated);
+    }
+
+    updateLock(paragraph, lock = true) {
+        if(lock) {
+            paragraph.lockedBy = this.selfToJson();
+        } else {
+            paragraph.lockedBy = null;
+        }
+        let updated = lockParagraphByAPI(this.selfToJson(), paragraph);
         this.update(updated);
     }
 
