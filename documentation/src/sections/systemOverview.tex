@@ -7,3 +7,9 @@
 
 \subsection{Applikationsprotokoll}
 %Netzwerk Protokolle und Payload Format (Ja wir schicken JSON)
+
+\subsection{Benutzerverwaltung}
+%TODO: Maybe not the right place here?
+Es ist keine persistente Benutzerverwaltung mit Registrationsprozess implementiert.
+Nach erstmaligem Anmelden in der Applikation mit einem globalen Benutzer, wird ein zufälliger Author erstellt.
+Die Daten des Authors werden im Local Storage des Browsers gespeichert, sodass bei erneutem Öffnen der Applikation der gleiche Author wiederverwendet wird.
