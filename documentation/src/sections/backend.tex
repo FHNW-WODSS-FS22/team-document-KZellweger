@@ -113,7 +113,7 @@ Stellt den zuletzt gelöschten Paragraphen wieder her.
 
 \subsection{Komponenten}
 
-\subsubsection{Domäne}
+\subsubsection{Package Domain}
 
 Im Zentrum der Domäne stehen die beiden Klassen DocumentCommand und Document.
 
@@ -173,27 +173,17 @@ Bei CommandType handelt es sich um eine Enum.
 Diese Enum beinhaltet alle Arten von DocumentCommands, welche im System bekannt sind.
 CommandTypes werden als ihr String Wert auf DocumentCommands persistiert.
 
-INITIAL \\
-ADD\_PARAGRAPH \\
-REMOVE\_PARAGRAPH \\
-UPDATE\_PARAGRAPH \\
-UPDATE\_PARAGRAPH\_ORDINALS \\
-UPDATE\_AUTHOR \\
-UPDATE\_LOCK \\
-ADD\_CLIENTS \\
-REMOVE\_CLIENT \\
+%INITIAL \\
+%ADD\_PARAGRAPH \\
+%REMOVE\_PARAGRAPH \\
+%UPDATE\_PARAGRAPH \\
+%UPDATE\_PARAGRAPH\_ORDINALS \\
+%UPDATE\_AUTHOR \\
+%UPDATE\_LOCK \\
+%ADD\_CLIENTS \\
+%REMOVE\_CLIENT \\
 
-\clearpage
-
-\subsubsection{Services}
-
-\begin{figure}[h]
-    \centering
-    \begin{minipage}[b]{0.8\textwidth}
-        \includegraphics[width=\textwidth]{graphics/class-be.drawio}
-        \caption{Klassendiagramm Services}
-    \end{minipage}
-\end{figure}
+\subsubsection{Package Web}
 
 \textbf{AuthenticationController}
 
@@ -220,6 +210,19 @@ Dieser muss einen Stringwert beinhalten, welchen den Author der die Daten anfrä
 Das Laden des Dokuments und das Erstellen der Abonnierung wird an den DocumentService delegiert.
 Als Rückgabetyp wird ''Flux$<$DocumentCommand$>$ verwendet.
 Dadurch ist es möglich den Status des Documents und alle folgenden Änderungen in einem Stream zurückzugeben.
+
+\clearpage
+
+\subsubsection{Package Services}
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{0.8\textwidth}
+        \includegraphics[width=\textwidth]{graphics/class-be.drawio}
+        \caption{Klassendiagramm Services}
+    \end{minipage}
+\end{figure}
+
 
 \textbf{DocumentService}
 
@@ -258,12 +261,12 @@ Die Klasse ActiveSessionService fürt den Zustand der aktiven Nutzer einer Sessi
 Dazu führt die Klasse eine Liste der Identifikatoren aller aktiven Nutzer einer Session.
 Der Service bietet Methoden um die aktiven Benutzer auszulesen, einen neuen Benutzer zu registrieren und einen Benutzer zu entfernen.
 
+\subsubsection{Package Persistence}
+
 \textbf{DocumentCommandRepository}
 
 Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository$<$DocumentCommand, UUID$>$ von Spring.
 Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für DocumentCommands in der angebundenen MongoDB auszuführen.
-
-\clearpage
 
 \subsubsection{Konfiguration}
 
