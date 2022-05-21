@@ -17,7 +17,7 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
-    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(4200000, false)
+    private val sink: Sinks.Many<DocumentCommand> = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(4200000, false)
 
     fun subscribe(id: UUID): Flux<DocumentCommand> {
         val cmd = activeSessionService.register(id)
@@ -61,7 +61,7 @@ class DocumentService(
         repository.findFirstByTypeOrderByCreatedAtDesc(REMOVE_PARAGRAPH)
             .map { Gson().fromJson(it?.payload, UUID::class.java) }
             .flatMap { repository.findFirstByTypeInAndCorrelationIdOrderByCreatedAtDesc(listOf(UPDATE_PARAGRAPH, ADD_PARAGRAPH), it) }
-            .flatMap { processor.toAddCommand(it) }
+            .flatMap { processor.undo(it) }
             .map { process(it) }
             .subscribe()
     }
