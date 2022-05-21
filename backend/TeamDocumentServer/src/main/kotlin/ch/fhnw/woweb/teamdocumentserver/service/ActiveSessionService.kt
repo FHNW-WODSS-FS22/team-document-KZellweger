@@ -9,7 +9,7 @@ import java.util.*
 
 @Service
 class ActiveSessionService(
-    val activeUsers: MutableList<UUID> = mutableListOf()
+    private val activeUsers: MutableList<UUID> = mutableListOf()
 ) {
 
     fun register(id: UUID): DocumentCommand {
