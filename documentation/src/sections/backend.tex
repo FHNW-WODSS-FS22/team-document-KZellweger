@@ -4,6 +4,7 @@
 \subsection{Aufbau}
 
 Der Aufbau der Serverapplikation orientiert sich am Konzept der Onion-Architecture.
+In Onion Architecture wird die Applikation in Layer aufgeteilt.
 
 \begin{figure}[h]
     \centering
@@ -13,12 +14,11 @@ Der Aufbau der Serverapplikation orientiert sich am Konzept der Onion-Architectu
     \end{minipage}
 \end{figure}
 
-In Onion Architecture wird die Applikation in Layer aufgeteilt.
-%\cite{medium-onion}
 Um zu garantieren, dass keine ungewollten Abhängigkeiten zwischen Layern bestehen, können die Layers in eigene Module verpackt werden.
 Dies erhöht jedoch die interne Komplexität der Applikation.
 Die Umsetzung wird aufgrund der geringen Projektgrösse deshalb nicht in unabhängigen Modulen realisiert, sondern über die Package Struktur angedeutet.
-Bei der Implementation wird dennoch konsequent darauf geachtet, die einzelnen Layer so zu halten das diese als eigenständige Module extrahiert werden können.
+
+Bei der Implementation wird dabei konsequent darauf geachtet, die einzelnen Layer so zu halten das diese als eigenständige Module extrahiert werden können.
 Für die Verwaltung der Komponenten der Serverapplikation wird folgende Packagestruktur definiert:
 
 \begin{figure}[h]
