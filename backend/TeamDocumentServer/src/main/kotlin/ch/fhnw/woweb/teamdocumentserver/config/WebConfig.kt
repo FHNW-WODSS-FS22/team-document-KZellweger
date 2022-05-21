@@ -18,7 +18,7 @@ import org.springframework.web.reactive.config.EnableWebFlux
 @EnableWebFlux
 @EnableWebFluxSecurity
 class WebConfig(
-    val properties: TeamDocumentServerProperties
+    private val properties: TeamDocumentServerProperties
 )  {
 
     @Bean
@@ -30,7 +30,6 @@ class WebConfig(
             .build()
         return MapReactiveUserDetailsService(userDetails)
     }
-
 
     @Bean
     fun corsFilter(): CorsWebFilter = CorsWebFilter(

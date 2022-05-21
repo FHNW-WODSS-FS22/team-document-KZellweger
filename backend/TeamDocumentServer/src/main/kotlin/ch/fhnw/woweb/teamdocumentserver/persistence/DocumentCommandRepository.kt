@@ -10,6 +10,9 @@ interface DocumentCommandRepository : ReactiveCrudRepository<DocumentCommand, UU
 
     fun findFirstByTypeOrderByCreatedAtDesc(type: CommandType): Mono<DocumentCommand>
 
-    fun findFirstByTypeInAndCorrelationIdOrderByCreatedAtDesc(type: Collection<CommandType>, correlationId: UUID): Mono<DocumentCommand>
+    fun findFirstByTypeInAndCorrelationIdOrderByCreatedAtDesc(
+        type: Collection<CommandType>,
+        correlationId: UUID
+    ): Mono<DocumentCommand>
 
 }

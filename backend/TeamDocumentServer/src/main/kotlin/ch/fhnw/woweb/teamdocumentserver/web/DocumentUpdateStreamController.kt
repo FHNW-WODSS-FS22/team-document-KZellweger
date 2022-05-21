@@ -13,7 +13,7 @@ import java.util.*
 @RestController
 @RequestMapping("api/v1/document")
 class DocumentUpdateStreamController(
-    val service: DocumentService
+    private val service: DocumentService
 )
 {
     @GetMapping(produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
