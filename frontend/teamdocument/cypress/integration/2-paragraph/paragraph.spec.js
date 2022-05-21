@@ -8,11 +8,11 @@ describe('Paragraph Suite', () => {
         cy.visit('localhost:3000');
         /* ==== Generated with Cypress Studio ==== */
         // Login to the application
-        cy.get(':nth-child(1) > .form-control').clear();
-        cy.get(':nth-child(1) > .form-control').type('user');
-        cy.get(':nth-child(2) > .form-control').clear();
-        cy.get(':nth-child(2) > .form-control').type('1234');
-        cy.get('.btn').click();
+        cy.get('.username').clear();
+        cy.get('.username').type('user');
+        cy.get('.password').clear();
+        cy.get('.password').type('1234');
+        cy.get('.login').click();
         // Needs to wait, else actions in test might be executed before INIT
         cy.wait(1500);
         /* ==== End Cypress Studio ==== */

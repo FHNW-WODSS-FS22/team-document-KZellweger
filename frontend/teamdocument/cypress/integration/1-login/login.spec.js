@@ -9,26 +9,26 @@ describe('Login Suite', () => {
         cy.visit('localhost:3000');
     })
 
-    it('Login to the application', () => {
+    it('Logs into the application', () => {
         /* ==== Generated with Cypress Studio ==== */
-        cy.get(':nth-child(1) > .form-control').clear();
-        cy.get(':nth-child(1) > .form-control').type('user');
-        cy.get(':nth-child(2) > .form-control').clear();
-        cy.get(':nth-child(2) > .form-control').type('1234');
-        cy.get('.btn').click();
+        cy.get('.username').clear();
+        cy.get('.username').type('user');
+        cy.get('.password').clear();
+        cy.get('.password').type('1234');
+        cy.get('.login').click();
         /* ==== End Cypress Studio ==== */
         cy.location().should(loc => {
             expect(loc.pathname).to.equal('/')
         })
     })
 
-    it('Login to the application and logout', () => {
+    it('Logs into the application and logout', () => {
         /* ==== Generated with Cypress Studio ==== */
-        cy.get(':nth-child(1) > .form-control').clear();
-        cy.get(':nth-child(1) > .form-control').type('user');
-        cy.get(':nth-child(2) > .form-control').clear();
-        cy.get(':nth-child(2) > .form-control').type('1234');
-        cy.get('.btn').click();
+        cy.get('.username').clear();
+        cy.get('.username').type('user');
+        cy.get('.password').clear();
+        cy.get('.password').type('1234');
+        cy.get('.login').click();
         cy.get('.logout').click();
         /* ==== End Cypress Studio ==== */
         cy.location().should(loc => {
@@ -36,13 +36,13 @@ describe('Login Suite', () => {
         })
     })
 
-    it('Login with wrong credentials', () => {
+    it('Tries to login with wrong credentials', () => {
         /* ==== Generated with Cypress Studio ==== */
-        cy.get(':nth-child(1) > .form-control').clear();
-        cy.get(':nth-child(1) > .form-control').type('user');
-        cy.get(':nth-child(2) > .form-control').clear();
-        cy.get(':nth-child(2) > .form-control').type('wrongPw');
-        cy.get('.btn').click();
+        cy.get('.username').clear();
+        cy.get('.username').type('user');
+        cy.get('.password').clear();
+        cy.get('.password').type('1234');
+        cy.get('.login').click();
         /* ==== End Cypress Studio ==== */
         cy.location().should(loc => {
             expect(loc.pathname).to.equal('/login')

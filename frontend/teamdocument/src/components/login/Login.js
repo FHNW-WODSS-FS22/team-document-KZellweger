@@ -28,14 +28,14 @@ const Login = () => {
             <form name="form" onSubmit={(event) => handleSubmit(event)}>
                 <div>
                     <label htmlFor="username">Username</label>
-                    <input type="text" className="form-control" name="username" value={user} onChange={(event) => setUser(event.target.value)} />
+                    <input type="text" className="username form-control" name="username" value={user} onChange={(event) => setUser(event.target.value)} />
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <input type="password" className="form-control" name="password" value={pwd} onChange={(event) => setPwd(event.target.value)} />
+                    <input type="password" className="password form-control" name="password" value={pwd} onChange={(event) => setPwd(event.target.value)} />
                 </div>
                 <div className="form-group">
-                    <button className="btn btn-primary">Login</button>
+                    <button className="login btn btn-primary">Login</button>
                 </div>
             </form>
         </div>
