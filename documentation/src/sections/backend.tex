@@ -111,8 +111,9 @@ Stellt den zuletzt gelöschten Paragraphen wieder her.
 
 \subsection{Komponenten}
 
-
 \subsubsection{Domäne}
+
+Im Zentrum der Domäne stehen die beiden Klassen DocumentCommand und Document.
 
 \begin{figure}[h]
     \centering
@@ -121,6 +122,64 @@ Stellt den zuletzt gelöschten Paragraphen wieder her.
         \caption{Klassendiagramm Domain}
     \end{minipage}
 \end{figure}
+
+\textbf{Document}
+
+Eine Instanz der Klasse Document repräsentiert den aktuellen Zustand eines Dokuments.
+Dieser Zustand wird in der Serverapplikation geführt und verwaltet.
+Ein Document besteht im Wesentlichen aus einer Liste von Paragraphs.
+Diese Liste kann mutiert, aber nicht ersetzt werden.
+
+\textbf{Paragraph}
+
+Eine Instanz der Klasse Document repräsentiert einen Abschnitt in einem Dokument.
+Jeder Paragraph wird durch eine UUID identifiziert.
+Ein Paragraph definiert weiter ein Attribut Content welches den Textinhalt des Abschnitts beinhaltet und ein Attribut Ordinal, welches die Position des Abschnitts im Dokument darstellt.
+Weiter ist jeder Paragraph einem Author zugewiesen.
+Letztlich hat ein Paragraph ein Optionales Attribut lockedBy.
+Dieses kann entweder leer (NULL) sein oder einen Author beinhalten.
+Dieses Feld kann von Consumern der API verwendet werden um das bearbeiten eines Paragraphen zu erlauben oder verbieten.
+
+\textbf{Author}
+
+Eine Instanz der Klasse Author repräsentiert einen Benutzer, der an einem Dokument mitarbeitet.
+Jeder Author wird durch eine UUID identifiziert und muss einen Namen definieren.
+Weiter besitzt ein Author ein optionales Attribut image.
+Darin kann die URL zu einem benutzerbild abgespeichert werden
+
+\clearpage
+
+\textbf{DocumentCommand}
+
+Eine Instanz der Klasse DocumentCommand stellt eine Änderung am Zustand einer Document-Instanz dar.
+DocumentCommands werden als einzige Entität, Persistenzschicht abgelegt werden.
+Damit DocumentCommands eindeutig identifiziert werden können, beinhaltet jede Instanz ein Attribut vom Type UUID.
+Diese id wird auch als Identifikator in der MongoDB verwendet.
+
+Die Änderungen welche ein DocumentCommand darstellt, werden über die Attribute payload und type definiert.
+Die payload hat den Typ String und beinhaltet JSON-Serialisierten des neuen Zustands, er Änderung die vorgenommen werden soll.
+Das Feld type beinhaltet einen Wert aus der Enum CommandType.
+Dieser Wert kann in den Domänenservices verwendet werden um die Payload korrekt zu Deserialisieren und die nötigen Änderungen am Document vorzunehmen.
+
+Das Optionale Feld correlationId kann entweder NULL oder eine UUID beinhalten.
+Eine allfällige UUID zeigt immer auf die Id eines anderen DocumentCommands, welcher mit dem aktuellen Command zusammenhängt.
+Dadurch wird es möglich die Identifkation der Payload eines Commands zu verwenden, ohne die Payload jedesmal deserialisieren zu müsen.
+
+\textbf{CommandType}
+
+Bei CommandType handelt es sich um eine Enum.
+Diese Enum beinhaltet alle Arten von DocumentCommands, welche im System bekannt sind.
+CommandTypes werden als ihr String Wert auf DocumentCommands persistiert.
+
+INITIAL \\
+ADD\_PARAGRAPH \\
+REMOVE\_PARAGRAPH \\
+UPDATE\_PARAGRAPH \\
+UPDATE\_PARAGRAPH\_ORDINALS \\
+UPDATE\_AUTHOR \\
+UPDATE\_LOCK \\
+ADD\_CLIENTS \\
+REMOVE\_CLIENT \\
 
 \clearpage
 
@@ -133,6 +192,78 @@ Stellt den zuletzt gelöschten Paragraphen wieder her.
         \caption{Klassendiagramm Services}
     \end{minipage}
 \end{figure}
+
+\textbf{AuthenticationController}
+
+Die Klasse AutenticationController implementiert einen RestController.
+Dieser stelt einen einzelnen GET Endpunkt zur Verfügung, über welchen sich Benutzer mittels Basic Authentication anmelden können.
+
+\textbf{CommandController}
+
+Die Klasse CommandController implementiert einen RestController.
+Dieser Controller bietet zwei POST Endpunkte zur Verfügung.
+Über den ersten Endpoint kann eine Liste von DocumentCommands an den Server gesendet werden.
+Der Endpunkt übergibt diese Liste von Commands an den DocumentService.
+Diese wenden die Änderungen am Zustand des Dokuments an und leiten die Änderungen an andere Teilnehmer weiter.
+Über den zweiten Endpunkt kann ein gelöschter Paragraph wiederhergestellt werden.
+Die entsprechende Fachlogik wird an den DocumentSerivce delegiert.
+%TODO: Generic undo description?
+
+\textbf{DocumentStreamUpdateController}
+
+Die Klasse DocumentStreamUpdateController implementiert einen RestController.
+Dieser Controller ermöglicht es, den aktuellen Zustand eines Dokumentes zu laden und Änderungen am Dokument zu abonnieren.
+Der Endpunkt, welcher dazu zur Verfügung steht erwartet, dass der Custom Header ''X-ClientId'' gesetht ist.
+Dieser muss einen Stringwert beinhalten, welchen den Author der die Daten anfrägt identifiziert.
+Das Laden des Dokuments und das Erstellen der Abonnierung wird an den DocumentService delegiert.
+Als Rückgabetyp wird ''Flux$<$DocumentCommand$>$ verwendet.
+Dadurch ist es möglich den Status des Documents und alle folgenden Änderungen in einem Stream zurückzugeben.
+
+\textbf{DocumentService}
+
+Die Klasse DocumentService ist dafür Verantwortlich erhaltene Anfragen für Dokumente und Änderungen an Dokumenten zu verarbeiten.
+Sie delegiert die entsprechende Fachlogik Klassen ActiveSessionService, DocumentProcessor und DocumentCommandrepository.
+
+Die Methode process erlaubt es, eine Liste von DocumentCommands zu verarbeiten.
+Dabei wird die Verarbeitung an den DocumentProcessor delegiert.
+Dieser wendet Änderungen an und löst Konflikte auf.
+Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
+Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung.
+Anschliesend werden die Persistierten Commands über den Sink veröffentlicht.
+
+Die Methode subscribe erlaubt es, einen Stream des aktuellen Zustands des Dokuments und aller künftigen Änderungen an einem Dokument anzufragen.
+Diese Informationen werden aus drei Quellen zusammengetragen.
+Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
+Anschliessend wird eine Liste aller aktuellen Authoren des Dokuments aus dem ActiveSessionService geladen.
+Letztlich wird eine Subscription auf den Sink erstellt.
+Diese drei Quellen werden zusammengefasst aus der Methode zurückgegeben.
+Um sicherzustellen, dass die Liste der aktiven Nutzer aktuell ist, wird zudem beim Öffnen der Subscription eine Registrierung beim ActiveSessionService durchgeführt.
+Diese Registrierung wird beim Schliessen der Subscription wieder entfernt.
+
+\textbf{DocumentProcessor}
+
+Die Klasse DocumentProcessor führt den Zustand des Dokuments, welches mit der Applikation verwaltet wird.
+Er ist dafür Verantwortlich, Änderungen an diesem Dokument vorzunehmen.
+Dazu besitzt Sie ein Attribut document vom gleichnamigen Typ.
+Über die Methode process kann ein einzelner DocumentCommand angewendet werden.
+Der Processor verarbeitet denm Command anhand des gesetzten CommandTypes.
+Dabei muss er allfällige Konflikte erkennen und auflösen.
+Nach der Verarbeitung des Commands werden alle Änderungen und Konfliktlösungen als DocumentCommands zurückgegeben.
+
+\textbf{ActiveSessionService}
+
+Die Klasse ActiveSessionService fürt den Zustand der aktiven Nutzer einer Session.
+Dazu führt die Klasse eine Liste der Identifikatoren aller aktiven Nutzer einer Session.
+Der Service bietet Methoden um die aktiven Benutzer auszulesen, einen neuen Benutzer zu registrieren und einen Benutzer zu entfernen.
+
+\textbf{DocumentCommandRepository}
+
+Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository$<$DocumentCommand, UUID$>$ von Spring.
+Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für DocumentCommands in der angebundenen MongoDB auszuführen.
+
+\clearpage
+
+\subsubsection{Konfiguration}
 
 \clearpage
 

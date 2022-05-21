@@ -17,7 +17,7 @@ class DocumentService(
     private val repository: DocumentCommandRepository
 ) {
 
-    val sink = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(4200000, false)
+    val sink: Sinks.Many<DocumentCommand> = Sinks.many().multicast().onBackpressureBuffer<DocumentCommand>(4200000, false)
 
     fun subscribe(id: UUID): Flux<DocumentCommand> {
         val cmd = activeSessionService.register(id)
