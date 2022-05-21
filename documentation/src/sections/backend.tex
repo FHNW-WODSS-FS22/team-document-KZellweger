@@ -265,6 +265,28 @@ Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für 
 
 \subsubsection{Konfiguration}
 
+\textbf{Spring}
+
+Alle Klassen im Package "Service" sind mit der Spring-Boot-Annotation ''@Service'' versehen.
+Sie können damit automatisch von Spring-Boot instanziert werden und stehen Sie in Spring Beans zur Verfügung und können über Constructor-Injection verwendet werden.
+
+Alle Klassen im Package "web" sind mit der Spring-Boot-Annotation ''@RestController'' versehen.
+Sie können damit automatisch von Spring-Boot instanziert werden.
+
+\textbf{application.yml}
+
+Die Datei application.yml beinhaltet die konfigurierbaren Werte der Serverapplikation.
+Dies beinhaltet die Konfiguration der angebundenen MongoDB, Referenzen zu Umgebungsvariablen mit User Credentials und Logging Konfiguration.
+
+\textbf{TeamDocumentServerProperties}
+
+Die Konfigurationsklasse TeamDocumentServerProperties ist mit der Annotation ''@ConfigurationProperties(prefix = "teamdocument")'' versehen.
+Sie kann wo nötig in den Serviceklassen verwendet werden, um auf Werte aus dem application.yaml zuzugreifen.
+
+\textbf{WebConfig}
+
+Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
+
 \clearpage
 
 \subsection{Sequenz}

@@ -39,7 +39,6 @@ class WebConfig(
                 CorsConfiguration().apply {
                     allowCredentials = true
                     allowedOriginPatterns = properties.allowedOrigins
-//                    allowedOriginPatterns = mutableListOf("http://localhost:3000","http://localhost:3000/**", "https://test-pebs.ch", "https://test-pebs.ch/**")
                     allowedHeaders = mutableListOf("*")
                     allowedMethods = mutableListOf("*")
                 }
