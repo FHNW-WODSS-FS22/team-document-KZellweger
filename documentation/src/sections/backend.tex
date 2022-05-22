@@ -1,5 +1,4 @@
 \section{Backend}
-%TODO: @Joshua
 
 \subsection{Aufbau}
 
@@ -235,20 +234,8 @@ Die Klasse DocumentService ist dafür Verantwortlich erhaltene Anfragen für Dok
 Sie delegiert die entsprechende Fachlogik Klassen ActiveSessionService, DocumentProcessor und DocumentCommandrepository.
 
 Die Methode process erlaubt es, eine Liste von DocumentCommands zu verarbeiten.
-Dabei wird die Verarbeitung an den DocumentProcessor delegiert.
-Dieser wendet Änderungen an und löst Konflikte auf.
-Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
-Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung.
-Anschliesend werden die Persistierten Commands über den Sink veröffentlicht.
-
 Die Methode subscribe erlaubt es, einen Stream des aktuellen Zustands des Dokuments und aller künftigen Änderungen an einem Dokument anzufragen.
-Diese Informationen werden aus drei Quellen zusammengetragen.
-Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
-Anschliessend wird eine Liste aller aktuellen Authoren des Dokuments aus dem ActiveSessionService geladen.
-Letztlich wird eine Subscription auf den Sink erstellt.
-Diese drei Quellen werden zusammengefasst aus der Methode zurückgegeben.
-Um sicherzustellen, dass die Liste der aktiven Nutzer aktuell ist, wird zudem beim Öffnen der Subscription eine Registrierung beim ActiveSessionService durchgeführt.
-Diese Registrierung wird beim Schliessen der Subscription wieder entfernt.
+Beide Abläufe werden in Kapitel 5.4 beschrieben.
 
 \textbf{DocumentProcessor}
 
@@ -259,7 +246,7 @@ Dazu besitzt Sie ein Attribut document vom gleichnamigen Typ.
 Der Processor verarbeitet denm Command anhand des gesetzten CommandTypes.
 Dabei muss er allfällige Konflikte erkennen und auflösen.
 Nach der Verarbeitung des Commands werden alle Änderungen und Konfliktlösungen als DocumentCommands zurückgegeben.
-
+\clearpage
 \textbf{ActiveSessionService}
 
 Die Klasse ActiveSessionService fürt den Zustand der aktiven Nutzer einer Session.
@@ -270,7 +257,7 @@ Der Service bietet Methoden um die aktiven Benutzer auszulesen, einen neuen Benu
 
 \textbf{DocumentCommandRepository}
 
-Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository$<$DocumentCommand, UUID$>$ von Spring.
+Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository von Spring.
 Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für DocumentCommands in der angebundenen MongoDB auszuführen.
 
 \subsubsection{Konfiguration}
@@ -299,9 +286,9 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
 
 \clearpage
 
-\subsection{Sequenz}
+\subsection{Abläufe}
 
-\subsubsection{Subscription Öffnen und Schliessen}
+\subsubsection{Dokument laden und Änderungen abonnieren}
 
 \begin{figure}[h]
     \centering
@@ -311,9 +298,32 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
     \end{minipage}
 \end{figure}
 
-\clearpage
+Die Komponente DocumentUpdateStreamController erlaubt es ein Dokument zu laden und Änderungen an diesem Dokument zu abonnieren.
+Dazu bietet der RestController einen Endpunkt, welcher den ein Resultat vom Typ Flux$<$DocumentCommand$>$ zurückgibt.
+Nachdem eine Anfrage beim Controller eingegangen ist, delegiert dieser die Erstellung des Flux an den DocumentService.
+Dieser registriert den Client hinter der Subscription beim ActiveSessionService und trägt anschliessend Informationen aus drei Quellen zusammen.
+Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
+Anschliessend wird eine Liste aller aktiven Clients des Dokuments aus dem ActiveSessionService geladen.
+Letztlich wird eine Subscription für Änderungen am Dokument erstellt.
+Der DocumentService führt dazu eine Instanzvariable vom Typ Sink.
+Alle Änderungen werden nach der Anwendung in diesen Sink geschrieben.
+Eine Subscription auf diesem Sink beinhaltet damit alle Änderungen, welche vorgenommen wurden.
+Die Informationen zum initialen Stand des Dokuments, aktiven Clients und die Subscription auf Änderungen werden anschliessend in einem einzelnen Flux zusammengefasst und zurückgegeben.
+Nachdem der Flux geschlossen wird, wird die Registrierung des aktiven Benutzers im ActiveSessionService wieder entfernt.
 
-\subsubsection{DocumentCommand verarbeiten}
+\subsubsection{Änderungen verarbeiten}
+
+Die Komponente CommandController erlaubt es Änderungen an einem Dokument vorzunehmen und zu persistieren.
+Der Controller bietet dazu einen HTTP-Endpunkt, über welchen ein JSON-Serialisierter DocumentCommand übergeben werden kann.
+Ein DocumentCommand definiert unter anderem einen type, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
+Die Payload ist wiederum ein JSON-Serialisiertes Objekt.
+Die Verarbeitung eines DokumentCommands wird vom Controller an den DocumentService delegiert.
+Dieser übergibt den Command wiederum an den DocumentProcessor.
+Dieser wendet Änderungen an und löst Konflikte auf.
+Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
+Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung in der Datenbank .
+Anschliessend werden die persistierten Commands über die Instanzvariable vom Typ Sink veröffentlicht.
+Registrierte Clients haben eine Subscription auf diesen Sink und werden so über die Änderungen informiert.
 
 \begin{figure}[h]
     \centering
@@ -322,6 +332,21 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
         \caption{Sequenzdiagramm Command verarbeiten}
     \end{minipage}
 \end{figure}
+
+\subsubsection{Fehlerbehandlung}
+
+Fachliche Fehler, die während der Verarbeitung von Änderungen an einem Dokument auftreten, werden innerhalb des DocumentProcessors behandelt.
+Dabei werden immer zusätzliche Änderungen generiert, welche Konflikte lösen.
+Die Verarbeitung wird nie durch das Werfen von Exceptions unterbrochen.
+Es ist möglich, dass die Verarbeitung einer Änderung oder das Veröffentlichen von Änderungen wegen einem technischen Fehler fehlschlägt.
+
+Wenn eine Exception beim Verarbeiten einer Änderung auftritt, wird die Verarbeitung abgebrochen und die Exception weiter geworfen.
+Exceptions werden in den Controller Klassen abgefangen.
+Im Fehlerfall wird dort eine ResponseEntity mit Statuscode 500 zurückgegeben.
+
+Wenn eine Exception beim Veröffentlichen einer Änderung auftritt, wird die Subscription geschlossen.
+Dadurch wird die Verbindung des betroffenen Clients getrennt.
+Es liegt in der Verwantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
 
 \clearpage
 
@@ -420,24 +445,5 @@ Er wird aber zurückgegeben, damit er an alle anderen Clients weitergegeben werd
 Ein DocumentCommand mit Typ \textbf{REMOVE\_CLIENT} teilt mit, dass die Verbindung eines Bearbeiters getrennt wurde.
 Bei der Verarbeitung dieses Commands werden alle Paragraphen, welche durch diesen Bearbeiter gesperrt waren entsperrt.
 Dadurch wird sichergestellt, dass Paragraphen nicht gesperrt sind wenn ein Benutzer den Client beendet oder die Verbindung abbricht.
-
-\clearpage
-
-\subsubsection{Fehlerbehandlung}
-
-Fachliche Fehler, die während der Verarbeitung von Änderungen an einem Dokument auftreten, werden innerhalb des DocumentProcessors behandelt.
-Dabei werden immer zusätzliche Änderungen generiert, welche Konflikte lösen.
-Die Verarbeitung wird nie durch das Werfen von Exceptions unterbrochen.
-Es ist möglich, dass die Verarbeitung einer Änderung oder das Veröffentlichen von Änderungen wegen einem technischen Fehler fehlschlägt.
-
-Wenn eine Exception beim Verarbeiten einer Änderung auftritt, wird die Verarbeitung abgebrochen und die Exception weiter geworfen.
-Exceptions werden in den Controller Klassen abgefangen.
-Im Fehlerfall wird dort eine ResponseEntity mit Statuscode 500 zurückgegeben.
-
-Wenn eine Exception beim Veröffentlichen einer Änderung auftritt, wird die Subscription geschlossen.
-Dadurch wird die Verbindung des betroffenen Clients getrennt.
-Es liegt in der Verwantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
-
-
 
 \clearpage
