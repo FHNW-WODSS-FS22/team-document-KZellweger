@@ -1,10 +1,10 @@
 import './Paragraph.css';
-import React, {useRef} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../../hooks/messages.hook";
 import RemoveParagraphButton from "../RemoveParagraphButton";
+import useDebounceMessages from "../../../hooks/useDebounceMessages.hook";
+import useSendMessagesHook from "../../../utils/sendMessagesService";
 
-// TODO
 /* eslint-disable react/prop-types */
 const Paragraph = ({id}) => {
 
@@ -13,22 +13,36 @@ const Paragraph = ({id}) => {
     const paragraph = useSelector(state => state.paragraphs.find(p => id === p.id));
     const paragraphs = useSelector(state => state.paragraphs);
     const dispatch = useDispatch()
+
+    const sendMessages = useSendMessagesHook(dispatch)
+
+    const [message, setMessage] = useState([])
+    const accumulatedMessages = useDebounceMessages(message,150)
     const maxOrdinal = useSelector(state => {
         const ordinals =  state.paragraphs.map(p => p.ordinal)
         return Math.max(...ordinals)
     })
 
+    useEffect(() => {
+        if(typeof accumulatedMessages!== undefined && Array.isArray(accumulatedMessages) && accumulatedMessages.length > 0){
+            sendMessages(accumulatedMessages)
+            setMessage([]);
+        }
+    },[accumulatedMessages])
+
     const handleContentChange = e => {
         e.preventDefault()
         const payload =  { ...paragraph, content: e.target.value }
         dispatch({ type: 'UPDATE_PARAGRAPH', payload })
-
-        sendMessage({
+        const newMessage = {
             type: 'UPDATE_PARAGRAPH',
             payload: JSON.stringify(payload),
-            sender: author.id
-        });
+            sender: author.id,
+            correlationId: paragraph.id
+        }
+        setMessage([...message, newMessage])
     }
+
     const handleOrdinalChange = e => {
         e.preventDefault()
         if (isNaN(e.target.valueAsNumber)) {
@@ -41,25 +55,23 @@ const Paragraph = ({id}) => {
             payload.push({ ...sibling, ordinal: paragraph.ordinal })
         }
         dispatch({type: 'UPDATE_PARAGRAPH_ORDINALS', payload})
-        sendMessage({
+        sendMessages([{
             type: 'UPDATE_PARAGRAPH_ORDINALS',
             payload: JSON.stringify(payload),
             sender: author.id
-        });
+        }])
     }
     const handleClickInside = e => {
         e.preventDefault()
         // Paragraph is lockable if no one is holding the lock
         if(paragraph.lockedBy === undefined || paragraph.lockedBy === null) {
-            const payload =  { ...paragraph, lockedBy: author.id }
+            const payload =  { ...paragraph, lockedBy: author }
             dispatch({ type: 'UPDATE_LOCK', payload })
-            console.log("locking")
-
-            sendMessage({
+            sendMessages([{
                 type: 'UPDATE_LOCK',
                 payload: JSON.stringify(payload),
                 sender: author.id
-            });
+            }]);
         }
     }
 
@@ -67,20 +79,28 @@ const Paragraph = ({id}) => {
      * Alert if clicked on outside of element
      */
     const handleClickOutside = e => {
-        if(paragraph.lockedBy === author.id) {
+        e.preventDefault()
+        if(isLockedByLocalAuthor()) {
             const payload =  { ...paragraph, lockedBy: null }
             dispatch({ type: 'UPDATE_LOCK', payload })
-
-            sendMessage({
+            sendMessages([{
                 type: 'UPDATE_LOCK',
                 payload: JSON.stringify(payload),
                 sender: author.id
-            });
+            }]);
         }
     }
 
+    const isLockedByLocalAuthor = () => {
+        return paragraph.lockedBy !== undefined && paragraph.lockedBy !== null && paragraph.lockedBy.id === author.id;
+    }
+
+    const isLocked = () => {
+        return !(paragraph.lockedBy === undefined || paragraph.lockedBy === null)
+    }
+
     return (
-        <div tabIndex={paragraph.ordinal} className={`paragraph divider-color ${paragraph.lockedBy === author.id ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
+        <div tabIndex={paragraph.ordinal} className={`paragraph divider-color ${isLockedByLocalAuthor() ? "editing" : "locked"}`} onFocus={handleClickInside} onBlur={handleClickOutside} >
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
@@ -88,16 +108,16 @@ const Paragraph = ({id}) => {
                 </div>
                 <div>
                     <label>Locked By: </label>
-                    <p>{paragraph.lockedBy}</p>
+                    <p>{isLocked() ? paragraph.lockedBy.name : ''}</p>
                 </div>
                 <div>
-                    <input value={paragraph.ordinal} type="number" disabled={error} readOnly={paragraph.lockedBy !== author.id} onChange={handleOrdinalChange}
+                    <input value={paragraph.ordinal} type="number" disabled={error} readOnly={isLocked() && !isLockedByLocalAuthor()} onChange={handleOrdinalChange}
                            min="1" max={maxOrdinal} />
-                    <RemoveParagraphButton id={paragraph.id} isAllowedToRemove={paragraph.lockedBy === author.id}/>
+                    <RemoveParagraphButton id={paragraph.id} isAllowedToRemove={isLockedByLocalAuthor()}/>
                 </div>
             </div>
             <div className="paragraphContent">
-                <textarea value={paragraph.content} disabled={error} readOnly={paragraph.lockedBy !== author.id} onChange={handleContentChange} />
+                <textarea value={paragraph.content} disabled={error} readOnly={isLocked() && !isLockedByLocalAuthor()} onChange={handleContentChange} />
             </div>
         </div>
     );

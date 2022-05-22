@@ -23,11 +23,12 @@ const initialState = (authorId, authorName, image) => {
             name: authorName,
             image: image
         },
+        otherAuthors:[],
         paragraphs: [],
         messages: [],
         error: {
             isPresent: false,
-            message: true
+            message: ""
         }
     }
 }

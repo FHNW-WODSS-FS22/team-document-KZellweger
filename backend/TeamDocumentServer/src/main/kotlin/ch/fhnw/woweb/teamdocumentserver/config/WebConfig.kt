@@ -1,6 +1,5 @@
 package ch.fhnw.woweb.teamdocumentserver.config
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -15,31 +14,22 @@ import org.springframework.web.cors.reactive.CorsWebFilter
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 import org.springframework.web.reactive.config.EnableWebFlux
 
-
 @Configuration
 @EnableWebFlux
 @EnableWebFluxSecurity
-class WebConfig {
-
-    @Value("\${teamdocument.userName}")
-    private val userName: String = ""
-
-    @Value("\${teamdocument.userPassword}")
-    private val userPassword: String = ""
-
-    @Value("\${teamdocument.allowedOrigins}")
-    private val allowedOrigins: List<String> = mutableListOf()
+class WebConfig(
+    private val properties: TeamDocumentServerProperties
+)  {
 
     @Bean
     fun userDetailsService(): ReactiveUserDetailsService {
         val userDetails = User.withDefaultPasswordEncoder()
-            .username(userName)
-            .password(userPassword)
+            .username(properties.userName)
+            .password(properties.userPassword)
             .roles("USER")
             .build()
         return MapReactiveUserDetailsService(userDetails)
     }
-
 
     @Bean
     fun corsFilter(): CorsWebFilter = CorsWebFilter(
@@ -47,9 +37,7 @@ class WebConfig {
             registerCorsConfiguration("/**",
                 CorsConfiguration().apply {
                     allowCredentials = true
-                    // allowedOriginPatterns = mutableListOf("*") works on localhost with dev profile
-                    // TODO: It somewhat makes a difference if this list is taken from app.yaml ?????????????
-                    allowedOriginPatterns = mutableListOf("http://localhost:3000","http://localhost:3000/**", "https://test-pebs.ch", "https://test-pebs.ch/**")
+                    allowedOriginPatterns = properties.allowedOrigins
                     allowedHeaders = mutableListOf("*")
                     allowedMethods = mutableListOf("*")
                 }
