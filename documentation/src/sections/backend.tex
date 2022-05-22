@@ -359,7 +359,7 @@ Ein DocumentCommand mit Typ \textbf{ADD\_PARAGRAPH} fügt einen neuen Abschnitt 
 Er beinhaltet als Payload einen einzelnen Paragraphen.
 Dieser Paragraph wird im DocumentProcessor deserialisiert und der Liste von Paragraphen im Dokument hinzugefügt.
 Es ist möglich, gleichzeitig zwei Commands eingehen, welche an derselben Stelle im Dokument einen Paragraphen einfügen möchten.
-Deshalb wird hier sichergestellt, dass die Ordinal-Nummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
+Deshalb wird hier sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
 Während diese Korrektur vorgenommen wird, dürfen keine anderen Änderungen möglich sein.
 Deshalb wird die Verarbeitung eines ADD\_PARAGRAPH Commands mit dem ReentrantLock versehen.
 Nach der Verarbeitung werden der ADD\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS Command zurückgegeben, damit Sie veröffentlicht werden können.
@@ -369,9 +369,9 @@ Ein beinhaltet als Payload die UUID, des zu entfernenden Abschnitts.
 Bei der Verarbeitung wird der Abschnitt mit der gegebenen Id entfernt.
 Ist der Abschnitt bereits entfernt, wird kein Fehler geworfen.
 Nachdem ein Paragraph entfernt wurde, muss sichergestellt werden, dass es keine Lücke in den Ordinal Nummern der Paragraphen gibt.
-Deshalb wird auch hier sichergetellt, dass die Ordinal-Nummern aller Paragraphen korrekt sind.
+Deshalb wird auch hier sichergetellt, dass die Ordinalnummern aller Paragraphen korrekt sind.
 Anschliessend werden die REMOVE\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS zurückgegeben.
-Um sicherzustellen, dass die Ordinal-Nummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
+Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
 
 Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH} aktualisiert den Textinhalt eines Abschnitts.
 Er beinhaltet als Payload einen einzelnen Paragraphen.
@@ -383,12 +383,12 @@ Es ist möglich, dass sich das Sperren eines Pargraphen von zwei Benutzern über
 Am Ende darf aber immer nur ein Benutzer den Paragraphen gesperrt haben.
 In diesem Fall ist es das gewünschte Verhalten, dass die Änderungen dieses Benutzers alle anderen Änderungen am selben Abschnitt überschreiben. 
 
-Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH\_ORDINALS} aktualisiert die Ordinal-Nummern von Abschnitten.
+Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH\_ORDINALS} aktualisiert die Ordinalnummern von Abschnitten.
 Er beinhaltet als Payload eine Liste von Paragraphen.
-Bei der Verarbeitung dieses Commands werden die Ordinal-Nummern aller Abschnitte mit den Ordinal-Nummern aus der Payload überschrieben.
-Anschliessend wird sichergestellt, dass die Ordinal-Nummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
+Bei der Verarbeitung dieses Commands werden die Ordinalnummern aller Abschnitte mit den Ordinalnummern aus der Payload überschrieben.
+Anschliessend wird sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
 Es werden darauf der erhaltenen Command und allfällige Commands zur Konfliktlösung zurückgegeben.
-Um sicherzustellen, dass die Ordinal-Nummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
+Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
 
 Ein DocumentCommand mit Typ \textbf{UPDATE\_AUTHOR} aktualisiert den Namen eines Authors, der das Dokument bearbeitet.
 Er beinhaltet als Payload eine Author-Instanz.
