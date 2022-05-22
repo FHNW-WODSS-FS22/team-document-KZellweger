@@ -59,10 +59,9 @@ Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle die drei Bere
 
 \subsubsection{API Authentication}
 
-Macht Authentifizierung
-
 \begin{tabbing}
 Left \= Middle \= Right \= Right \kill
+Beschreibung:  \> \> \> Authentifizierung mit Basic Auth\\
 Endpunkt:  \> \> \> /api/v1/authentication\\
 Methode \>  \> \> GET\\
 Headers:  \> \>   \> Authentication: Basic \\
@@ -72,10 +71,9 @@ Response Body:  \> \>  \> application/json \\
 
 \subsubsection{API Document}
 
-Liefert den Initialen Status und Updates
-
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Dokument laden und Updates abonnieren\\
     Endpunkt:  \> \> \> api/v1/document\\
     Methode \>  \> \> GET\\
     Headers:  \> \>   \> Authentication: Basic\\
@@ -87,10 +85,9 @@ Liefert den Initialen Status und Updates
 
 \subsubsection{API Message}
 
-Verarbeitet Updates
-
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Änderung an Dokument vornehmen\\
     Endpunkt:  \> \> \> /api/v1/message\\
     Methode \>  \> \> POST\\
     Headers:  \> \>   \> Authentication: Basic\\
@@ -99,12 +96,20 @@ Verarbeitet Updates
     Response Code:  \> \>  \> 200, 401 oder 500 \\
 \end{tabbing}
 
-Stellt den zuletzt gelöschten Paragraphen wieder her.
+\begin{tabbing}
+    Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Zuletzt gelöschten Paragraphen wiederherstellen \\
+    Endpunkt:  \> \> \> /api/v1/message/restore\\
+    Methode \>  \> \> POST\\
+    Headers:  \> \>   \> Authentication: Basic\\
+    Response Code:  \> \>  \> 200, 401 oder 500 \\
+\end{tabbing}
 
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Dokument zurücksetzen \\
     Endpunkt:  \> \> \> /api/v1/message/restore\\
-    Methode \>  \> \> POST\\
+    Methode \>  \> \> DELETE\\
     Headers:  \> \>   \> Authentication: Basic\\
     Response Code:  \> \>  \> 200, 401 oder 500 \\
 \end{tabbing}
@@ -420,6 +425,19 @@ Dadurch wird sichergestellt, dass Paragraphen nicht gesperrt sind wenn ein Benut
 
 \subsubsection{Fehlerbehandlung}
 
-Throw and forget
+Fachliche Fehler, die während der Verarbeitung von Änderungen an einem Dokument auftreten, werden innerhalb des DocumentProcessors behandelt.
+Dabei werden immer zusätzliche Änderungen generiert, welche Konflikte lösen.
+Die Verarbeitung wird nie durch das Werfen von Exceptions unterbrochen.
+Es ist möglich, dass die Verarbeitung einer Änderung oder das Veröffentlichen von Änderungen wegen einem technischen Fehler fehlschlägt.
+
+Wenn eine Exception beim Verarbeiten einer Änderung auftritt, wird die Verarbeitung abgebrochen und die Exception weiter geworfen.
+Exceptions werden in den Controller Klassen abgefangen.
+Im Fehlerfall wird dort eine ResponseEntity mit Statuscode 500 zurückgegeben.
+
+Wenn eine Exception beim Veröffentlichen einer Änderung auftritt, wird die Subscription geschlossen.
+Dadurch wird die Verbindung des betroffenen Clients getrennt.
+Es liegt in der Verwantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
+
+
 
 \clearpage
