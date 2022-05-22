@@ -21,10 +21,14 @@ const paragraph = {
 }
 
 describe('Test Paragraph', () => {
-    it('Renders a paragraph', () => {
-        const store = createStore(reducer, initialState(unknownAuthor.id, unknownAuthor.name, unknownAuthor.image) , applyMiddleware(ReduxThunk))
-        store.dispatch({ type: 'ADD_PARAGRAPH', paragraph });
+    let store = undefined;
 
+    beforeEach(() => {
+        store = createStore(reducer, initialState(unknownAuthor.id, unknownAuthor.name, unknownAuthor.image) , applyMiddleware(ReduxThunk))
+        store.dispatch({ type: 'ADD_PARAGRAPH', paragraph });
+    })
+
+    it('Renders a paragraph', () => {
         render(
             <Provider store={store}>
                 <Paragraph id={paragraph.id}/>
