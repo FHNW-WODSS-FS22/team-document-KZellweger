@@ -93,7 +93,7 @@ class DocumentProcessor(
         document.paragraphs
             .find { it.id == paragraphPayload.id }
             ?.content = paragraphPayload.content
-        return Flux.merge(just(updateParagraphCommand))
+        return just(updateParagraphCommand)
     }
 
     private fun updateParagraphOrdinals(updateOrdinalsCommand: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
