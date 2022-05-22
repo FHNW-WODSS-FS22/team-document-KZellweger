@@ -77,7 +77,7 @@ describe('Stress suite', () => {
         cy.get('.paragraphs').children('div').should('have.length', 0);
     })
 
-    it.only('Can edit paragraphs under stress', () => {
+    it('Can edit paragraphs under stress', () => {
         add();
         let n = 5;
         executeNActionsPerUser(n, doNothing);

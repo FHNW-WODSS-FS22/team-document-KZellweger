@@ -3,7 +3,8 @@ import randomUUID from "../../src/utils/uuid";
 const backendUrl = "localhost:8080/api/v1/message"
 
 const resetDb = () => {
-    requestUrl(backendUrl, {}, "DELETE", 204)
+    let url = `${backendUrl}/reset`
+    requestUrl(url, {}, "DELETE", 204)
 }
 
 const requestUrl = (url = backendUrl, body = {}, method = "GET", expectedResponseCode) => {
