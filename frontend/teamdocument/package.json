@@ -6,7 +6,12 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "babel-eslint": "^10.1.0",
     "cypress": "^9.6.1",
+    "eslint": "^8.16.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-react": "^7.30.0",
     "event-source-polyfill": "^1.0.26",
     "loadash": "^1.0.0",
     "react": "^17.0.2",
@@ -25,7 +30,10 @@
     "build": "react-scripts build",
     "e2e": "yarn run cypress open",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext js,jsx",
+    "lint:fix": "eslint . --ext js,jsx --fix"
+
   },
   "eslintConfig": {
     "extends": [
