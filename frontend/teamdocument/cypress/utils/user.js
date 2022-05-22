@@ -29,7 +29,6 @@ class User {
 
     addParagraph() {
         this.add(addParagraphByAPI(this.selfToJson()));
-        console.log("Added new paragraph")
     }
 
     selectRandomWord() {
@@ -52,7 +51,6 @@ class User {
     update(paragraph) {
         for(let i = 0; i < this.paragraphs.length - 1; i++) {
             if (this.paragraphs[i].id === paragraph.id) this.paragraphs[i] = paragraph;
-            console.log("Updated paragraph: ", paragraph)
         }
     }
 
@@ -75,22 +73,39 @@ class User {
     remove(paragraph) {
         for(let i = 0; i < this.paragraphs.length - 1; i++) {
             if (this.paragraphs[i].id === paragraph.id) this.paragraphs.splice(i, 1);
-            console.log("Removed paragraph")
         }
     }
 
-    removeParagraph() {
-        let toRemove = this.selectRandomParagraph();
-        removeParagraphByAPI(this.selfToJson(), toRemove);
-        this.remove(toRemove);
+    removeParagraph(paragraph) {
+        removeParagraphByAPI(this.selfToJson(), paragraph.id);
+        this.remove(paragraph);
     }
 
     selectRandomParagraph() {
+        if(this.paragraphs.length === 0) {
+            this.addParagraph();
+        }
         return this.paragraphs[Math.floor(Math.random() * this.paragraphs.length)];
     }
 
-    randomizeUserBehaviour() {
+    randomUserBehaviour() {
+        const randomAction = Math.floor(Math.random() * 4);
+        let p = this.selectRandomParagraph();
 
+        switch (randomAction) {
+            case 0:
+                this.addParagraph();
+                break;
+            case 1:
+                this.updateParagraphContent(p);
+                break;
+            case 2:
+                this.removeParagraph(p);
+                break;
+            case 3:
+                this.updateLock(p, p.lockedBy === null ? this.selfToJson() : null);
+                break;
+        }
     }
 }
 

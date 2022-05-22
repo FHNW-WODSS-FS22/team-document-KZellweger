@@ -23,7 +23,7 @@ const RemoveParagraphButton = ({id, isAllowedToRemove}) => {
     }
 
     return (
-        <button value="Remove Paragraph" className={`remove danger ${isAllowedToRemove ? "" : "locked"}`} onClick={handleRemoveParagraph} tabIndex={-1} >
+        <button value="Remove Paragraph" className={`remove danger ${isAllowedToRemove ? "" : "locked"}`} onClick={handleRemoveParagraph} tabIndex={-1} name={author.id}>
             Remove
         </button>
     );
