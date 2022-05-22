@@ -2,14 +2,15 @@ package ch.fhnw.woweb.teamdocumentserver.service
 
 import ch.fhnw.woweb.teamdocumentserver.persistence.DocumentCommandRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ResetService(
     private val processor: DocumentProcessor,
     private val repository: DocumentCommandRepository
 ) {
-    //@Profile("e2e")
-    fun resetDb() {
+    @Transactional
+    fun reset() {
         processor.resetDocument()
         repository.deleteAll()
     }

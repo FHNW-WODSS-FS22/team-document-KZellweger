@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RestController
 class ResetController(
     private val service: ResetService
 ) {
-    //@Profile("e2e")
-    @DeleteMapping
-    fun resetDb(): ResponseEntity<Void> {
-        service.resetDb()
-        return ResponseEntity(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/reset")
+    fun reset(): ResponseEntity<Void> {
+        return try {
+            service.reset()
+            ResponseEntity(HttpStatus.NO_CONTENT)
+        } catch (e: Exception) {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }
