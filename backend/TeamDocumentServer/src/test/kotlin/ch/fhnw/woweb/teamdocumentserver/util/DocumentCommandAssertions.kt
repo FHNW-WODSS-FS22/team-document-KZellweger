@@ -71,6 +71,12 @@ object DocumentCommandAssertions {
             .hasSize(expectedPayload.size)
     }
 
+    fun verifyRemoveClientCommand(cmd: DocumentCommand, expectedPayload: UUID) {
+        assertThat(cmd.type).isEqualTo(CommandType.REMOVE_CLIENT)
+        val payload = gson.fromJson(cmd.payload, UUID::class.java)
+        assertThat(payload).isEqualTo(expectedPayload)
+    }
+
     private fun verifyParagraphList(cmd: DocumentCommand?, expectedPayload: List<Paragraph> = emptyList()): Boolean {
         val paragraphs: Array<Paragraph> = gson.fromJson(cmd?.payload, Array<Paragraph>::class.java)
         assertThat(paragraphs)

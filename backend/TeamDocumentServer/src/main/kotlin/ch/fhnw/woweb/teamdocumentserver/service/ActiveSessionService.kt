@@ -1,5 +1,6 @@
 package ch.fhnw.woweb.teamdocumentserver.service
 
+import ch.fhnw.woweb.teamdocumentserver.config.TeamDocumentServerProperties
 import ch.fhnw.woweb.teamdocumentserver.domain.command.CommandType
 import ch.fhnw.woweb.teamdocumentserver.domain.command.DocumentCommand
 import com.google.gson.Gson
@@ -9,7 +10,8 @@ import java.util.*
 
 @Service
 class ActiveSessionService(
-    private val activeUsers: MutableList<UUID> = mutableListOf()
+    private val activeUsers: MutableList<UUID> = mutableListOf(),
+    private val properties: TeamDocumentServerProperties
 ) {
 
     fun register(id: UUID): DocumentCommand {
@@ -37,7 +39,7 @@ class ActiveSessionService(
         return Mono.just(
             DocumentCommand(
                 payload = serializedIds,
-                sender = UUID.randomUUID(),
+                sender = properties.serverId,
                 type = CommandType.ADD_CLIENTS
             )
         )
