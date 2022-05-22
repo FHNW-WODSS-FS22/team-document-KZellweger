@@ -6,7 +6,10 @@ Dabei sollen die eingehenden Änderungen am Dokument als einzelne Commands model
 Die eingehenden Commands werden vom Backend in der ersten Variante sequenziell innerhalb einer Que verarbeitet und die aktualisierte Version des Dokuments an alle Teilnehmer gesendet.
 
 \subsection{Frontend}
-%TODO Peter Schmucki
+Das Frontend wird gemäss gängigen Konventionen organisiert.
+Komponenten werden zusammen mit ihrem Styling in Ordnern organisiert, Configurationen befinden sich auf top-level und Tests sind abgesondert von normalem Code.
+
+Fast alle Komponenten nutzen den Dispatcher oder einen bestimmten State, um einzelne Commands abzusetzen und den Application State im Redux Store zu manipulieren.
 
 \subsection{Backend}
 Zur Organisation der Backend Sourcen orientieren wir uns an der Onion-Architecture.
