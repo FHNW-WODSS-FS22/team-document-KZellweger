@@ -35,7 +35,7 @@ const AddButton = () => {
     }
 
     return (
-        <button disabled={error} value="Add Paragraph" onClick={handleAddParagraph}>
+        <button disabled={error} className={"add"} value="Add Paragraph" onClick={handleAddParagraph}>
             Add Paragraph
         </button>
     );

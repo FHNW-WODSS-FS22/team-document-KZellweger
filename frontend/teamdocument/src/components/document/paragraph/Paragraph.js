@@ -104,11 +104,11 @@ const Paragraph = ({id}) => {
             <div className="paragraphHeader">
                 <div>
                     <label>Author: </label>
-                    <p>{paragraph.author.name}</p>
+                    <p className={"author-name"}>{paragraph.author.name}</p>
                 </div>
                 <div>
                     <label>Locked By: </label>
-                    <p>{isLocked() ? paragraph.lockedBy.name : ''}</p>
+                    <p className={"locked-by"}>{isLocked() ? paragraph.lockedBy.name : ''}</p>
                 </div>
                 <div>
                     <input value={paragraph.ordinal} type="number" disabled={error} readOnly={isLocked() && !isLockedByLocalAuthor()} onChange={handleOrdinalChange}
