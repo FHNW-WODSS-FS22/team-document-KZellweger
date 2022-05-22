@@ -14,8 +14,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
-import {resetDb} from "../utils/requestUtil";
+import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

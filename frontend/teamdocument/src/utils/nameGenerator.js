@@ -1,20 +1,12 @@
-
 export const fetchSampleName = () => {
+  const akabab = 'https://akabab.github.io/starwars-api/api/id/';
+  const akababFn = (num) => `${akabab}${num}.json`;
 
-    const swappi = "https://swapi.dev/api/people/";
-    const akabab = "https://akabab.github.io/starwars-api/api/id/";
+  const num = Math.floor(Math.random() * 66);
 
-    const swappiFn = (num) => {
-        return `${swappi}${num}`;
-    }
+  return fetch(akababFn(num))
+    .then((response) => response.json())
+    .then().catch((error) => console.error(error));
+};
 
-    const akababFn = (num) => {
-        return `${akabab}${num}.json`;
-    }
-
-    const num = Math.floor(Math.random() * 66);
-
-    return fetch(akababFn(num))
-        .then(response => response.json())
-        .then().catch(error => console.error(error));
-}
+export default fetchSampleName;

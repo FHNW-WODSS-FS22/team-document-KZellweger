@@ -1,11 +1,11 @@
-.login {
+.login-div {
     width: 50%;
     border: 1px solid black;
     margin: 5% auto 0;
     padding: 1rem;
 }
 
-.login h2 {
+.login-div h2 {
     text-align: center;
     padding: .3rem;
 }
