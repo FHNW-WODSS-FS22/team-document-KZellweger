@@ -1,0 +1,27 @@
+.login {
+    width: 50%;
+    border: 1px solid black;
+    margin: 5% auto 0;
+    padding: 1rem;
+}
+
+.login h2 {
+    text-align: center;
+    padding: .3rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.login-form div {
+    display: flex;
+    justify-content: space-evenly;
+    margin: .3rem;
+}
+
+.login-form button {
+    width: 25%;
+}

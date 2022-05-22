@@ -8,7 +8,7 @@ import Error from "./components/error/Error";
 const App = () => {
     return (
         <BrowserRouter>
-            <div className="App" id="app">
+            <div className="App" id="app-container">
             <Error/>
             <Routes>
                 <Route path={'/'} element={<DocumentWrapper/>}/>
