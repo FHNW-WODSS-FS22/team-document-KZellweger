@@ -4,7 +4,36 @@
 %TODO: @Peter
 
 \subsection{Backend}
-%TODO: @Joshua
+
+\subsubsection{Unit Tests}
+
+Sämtliche Service- und Controller Klassen werden mit Unit-Tests getestet.
+Dazu wird das Framework JUnit verwendet.
+Die Unit Tests testen jeweils genau eine Klasse.
+Sämtliche Abhängigkeiten auf andere Services werden mit dem Framework Mockito gemocked.
+
+\subsubsection{Lasttests}
+
+Neben den einfachen Unit Tests wurden für den DocumentProcessor Lasttests implementiert.
+Diese stellen sicher, dass der DocumentProcessor Änderungen auch unter grössere Last schnell verarbeitet und dabei einen konsistenten Zustand im Dokument erstellt.
+In diesen Lasttests werden drei Benutzer simuliert welche parallel je 512 DocumentCommands verarbeiten lassen.
+Dabei wird vor jedem Verarbeitungsschritt eine zufällige Verzögerung von max. einer Sekunde eingebaut.
+Der Test stellt sicher, dass im Schnitt nicht mehr als vier Millisekunden für die Verarbeitung eines Commands verwendet.
+Der Test prüft weiter, dass das Dokument nach der Verarbeitung den erwarteten Zustand hat.
+
+\subsubsection{Application Tests}
+
+Mit der Testklasse TeamDocumentServerApplicationTests wird die Backendapplikation als Ganzes getestet.
+Dazu wird der gesamte Application Context hochgefahren.
+Anschliessend werden DocumentCommands direkt über die Controller Klassen verarbeitet.
+Dabei wird geprüft, dass Änderungen korrekt angewendet und veröffentlicht werden.
+
+In den Application Tests werden zudem einfache Lasttests ausgeführt.
+Gleich wie bei den Lasttests auf dem DocumentProcessor werden hier drei Benutzer simuliert welche parallel je 512 DocumentCommands verarbeiten lassen.
+Anschliessend wird sichergestellt, dass im Schnitt nicht mehr als 40 Millisekunden für die Verarbeitung eines Commands verwendet wird.
+Es wird weiter geprüft, dass das Dokument nach der Verarbeitung in einem Konsistenten zustand ist.
+
+
 
 \subsection{End to End Test}
 %TODO: @Peter
