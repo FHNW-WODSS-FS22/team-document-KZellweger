@@ -6,6 +6,7 @@ describe('User Suite', () => {
     cy.get('.username-primary').type('Test', { delay: 250 });
 
     cy.get('.add').click();
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
 
     // Assert locked state
     cy.get('.locked-by').should('contain.text', '');
@@ -20,6 +21,7 @@ describe('User Suite', () => {
 
   it('Releases a lock', () => {
     cy.get('.add').click();
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
     cy.get('[tabindex="1"]').should('have.class', 'locked');
     cy.get('[tabindex="1"]').click();
     cy.get('[tabindex="1"]').should('have.class', 'editing');
@@ -29,7 +31,9 @@ describe('User Suite', () => {
 
   it('Moves the lock', () => {
     cy.get('.add').click();
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
     cy.get('.add').click();
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
     cy.get('[tabindex="1"]').click();
     cy.get('[tabindex="1"]').should('have.class', 'editing');
     cy.get('[tabindex="2"]').should('have.class', 'locked');
@@ -45,9 +49,8 @@ describe('User Suite', () => {
     user.rename('Test');
     user.addParagraph();
     user.updateLock(user.selectRandomParagraph(), true);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
 
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
     cy.get('[tabindex="1"]').should('have.class', 'locked');
     cy.get('[tabindex="1"] .locked-by').should('contain.text', 'Test');
     cy.get('[tabindex="1"] textarea').should('have.attr', 'readonly');
@@ -69,8 +72,7 @@ describe('User Suite', () => {
     user.rename('Other');
     user.addParagraph();
     user.updateLock(user.selectRandomParagraph(), true);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
 
     cy.get('[tabindex="1"]').should('have.class', 'locked');
     cy.get('[tabindex="1"] .locked-by').should('contain.text', 'Other');
@@ -78,8 +80,7 @@ describe('User Suite', () => {
     cy.get('[tabindex="1"] input').should('have.attr', 'readonly');
 
     user.updateLock(user.selectRandomParagraph(), false);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
 
     // Behaviour should change after click
     cy.get('[tabindex="1"] textarea').click();
@@ -95,8 +96,7 @@ describe('User Suite', () => {
     const user = new User();
     user.addParagraph();
     user.updateLock(user.selectRandomParagraph(), true);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
     // Try remove
     cy.get('.remove').click();
     cy.get('.paragraphs').children('div').should('have.length', 1);

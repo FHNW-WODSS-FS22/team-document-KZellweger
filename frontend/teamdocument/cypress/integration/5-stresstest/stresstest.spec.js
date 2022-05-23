@@ -16,8 +16,14 @@ describe('Stress suite', () => {
     }
   };
 
+  beforeEach(() => {
+    cy.get('.username-primary', { timeout: 5000 }).clear();
+    cy.get('.username-primary').type(username, { delay: 250 });
+  });
+
   const add = () => {
     cy.get('.add').click();
+    cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
   };
 
   const remove = () => {
@@ -35,16 +41,12 @@ describe('Stress suite', () => {
     const n = 5;
     add();
     executeNActionsPerUser(n, add);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
     cy.get('.author-name').filter(`:contains("${username}")`).should('have.length', n + 1);
   });
 
   it('Can remove paragraphs under stress', () => {
     const n = 5;
     executeNActionsPerUser(n, addAndRemove);
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
     cy.get('.paragraphs').children('div').should('have.length', 0);
   });
 
