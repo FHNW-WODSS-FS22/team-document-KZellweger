@@ -186,18 +186,18 @@ Dies ist in Kapitel 4.5 weiter beschrieben.
 \textbf{AuthenticationController}
 
 Die Klasse AuthenticationController implementiert einen Spring RestController.
-Dieser stellt einen einzelnen GET\-Endpunkt zur Verfügung, über welchen sich Benutzer mittels Basic Authentication anmelden können.
+Dieser stellt einen einzelnen GET-Endpunkt zur Verfügung, über welchen sich Benutzer mittels Basic Authentication anmelden können.
 
 \textbf{CommandController}
 
 Die Klasse CommandController implementiert einen Spring RestController.
-Dieser Controller stellt zwei POST\-Endpunkte zur Verfügung.
+Dieser Controller stellt zwei POST-Endpunkte zur Verfügung.
 Über den ersten Endpoint kann eine Liste von DocumentCommands an den Server gesendet werden.
 Der Endpunkt übergibt diese Liste von Commands an den DocumentService.
 Diese wenden die Änderungen am Zustand des Dokuments an und leiten die Änderungen an andere Teilnehmer weiter.
 Über den zweiten Endpunkt kann ein gelöschter Paragraph wiederhergestellt werden.
 Die entsprechende Fachlogik wird an den DocumentSerivce delegiert.
-Letztlich stellt der Controller einen DELETE\-Endpunkt zur Verfügung.
+Letztlich stellt der Controller einen DELETE-Endpunkt zur Verfügung.
 Über diesen kann der Zustand des Dokuments zurückgesetzt werden.
 
 \textbf{DocumentStreamUpdateController}
