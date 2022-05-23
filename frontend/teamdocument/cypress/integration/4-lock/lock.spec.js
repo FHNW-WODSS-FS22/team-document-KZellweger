@@ -35,6 +35,7 @@ describe('User Suite', () => {
     cy.get('.add').click();
     cy.get('.UPDATE_PARAGRAPH_ORDINALS', { timeout: 10000 });
     cy.get('[tabindex="1"]').click();
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
     cy.get('[tabindex="1"]').should('have.class', 'editing');
     cy.get('[tabindex="2"]').should('have.class', 'locked');
     cy.get('.UPDATE_LOCK', { timeout: 10000 });
