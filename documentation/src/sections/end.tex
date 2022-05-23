@@ -15,7 +15,7 @@ Die Verarbeitung der Updates von der Eventsource lässt sich mit dem gleichen Pr
 Ein neuer Command entspräche dann einer neuen Funktion im Reducer.
 Die Redux Komponenten kommen ohne eigene Logik aus, was die gesamte Frontendapplikation übersichtlich und einfach zu warten macht.
 Die Implementation der Reducer-Funktionen hat sich als herausfordernder als erwartet dargestellt.
-So ist es im Endeffekt nicht gelungen, Reducer zu implementieren, welche einen garantiert Konsistenten Zustand herstellen.
+So ist es im Endeffekt nicht gelungen, Reducer zu implementieren, welche einen garantiert konsistenten Zustand herstellen.
 
 Was sich retrospektiv als Fehler erwiesen hat, war die Entscheidung die Commands aus dem Frontend via HTTP an den Server zu senden.
 Für jedes Update wird eine TCP Verbindung aufgebaut und entsprechend auch gewartet bis diese wieder abgebaut ist.
