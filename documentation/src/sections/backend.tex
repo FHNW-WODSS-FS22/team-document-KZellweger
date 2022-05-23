@@ -1,5 +1,4 @@
 \section{Backend}
-%TODO: @Joshua
 
 \subsection{Aufbau}
 
@@ -59,10 +58,9 @@ Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle die drei Bere
 
 \subsubsection{API Authentication}
 
-Macht Authentifizierung
-
 \begin{tabbing}
 Left \= Middle \= Right \= Right \kill
+Beschreibung:  \> \> \> Authentifizierung mit Basic Auth\\
 Endpunkt:  \> \> \> /api/v1/authentication\\
 Methode \>  \> \> GET\\
 Headers:  \> \>   \> Authentication: Basic \\
@@ -72,10 +70,9 @@ Response Body:  \> \>  \> application/json \\
 
 \subsubsection{API Document}
 
-Liefert den Initialen Status und Updates
-
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Dokument laden und Updates abonnieren\\
     Endpunkt:  \> \> \> api/v1/document\\
     Methode \>  \> \> GET\\
     Headers:  \> \>   \> Authentication: Basic\\
@@ -87,10 +84,9 @@ Liefert den Initialen Status und Updates
 
 \subsubsection{API Message}
 
-Verarbeitet Updates
-
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Änderung an Dokument vornehmen\\
     Endpunkt:  \> \> \> /api/v1/message\\
     Methode \>  \> \> POST\\
     Headers:  \> \>   \> Authentication: Basic\\
@@ -99,12 +95,20 @@ Verarbeitet Updates
     Response Code:  \> \>  \> 200, 401 oder 500 \\
 \end{tabbing}
 
-Stellt den zuletzt gelöschten Paragraphen wieder her.
+\begin{tabbing}
+    Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Zuletzt gelöschten Paragraphen wiederherstellen \\
+    Endpunkt:  \> \> \> /api/v1/message/restore\\
+    Methode \>  \> \> POST\\
+    Headers:  \> \>   \> Authentication: Basic\\
+    Response Code:  \> \>  \> 200, 401 oder 500 \\
+\end{tabbing}
 
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
+    Beschreibung:  \> \> \> Dokument zurücksetzen \\
     Endpunkt:  \> \> \> /api/v1/message/restore\\
-    Methode \>  \> \> POST\\
+    Methode \>  \> \> DELETE\\
     Headers:  \> \>   \> Authentication: Basic\\
     Response Code:  \> \>  \> 200, 401 oder 500 \\
 \end{tabbing}
@@ -230,20 +234,8 @@ Die Klasse DocumentService ist dafür Verantwortlich erhaltene Anfragen für Dok
 Sie delegiert die entsprechende Fachlogik Klassen ActiveSessionService, DocumentProcessor und DocumentCommandrepository.
 
 Die Methode process erlaubt es, eine Liste von DocumentCommands zu verarbeiten.
-Dabei wird die Verarbeitung an den DocumentProcessor delegiert.
-Dieser wendet Änderungen an und löst Konflikte auf.
-Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
-Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung.
-Anschliesend werden die Persistierten Commands über den Sink veröffentlicht.
-
 Die Methode subscribe erlaubt es, einen Stream des aktuellen Zustands des Dokuments und aller künftigen Änderungen an einem Dokument anzufragen.
-Diese Informationen werden aus drei Quellen zusammengetragen.
-Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
-Anschliessend wird eine Liste aller aktuellen Authoren des Dokuments aus dem ActiveSessionService geladen.
-Letztlich wird eine Subscription auf den Sink erstellt.
-Diese drei Quellen werden zusammengefasst aus der Methode zurückgegeben.
-Um sicherzustellen, dass die Liste der aktiven Nutzer aktuell ist, wird zudem beim Öffnen der Subscription eine Registrierung beim ActiveSessionService durchgeführt.
-Diese Registrierung wird beim Schliessen der Subscription wieder entfernt.
+Beide Abläufe werden in Kapitel 5.4 beschrieben.
 
 \textbf{DocumentProcessor}
 
@@ -254,7 +246,7 @@ Dazu besitzt Sie ein Attribut document vom gleichnamigen Typ.
 Der Processor verarbeitet denm Command anhand des gesetzten CommandTypes.
 Dabei muss er allfällige Konflikte erkennen und auflösen.
 Nach der Verarbeitung des Commands werden alle Änderungen und Konfliktlösungen als DocumentCommands zurückgegeben.
-
+\clearpage
 \textbf{ActiveSessionService}
 
 Die Klasse ActiveSessionService fürt den Zustand der aktiven Nutzer einer Session.
@@ -265,7 +257,7 @@ Der Service bietet Methoden um die aktiven Benutzer auszulesen, einen neuen Benu
 
 \textbf{DocumentCommandRepository}
 
-Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository$<$DocumentCommand, UUID$>$ von Spring.
+Das Interface DocumentCommandrepository erweitert das Interface ReactiveCrudRepository von Spring.
 Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für DocumentCommands in der angebundenen MongoDB auszuführen.
 
 \subsubsection{Konfiguration}
@@ -294,15 +286,164 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
 
 \clearpage
 
-\subsection{Sequenz}
+\subsection{Abläufe}
 
-\subsubsection{Subscription Öffnen und Schliessen}
+\subsubsection{Dokument laden und Änderungen abonnieren}
 
-\subsubsection{DocumentCommand verarbeiten}
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{1\textwidth}
+        \includegraphics[width=\textwidth]{graphics/seq_init_subscription.drawio}
+        \caption{Sequenzdiagramm Subscription erstellen}
+    \end{minipage}
+\end{figure}
+
+Die Komponente DocumentUpdateStreamController erlaubt es ein Dokument zu laden und Änderungen an diesem Dokument zu abonnieren.
+Dazu bietet der RestController einen Endpunkt, welcher den ein Resultat vom Typ Flux$<$DocumentCommand$>$ zurückgibt.
+Nachdem eine Anfrage beim Controller eingegangen ist, delegiert dieser die Erstellung des Flux an den DocumentService.
+Dieser registriert den Client hinter der Subscription beim ActiveSessionService und trägt anschliessend Informationen aus drei Quellen zusammen.
+Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
+Anschliessend wird eine Liste aller aktiven Clients des Dokuments aus dem ActiveSessionService geladen.
+Letztlich wird eine Subscription für Änderungen am Dokument erstellt.
+Der DocumentService führt dazu eine Instanzvariable vom Typ Sink.
+Alle Änderungen werden nach der Anwendung in diesen Sink geschrieben.
+Eine Subscription auf diesem Sink beinhaltet damit alle Änderungen, welche vorgenommen wurden.
+Die Informationen zum initialen Stand des Dokuments, aktiven Clients und die Subscription auf Änderungen werden anschliessend in einem einzelnen Flux zusammengefasst und zurückgegeben.
+Nachdem der Flux geschlossen wird, wird die Registrierung des aktiven Benutzers im ActiveSessionService wieder entfernt.
+
+\subsubsection{Änderungen verarbeiten}
+
+Die Komponente CommandController erlaubt es Änderungen an einem Dokument vorzunehmen und zu persistieren.
+Der Controller bietet dazu einen HTTP-Endpunkt, über welchen ein JSON-Serialisierter DocumentCommand übergeben werden kann.
+Ein DocumentCommand definiert unter anderem einen type, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
+Die Payload ist wiederum ein JSON-Serialisiertes Objekt.
+Die Verarbeitung eines DokumentCommands wird vom Controller an den DocumentService delegiert.
+Dieser übergibt den Command wiederum an den DocumentProcessor.
+Dieser wendet Änderungen an und löst Konflikte auf.
+Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
+Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung in der Datenbank .
+Anschliessend werden die persistierten Commands über die Instanzvariable vom Typ Sink veröffentlicht.
+Registrierte Clients haben eine Subscription auf diesen Sink und werden so über die Änderungen informiert.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{1\textwidth}
+        \includegraphics[width=\textwidth]{graphics/seq_send_command.drawio}
+        \caption{Sequenzdiagramm Command verarbeiten}
+    \end{minipage}
+\end{figure}
+
+\subsubsection{Fehlerbehandlung}
+
+Fachliche Fehler, die während der Verarbeitung von Änderungen an einem Dokument auftreten, werden innerhalb des DocumentProcessors behandelt.
+Dabei werden immer zusätzliche Änderungen generiert, welche Konflikte lösen.
+Die Verarbeitung wird nie durch das Werfen von Exceptions unterbrochen.
+Es ist möglich, dass die Verarbeitung einer Änderung oder das Veröffentlichen von Änderungen wegen einem technischen Fehler fehlschlägt.
+
+Wenn eine Exception beim Verarbeiten einer Änderung auftritt, wird die Verarbeitung abgebrochen und die Exception weiter geworfen.
+Exceptions werden in den Controller Klassen abgefangen.
+Im Fehlerfall wird dort eine ResponseEntity mit Statuscode 500 zurückgegeben.
+
+Wenn eine Exception beim Veröffentlichen einer Änderung auftritt, wird die Subscription geschlossen.
+Dadurch wird die Verbindung des betroffenen Clients getrennt.
+Es liegt in der Verwantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
 
 \clearpage
 
-\subsection{State- und Konfliktmanagment}
+\subsection{Zustands- und Konfliktmanagment}
 
+Um sicherzustellen, dass ein Dokument auf allen Clients einen konsistenten Zustand hat, wird der Zustand des Dokuments in der Serverapplikation geführt.
+Änderungen von Clients müssen an den Server gesendet werden.
+Dieser wendet die Änderungen auf dem Dokument an und leitet die Änderungen an alle anderen Clients weiter.
+Während der Anwendung von Änderungen, ist es in der Verantwortung der Serverapplikation, sicherzustellen, dass das Dokument in einem Konsistenten zustand bleibt.
+Wenn nötig, erstellt es dazu zusätzliche Änderungen und veröffentlicht diese ebenfalls an alle Clients.
+
+Die entsprechende Fachlogik ist in den Klassen DocumentService und DocumentProcessor implementiert.
+Dabei ist die Klasse DocumentProcessor für die Zustandsverwaltung des Dokuments verantwortlich.
+
+
+\subsubsection{Grundsatz}
+
+Der DocumentProcessor hat zwei private Instanzvariablen, die für das Zustandsmanagement relevant sind.
+Die Variable \textbf{document} ist vom gleichnamigen Typ.
+Diese Document-Instanz stellt die ''Source Of Truth'' für den Zustand des Dokuments dar.
+Ein Document besteht im Wesentlichen aus einer Liste von Paragraphen.
+Diese Liste wird mit synchronizedList(mutableListOf<Paragraph>()) initialisiert.
+Dadurch wird sichergestellt, dass der Zugriff für die Liste zwischen der Verarbeitung einzelner Commands synchronisiert ist.
+Die Variable \textbf{lock} hat den Typ ReentrantLock.
+Die Verarbeitung einiger DocumentCommands darf nicht parallel passieren, weil dadurch Konflikte ausgelöst werden können.
+Die Verarbeitung solcher DocumentCommands wird durch die Verwendung dieses ReentrantLocks gesperrt.
+
+\subsubsection{Zustandsänderungen}
+
+Alle Änderungen werden als Instanzen der Klasse DocumentCommand an den Server übermittelt.
+Nachfolgend wird beschrieben, welche Arten von DocumentCommands unterstützt sind, wie diese verarbeitet werden und wie mit möglichen Konflikten umgegangen wird.
+
+
+Ein DocumentCommand mit Typ \textbf{INITIAL} stellt den vollständigen Zustand eines Dokuments dar.
+Er beinhaltet als Payload eine Liste der Paragraphen in diesem Dokument.
+INITIAL Commands werden im Backend generiert, um den vollständigen Zustand eines Dokuments zu veröffentlichen.
+Eingehende INITIAL Commands werden im DocumentProcessor nicht angewendet.
+
+Ein DocumentCommand mit Typ \textbf{ADD\_PARAGRAPH} fügt einen neuen Abschnitt zum Dokument hinzu.
+Er beinhaltet als Payload einen einzelnen Paragraphen.
+Dieser Paragraph wird im DocumentProcessor deserialisiert und der Liste von Paragraphen im Dokument hinzugefügt.
+Es ist möglich, gleichzeitig zwei Commands eingehen, welche an derselben Stelle im Dokument einen Paragraphen einfügen möchten.
+Deshalb wird hier sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
+Während diese Korrektur vorgenommen wird, dürfen keine anderen Änderungen möglich sein.
+Deshalb wird die Verarbeitung eines ADD\_PARAGRAPH Commands mit dem ReentrantLock versehen.
+Nach der Verarbeitung werden der ADD\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS Command zurückgegeben, damit Sie veröffentlicht werden können.
+
+Ein DocumentCommand mit Typ \textbf{REMOVE\_PARAGRAPH} entfernt einen Paragraphen aus dem Dokument.
+Ein beinhaltet als Payload die UUID, des zu entfernenden Abschnitts.
+Bei der Verarbeitung wird der Abschnitt mit der gegebenen Id entfernt.
+Ist der Abschnitt bereits entfernt, wird kein Fehler geworfen.
+Nachdem ein Paragraph entfernt wurde, muss sichergestellt werden, dass es keine Lücke in den Ordinal Nummern der Paragraphen gibt.
+Deshalb wird auch hier sichergetellt, dass die Ordinalnummern aller Paragraphen korrekt sind.
+Anschliessend werden die REMOVE\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS zurückgegeben.
+Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
+
+Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH} aktualisiert den Textinhalt eines Abschnitts.
+Er beinhaltet als Payload einen einzelnen Paragraphen.
+Bei der Verarbeitung wird der relevante Abschnitt im Dokument gefunden und dessen Inhalt überschrieben.
+Hier wird bewusst kein explizites Konfliktmanagement betrieben.
+Paragraphen dürfen nur bearbeitet werden, wenn der Benutzer den Paragraph für sich gesperrt hat.
+Da ein Paragraph immer nur von einem Benutzer gesperrt sein kann und Updates in derselben Reihenfolge wie sie geschehen eingehen, können diese Updates immer angewendet werden.
+Es ist möglich, dass sich das Sperren eines Pargraphen von zwei Benutzern überschneidet.
+Am Ende darf aber immer nur ein Benutzer den Paragraphen gesperrt haben.
+In diesem Fall ist es das gewünschte Verhalten, dass die Änderungen dieses Benutzers alle anderen Änderungen am selben Abschnitt überschreiben. 
+
+Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH\_ORDINALS} aktualisiert die Ordinalnummern von Abschnitten.
+Er beinhaltet als Payload eine Liste von Paragraphen.
+Bei der Verarbeitung dieses Commands werden die Ordinalnummern aller Abschnitte mit den Ordinalnummern aus der Payload überschrieben.
+Anschliessend wird sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
+Es werden darauf der erhaltenen Command und allfällige Commands zur Konfliktlösung zurückgegeben.
+Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
+
+Ein DocumentCommand mit Typ \textbf{UPDATE\_AUTHOR} aktualisiert den Namen eines Authors, der das Dokument bearbeitet.
+Er beinhaltet als Payload eine Author-Instanz.
+Der Name dieses Authors wird auf allen Abschnitten im Dokument aktualisiert.
+Anschliessend wird der Command zurückgegeben.
+Es wird hier kein explizites Konfliktmanagement betrieben, da ein Benutzer immer nur an genau einem Gerät arbeiten kann.
+Sollte derselbe Benutzer auf mehreren Clients verwendet werden und gleichzeitig den Namen ändern, können sich diese Änderungen überschreiben.
+In diesem Fall wird das zuletzt gesendete Update angewendet und veröffentlicht.
+Damit ist der Zustand auch bei Konflikten konsistent.
+
+Ein DocumentCommand mit Typ \textbf{UPDATE\_LOCK} erlaubt es einen Abschnitt durch einen Benutzer zu ent-/sperren.
+Dies wird in den Clients verwendet, um sicherzustellen, dass nur ein Benutzer gleichzeitig an einem Paragraph arbeiten kann.
+Die Payload dieses Commands beinhaltet als Payload den Pargraphen, der gesperrt werden soll.
+Dieser Paragraph wird in der Liste von Pargraphen gefunden und durch setzten des lockedBy Attributs gesperrt.
+Ist auf der Payload kein lockedBy Attribut gesetzt, wird die Sperre entfernt.
+Dabei wird sichergestellt, dass eine Sperre nur durch den Benutzer der sie erstellt hat entfernt werden kann.
+Versucht ein anderer Benutzer, die Sperre aufzuheben, wird die Verarbeitung abgebrochen und ein Command welcher die Sperre zurücksetzt zurückgegeben.
+Damit sich das Sperren von Paragraphen zwischen Benutzern nicht überschneiden kann, ist die Verarbeitung dieses Commands mit dem ReentrantLock versehen. 
+
+Ein DocumentCommand mit Typ \textbf{ADD\_CLIENTS} teilt mit, dass ein neuer Bearbeiter am Dokument existiert.
+Dieser Command führt zu keiner Änderung am Dokument und wird im DocumentProcessor nicht verarbeitet.
+Er wird aber zurückgegeben, damit er an alle anderen Clients weitergegeben werden kann.
+
+Ein DocumentCommand mit Typ \textbf{REMOVE\_CLIENT} teilt mit, dass die Verbindung eines Bearbeiters getrennt wurde.
+Bei der Verarbeitung dieses Commands werden alle Paragraphen, welche durch diesen Bearbeiter gesperrt waren entsperrt.
+Dadurch wird sichergestellt, dass Paragraphen nicht gesperrt sind wenn ein Benutzer den Client beendet oder die Verbindung abbricht.
 
 \clearpage
