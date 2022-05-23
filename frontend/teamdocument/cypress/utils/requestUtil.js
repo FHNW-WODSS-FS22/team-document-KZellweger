@@ -8,24 +8,22 @@ const headers = () => ({
 });
 
 // eslint-disable-next-line default-param-last
-const requestUrl = (url = backendUrl, body = {}, method = 'GET', expectedResponseCode) => {
-  cy.request({
-    method,
-    body,
-    url,
-    headers: headers(),
-  })
-    .should((response) => {
-      expect(response.status).eq(expectedResponseCode);
-    });
-};
+const requestUrl = (url = backendUrl, body = {}, method = 'GET', expectedResponseCode) => cy.request({
+  method,
+  body,
+  url,
+  headers: headers(),
+})
+  .should((response) => {
+    expect(response.status).eq(expectedResponseCode);
+  });
 
-const resetDb = () => {
+const resetDb = async () => {
   const url = `${backendUrl}/reset`;
-  requestUrl(url, {}, 'DELETE', 204);
+  return requestUrl(url, {}, 'DELETE', 204);
 };
 
-const addParagraphByAPI = (author) => {
+const addParagraphByAPI = async (author) => {
   const payload = {
     id: randomUUID(),
     author,
@@ -33,7 +31,7 @@ const addParagraphByAPI = (author) => {
     content: '',
   };
 
-  requestUrl(backendUrl, [{
+  await requestUrl(backendUrl, [{
     type: 'ADD_PARAGRAPH',
     correlationId: payload.id,
     payload: JSON.stringify(payload),
@@ -43,8 +41,8 @@ const addParagraphByAPI = (author) => {
   return payload;
 };
 
-const lockParagraphByAPI = (author, paragraph) => {
-  requestUrl(backendUrl, [{
+const lockParagraphByAPI = async (author, paragraph) => {
+  await requestUrl(backendUrl, [{
     type: 'UPDATE_LOCK',
     payload: JSON.stringify(paragraph),
     sender: author.id,
@@ -53,12 +51,12 @@ const lockParagraphByAPI = (author, paragraph) => {
   return paragraph;
 };
 
-const updateParagraphContentByAPI = (author, paragraph, newContent) => {
+const updateParagraphContentByAPI = async (author, paragraph, newContent) => {
   let pContent = paragraph.content;
   pContent += newContent;
   const payload = { ...paragraph, content: pContent };
 
-  requestUrl(backendUrl, [{
+  await requestUrl(backendUrl, [{
     type: 'UPDATE_PARAGRAPH',
     payload: JSON.stringify(payload),
     sender: author.id,
@@ -68,8 +66,8 @@ const updateParagraphContentByAPI = (author, paragraph, newContent) => {
   return payload;
 };
 
-const removeParagraphByAPI = (author, paragraphId) => {
-  requestUrl(backendUrl, [{
+const removeParagraphByAPI = async (author, paragraphId) => {
+  await requestUrl(backendUrl, [{
     type: 'REMOVE_PARAGRAPH',
     payload: JSON.stringify(paragraphId),
     sender: author.id,

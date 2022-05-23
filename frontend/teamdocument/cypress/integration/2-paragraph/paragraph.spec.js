@@ -4,8 +4,10 @@ describe('Paragraph Suite', () => {
   beforeEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
-    cy.visit('localhost:3000');
+    cy.wait(2500);
+    cy.visit('localhost:3000/login');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2500);
     /* ==== Generated with Cypress Studio ==== */
     // Login to the application
     cy.get('.username').clear();
@@ -22,7 +24,7 @@ describe('Paragraph Suite', () => {
   afterEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.wait(2500);
     cy.get('.logout').click();
   });
 
@@ -86,14 +88,14 @@ describe('Paragraph Suite', () => {
       cy.get(`[tabindex="${i}"] textarea`).click();
       cy.get(`[tabindex="${i}"] textarea`).type(i.toString());
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(100);
+      cy.wait(500);
     }
     // Swap 3 with 1
     cy.get('[tabindex="3"] > .paragraphHeader').click();
     cy.get('[tabindex="3"] > .paragraphHeader input').clear();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
-    cy.get('[tabindex="3"] > .paragraphHeader input').type('1', { delay: 500 }).trigger('change');
+    cy.get('[tabindex="3"] > .paragraphHeader input').type('1', { delay: 250 }).trigger('change');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
     // Write 1 to the new 1
@@ -106,11 +108,13 @@ describe('Paragraph Suite', () => {
   it('Restores a deleted paragraph', () => {
     /* ==== Generated with Cypress Studio ==== */
     cy.get('.add').click();
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2500);
     cy.get('textarea').click();
     cy.get('textarea').type('This gets restored', { delay: 250 });
     // Simulate long waiting
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.wait(2500);
     cy.get('.remove').click();
     cy.get('.add').click({ shiftKey: true });
     /* ==== End Cypress Studio ==== */

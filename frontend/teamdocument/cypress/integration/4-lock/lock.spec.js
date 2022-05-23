@@ -5,8 +5,10 @@ describe('User Suite', () => {
   beforeEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
-    cy.visit('localhost:3000');
+    cy.wait(2500);
+    cy.visit('localhost:3000/login');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2500);
     /* ==== Generated with Cypress Studio ==== */
     // Login to the application
     cy.get('.username').clear();
@@ -23,7 +25,7 @@ describe('User Suite', () => {
   afterEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.wait(2500);
     cy.get('.logout').click();
   });
 

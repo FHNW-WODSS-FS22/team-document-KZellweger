@@ -14,12 +14,13 @@ const unknownAuthor = {
 };
 
 describe('Test Add Button', () => {
+  // eslint-disable-next-line global-require
   const crypto = require('crypto');
 
   Object.defineProperty(global.self, 'crypto', {
     value: {
-      getRandomValues: arr => crypto.randomBytes(arr.length)
-    }
+      getRandomValues: (arr) => crypto.randomBytes(arr.length),
+    },
   });
   it('Renders a button', () => {
     // eslint-disable-next-line max-len

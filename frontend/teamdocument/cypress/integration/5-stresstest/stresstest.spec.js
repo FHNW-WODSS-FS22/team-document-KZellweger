@@ -2,13 +2,12 @@ import { resetDb } from '../../utils/requestUtil';
 import User from '../../utils/user';
 
 describe('Stress suite', () => {
-  const users = [];
   const username = 'Special Name';
 
   // Pseudo asynchronous calls
   const executeNActionsPerUser = (n, handle) => {
     // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < n; i++) {
       // eslint-disable-next-line no-plusplus
       for (let j = 0; j < n; j++) {
         const user = new User();
@@ -21,11 +20,13 @@ describe('Stress suite', () => {
   beforeEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
-    cy.visit('localhost:3000');
+    cy.wait(2500);
+    cy.visit('localhost:3000/login');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(2500);
     /* ==== Generated with Cypress Studio ==== */
     // Login to the application
-    cy.get('.username').clear();
+    cy.get('.username', { timeout: 5000 }).should('be.visible').clear();
     cy.get('.username').type('user');
     cy.get('.password').clear();
     cy.get('.password').type('1234');
@@ -37,18 +38,12 @@ describe('Stress suite', () => {
 
     cy.get('.username-primary').clear();
     cy.get('.username-primary').type(username, { delay: 250 });
-
-    // Create 5 user
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < 5; i++) {
-      users.push(new User());
-    }
   });
 
   afterEach(() => {
     resetDb();
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.wait(2500);
     cy.get('.logout').click();
   });
 
