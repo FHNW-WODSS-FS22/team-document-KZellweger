@@ -286,11 +286,11 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
     \centering
     \begin{minipage}[b]{1\textwidth}
         \includegraphics[width=\textwidth]{graphics/seq_init_subscription.drawio}
-        \caption{Sequenzdiagramm Subscription erstellen}
-    \end{minipage}
+        \caption{Sequenzdiagramm Document Subscription}
+    \end{minipage}\label{fig:figureseqsub}
 \end{figure}
 
-Die Komponente DocumentUpdateStreamController erlaubt es ein Dokument zu laden und Änderungen an diesem Dokument zu abonnieren.
+Die Komponente DocumentUpdateStreamController erlaubt es, ein Dokument zu laden und Änderungen an diesem Dokument zu abonnieren.
 Dazu bietet der RestController einen Endpunkt, welcher den ein Resultat vom Typ Flux$<$DocumentCommand$>$ zurückgibt.
 Nachdem eine Anfrage beim Controller eingegangen ist, delegiert dieser die Erstellung des Flux an den DocumentService.
 Dieser registriert den Client hinter der Subscription beim ActiveSessionService und trägt anschliessend Informationen aus drei Quellen zusammen.
@@ -300,20 +300,20 @@ Letztlich wird eine Subscription für Änderungen am Dokument erstellt.
 Der DocumentService führt dazu eine Instanzvariable vom Typ Sink.
 Alle Änderungen werden nach der Anwendung in diesen Sink geschrieben.
 Eine Subscription auf diesem Sink beinhaltet damit alle Änderungen, welche vorgenommen wurden.
-Die Informationen zum initialen Stand des Dokuments, aktiven Clients und die Subscription auf Änderungen werden anschliessend in einem einzelnen Flux zusammengefasst und zurückgegeben.
+Die Informationen zum initialen Stand des Dokuments, aktiven Clients und die Subscription auf Änderungen werden in einem einzelnen Flux zusammengefasst und zurückgegeben.
 Nachdem der Flux geschlossen wird, wird die Registrierung des aktiven Benutzers im ActiveSessionService wieder entfernt.
 
 \subsubsection{Änderungen verarbeiten}
 
-Die Komponente CommandController erlaubt es Änderungen an einem Dokument vorzunehmen und zu persistieren.
-Der Controller bietet dazu einen HTTP-Endpunkt, über welchen ein JSON-Serialisierter DocumentCommand übergeben werden kann.
-Ein DocumentCommand definiert unter anderem einen type, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
-Die Payload ist wiederum ein JSON-Serialisiertes Objekt.
+Die Komponente CommandController erlaubt es, Änderungen an einem Dokument vorzunehmen und zu persistieren.
+Der Controller bietet dazu einen HTTP-Endpunkt, über welchen ein JSON-serialisierter DocumentCommand übergeben werden kann.
+Ein DocumentCommand definiert unter anderem einen Typ, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
+Die Payload ist wiederum ein JSON-serialisiertes Objekt.
 Die Verarbeitung eines DokumentCommands wird vom Controller an den DocumentService delegiert.
 Dieser übergibt den Command wiederum an den DocumentProcessor.
 Dieser wendet Änderungen an und löst Konflikte auf.
 Die übergebenen Commands und allfällige Commands zur Konfliktlösung werden vom DocumentProcessor zurückgegeben.
-Der DocumentService übergibt diese an das DocumentCommandRepository zur persistierung in der Datenbank .
+Der DocumentService übergibt diese an das DocumentCommandRepository zur Persistierung in der Datenbank.
 Anschliessend werden die persistierten Commands über die Instanzvariable vom Typ Sink veröffentlicht.
 Registrierte Clients haben eine Subscription auf diesen Sink und werden so über die Änderungen informiert.
 
@@ -322,7 +322,7 @@ Registrierte Clients haben eine Subscription auf diesen Sink und werden so über
     \begin{minipage}[b]{1\textwidth}
         \includegraphics[width=\textwidth]{graphics/seq_send_command.drawio}
         \caption{Sequenzdiagramm Command verarbeiten}
-    \end{minipage}
+    \end{minipage}\label{fig:figuresqcmd}
 \end{figure}
 
 \subsubsection{Fehlerbehandlung}
@@ -334,15 +334,15 @@ Es ist möglich, dass die Verarbeitung einer Änderung oder das Veröffentlichen
 
 Wenn eine Exception beim Verarbeiten einer Änderung auftritt, wird die Verarbeitung abgebrochen und die Exception weiter geworfen.
 Exceptions werden in den Controller Klassen abgefangen.
-Im Fehlerfall wird dort eine ResponseEntity mit Statuscode 500 zurückgegeben.
+Im Fehlerfall wird dort die Exception in das Log geschrieben und eine ResponseEntity mit Statuscode 500 zurückgegeben.
 
 Wenn eine Exception beim Veröffentlichen einer Änderung auftritt, wird die Subscription geschlossen.
 Dadurch wird die Verbindung des betroffenen Clients getrennt.
-Es liegt in der Verwantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
+Es liegt in der Verantwortung des Clients die Verbindung erneut zu öffnen und den aktuellen Stand des Dokuments zu laden.
 
 \clearpage
 
-\subsection{Zustands- und Konfliktmanagment}
+\subsection{Zustands- und Konfliktmanagement}\label{subsec:statemgmt}
 
 Um sicherzustellen, dass ein Dokument auf allen Clients einen konsistenten Zustand hat, wird der Zustand des Dokuments in der Serverapplikation geführt.
 Änderungen von Clients müssen an den Server gesendet werden.
