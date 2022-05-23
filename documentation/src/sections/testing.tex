@@ -51,7 +51,7 @@ Dabei wird geprüft, dass Änderungen korrekt angewendet und veröffentlicht wer
 In den Application Tests werden zudem einfache Lasttests ausgeführt.
 Gleich wie bei den Lasttests auf dem DocumentProcessor werden hier drei Benutzer simuliert welche parallel je 512 DocumentCommands verarbeiten lassen.
 Anschliessend wird sichergestellt, dass im Schnitt nicht mehr als 40 Millisekunden für die Verarbeitung eines Commands verwendet wird.
-Es wird weiter geprüft, dass das Dokument nach der Verarbeitung in einem Konsistenten zustand ist.
+Es wird weiter geprüft, dass das Dokument nach der Verarbeitung in einem konsistenten Zustand ist.
 
 
 
@@ -92,7 +92,7 @@ Auch sonst lassen sich bei Cypress einige Fehler nicht rekonstruieren, lösen si
 
 \subsubsection{Stress Tests}
 Die Stress Tests werden mit mehreren Instanzen der User Klasse ausgef\"uhrt.
-Der "User" verwaltet dabei einen eigenen State seiner Paragraphen in Memory und ruft die API auf, um seine eigenen Paragraphen im Dokument zu ver\"andern.
+Der ''User'' verwaltet dabei einen eigenen State seiner Paragraphen in Memory und ruft die API auf, um seine eigenen Paragraphen im Dokument zu ver\"andern.
 Der Cypress User interagiert mit diesen anderen Usern und versucht dabei seine Aufgaben abzuarbeiten.
 Die Tests lösen das Stressverhalten aus, indem mehrere Commands an das Backend gesendet werden, die ein zufälliges Userverhalten abbilden.
 Die Aufrufe erfolgen jedoch nicht asynchron.

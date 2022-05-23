@@ -2,12 +2,12 @@
 
 Die Applikation ist auf einen virtuellen Ubuntu Server bei Switch Tube deployt.
 Für Frontend und Backend sind eigene Docker Images erstellt.
-Für die Datenbank verwenden wir das Offizielle MongoDb Image.
+Für die Datenbank verwenden wir das Offizielle MongoDB Image.
 Die Container werden mit Docker-Compose verwaltet.
 
 \subsubsection*{Frontend}
 Das Frontend-Image wird mit einem Multi-Stage Dockerfile gebaut.
-Der Builder ist ein Node Container welcher den Production build erstellt.
+Der Builder ist ein Node Container welcher den Production-Build erstellt.
 Diese Artefakte werden in einen NGINX Container kopiert.
 
 NGINX dient dabei als Webserver für das Frontend und gleichzeitig als Reverse-Proxy.
