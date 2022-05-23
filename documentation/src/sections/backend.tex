@@ -196,7 +196,7 @@ Dieser Controller stellt zwei POST-Endpunkte zur Verfügung.
 Der Endpunkt übergibt diese Liste von Commands an den DocumentService.
 Diese wenden die Änderungen am Zustand des Dokuments an und leiten die Änderungen an andere Teilnehmer weiter.
 Über den zweiten Endpunkt kann ein gelöschter Paragraph wiederhergestellt werden.
-Die entsprechende Fachlogik wird an den DocumentSerivce delegiert.
+Die entsprechende Fachlogik wird an den DocumentService delegiert.
 Letztlich stellt der Controller einen DELETE-Endpunkt zur Verfügung.
 Über diesen kann der Zustand des Dokuments zurückgesetzt werden.
 
@@ -207,7 +207,7 @@ Dieser Controller ermöglicht es, den aktuellen Zustand eines Dokumentes zu lade
 Der Endpunkt, welcher dazu zur Verfügung steht erwartet, dass der Custom Header ''X-ClientId'' gesetzt ist.
 Dieser muss einen die Id des Authors, der die Daten laden möchte, beinhalten.
 Das Laden des Dokuments und das Erstellen der Abonnierung wird an den DocumentService delegiert.
-Als Rückgabetyp wird ''Flux$<$DocumentCommand$>$ verwendet.
+Als Rückgabetyp wird ''Flux$<$DocumentCommand$>$'' verwendet.
 Dadurch ist es möglich den Status des Documents und alle folgenden Änderungen in einem Stream zurückzugeben.
 
 \clearpage
