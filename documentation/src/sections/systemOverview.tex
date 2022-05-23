@@ -73,7 +73,7 @@ Wir haben uns für diese Variante aufgrund der bestehenden reaktiven Integration
 In der Folge wird auf die verschiedenen Kanäle und das Applikationsprotokoll eingegangen.
 
 \subsubsection{EventSource}
-Für die stetige Verbindung der Clients zum Server abonnieren die Clients eine EventSource.
+Für die langlebige Verbindung der Clients zum Server abonnieren die Clients eine EventSource.
 Die EventSource ist eine langlebige HTTP Verbindung.
 Über diese Verbindung hören alle Clients auf Änderungen, die von anderen Clients gemacht werden.
 Dieser Kanal sendet alle Commands einzeln an die Clients.
@@ -85,8 +85,8 @@ Die EventSource wird auch verwendet, um eine Aussage über die verbundenen Clien
 \subsubsection{HTTP}
 Die Clients wenden im Frontend alle Commands auf sich selber an und senden danach das Command an den Server.
 Dafür gibt es einen HTTP POST Endpunkt, der alle Commands entgegennimmt.
-Intern wird anhand des "type" in der Payload entschieden, wie mit dem Command umgegangen wird.
-Die genaue Übersicht der Endpunkte ist im Kapitel "API" zu finden.
+Intern wird anhand des ''type'' in der Payload entschieden, wie mit dem Command umgegangen wird.
+Die genaue Übersicht der Endpunkte ist im Kapitel ''API'' zu finden.
 Eine Beschreibung der implementierten Typen ist im Kapitel 5 beschrieben.
 
 \subsubsection{Applikationsprotokoll}
