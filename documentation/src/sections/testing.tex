@@ -20,7 +20,7 @@ Jest folgende Vorteile:
 
 Es sollen einzelne Komponenten getestet werden, damit deren Funktionalit\"at gegeben ist.
 Es wird darauf verzichtet Enzyme als zus\"atzliche Dependency einzubinden, da die Tests einfach gehalten werden sollen.
-Da die einzelnen Komponenten oftmals nur Kommandos an Redux dispatchen, ist deren Testing als abgeschottete Komponente nicht immer zielf\"uhrend, da indirekt die Funktionalit\"at von Redux getestet wird.
+Da die einzelnen Komponenten oftmals nur Commands an Redux dispatchen, ist deren Testing als abgeschottete Komponente nicht immer zielf\"uhrend, da indirekt die Funktionalit\"at von Redux getestet wird.
 Es bietet sich deshalb an, mehrere Funktionen in die End to End Tests zu verschieben.
 
 \subsection{Backend}
@@ -80,7 +80,7 @@ Da die End to End Test auf die Datenbank zugreifen, ist es ebenfalls notwendig e
 
 \subsubsection{Probleme}
 Nebst der angesprochenen Einzelnutzer Limitierung gibt es noch andere Herausforderungen im Zusammenhang mit dem End to End Testing.
-Da jedes Update ein eigenes Kommando erzeugt, kann es es sein, dass Cypress beispielsweise zu schnell tippt und bereits die n\"achste Aktion ausf\"uhrt, bevor das Backend die Inputs verarbeiten konnte.
+Da jedes Update ein eigenes Command erzeugt, kann es es sein, dass Cypress beispielsweise zu schnell tippt und bereits die n\"achste Aktion ausf\"uhrt, bevor das Backend die Inputs verarbeiten konnte.
 Beim normalen Arbeiten mit dem Dokument w\"urde einfach der letzte konsistente Zustand hergestellt.
 Beim Test ist es aber notwendig, dass von einem Bestimmten Output oder Status in der Applikation ausgegangen werden kann, um die Testbedingung zu erf\"ullen.
 Damit dies beim Testen nicht zum Problem wird, werden \"ofters cy.wait() Statements und delay Optionen auf Input aufgerufen.

@@ -74,30 +74,31 @@ In der Folge wird auf die verschiedenen Kanäle und das Applikationsprotokoll ei
 
 \subsubsection{EventSource}
 Für die stetige Verbindung der Clients zum Server abonnieren die Clients eine EventSource.
-Die EventSource ist eine persistente HTTP Verbindung.
+Die EventSource ist eine langlebige HTTP Verbindung.
 Über diese Verbindung hören alle Clients auf Änderungen, die von anderen Clients gemacht werden.
-Dieser Kanal sendet alle Kommandos einzeln an die Clients.
-Im Fehlerfall wird ein neuer Initial Command ausgelöst, der das gesamte Dokument an alle Clients verteilt.
+Dieser Kanal sendet alle Commands einzeln an die Clients.
+Im Fehlerfall wird die Verbindung geschlossen.
+Clients können die Verbindung darauf erneut, öffnen um den aktuellen Zustand des Dokuments zu erhalten.
 Damit wird ein konsistenter Zustand erstellt.
 Die EventSource wird auch verwendet, um eine Aussage über die verbundenen Clients machen zu können.
 
 \subsubsection{HTTP}
 Die Clients wenden im Frontend alle Commands auf sich selber an und senden danach das Command an den Server.
-Dafür gibt es einen HTTP POST Endpunkt, der alle Commands entgegen nimmt.
+Dafür gibt es einen HTTP POST Endpunkt, der alle Commands entgegennimmt.
 Intern wird anhand des "type" in der Payload entschieden, wie mit dem Command umgegangen wird.
-
 Die genaue Übersicht der Endpunkte ist im Kapitel "API" zu finden.
-
-Der eigentliche Kanal läuft über HTTPS.
+Eine Beschreibung der implementierten Typen ist im Kapitel 5 beschrieben.
 
 \subsubsection{Applikationsprotokoll}
-Die Frontend und Backend kommunizieren über JSON.
-Jedes JSON Objekt hat folgenden Aufbau:
+
+Frontend und Backend tauschen Commands im JSON-Format aus.
+Dabei haben die ausgetauschten Objekte folgenden Aufbau:
+
 \begin{itemize}
     \item type: Der Command Type (Bsp. ADD\_PARAGRAPH)
     \item payload: Ein JSON Objekt welches die Payload für den konkreten type enthält
     \item sender: Eine eindeutige ID des Senders
-    \item (opt.) correlationId: Eine zufällige, eindeutige ID
+    \item (opt.) correlationId: ID der payload eines anderen Commands
 \end{itemize}
 
 \subsection{Benutzerverwaltung}
