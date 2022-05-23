@@ -2,7 +2,7 @@
 
 \subsection{Lösungsstrategie}
 Um die verteilte Dokumentenbearbeitung zu ermöglichen, verwenden wir eine Variante von Eventsourcing.
-Dabei sollen die alle Änderungen am Dokument als einzelne Commands modelliert werden.
+Dabei sollen alle Änderungen am Dokument als einzelne Commands modelliert werden.
 Commands werden von Clients generiert, lokal angewendet und anschliessend an den Server gesendet.
 Dieser führt den Zustand des Dokuments und wendet Änderungen darauf an.
 Allfällige Konflikte werden dabei auf dem Server gelöst.
@@ -18,7 +18,7 @@ Das Anwenden von Commands in den Clients erlaubt es auch dort einzelne Änderung
 
 Das Versenden von Commands findet über zwei getrennte Kanäle statt.
 Für Versenden von Commands vom Backend an Clients verwenden wir HTTP-Event Streams (Server Sent Events).
-Als konkrete Implementation dieser Technologie setzen wir Spring-WebFlux ein.
+Auf Serverseite setzten wir dazu Spring-WebFlux ein.
 Die weitere Technologieauswahl orientiert sich an diesem Grundsatz Entscheid.
 Für das Versenden von Commands von Clients an das Backend werden HTTP-POST-Requests verwendet.
 Diese Trennung erlaubt es, das Schreiben und Lesen von Änderungen zu trennen.
@@ -50,7 +50,7 @@ Das Projektteam hat bis jetzt noch keine grösseren Projekte mit React umgesetzt
 Unser Ziel ist es in diesem Projekt die React Kenntnisse in einem Projekt zu vertiefen und die Client-Software möglichst pur funktional zu halten.
 
 Änderungen am Dokument werden auch im Frontend immer als Commands modelliert.
-Für die Verarbeitung dieser Commands und das Verwalten des Zustands der Client Applikation wird redux verwendet.
+Für die Verarbeitung dieser Commands und das Verwalten des Zustands der Client Applikation wird Redux verwendet.
 
 \begin{figure}[h]
     \centering
