@@ -201,11 +201,11 @@ Parallel wird die Änderung als Command an den Server gesendet welcher den Zusta
 Allfällige Konflikte werden dabei vom Server detektiert und aufgelöst.
 Diese korrekturen werden dann von allen Clients verarbeitet.
 
-\subsubsection*{Ablaufdiagram}
+Das nachfolgende Ablaufdiagramm stellt die möglichen Varianten von Mutationen innerhalb des Frontends dar.
 
 \begin{figure}[H]
-    \includegraphics[width=\textwidth,keepaspectratio]{fe_dataflow}
-    \caption{Datenfluss}
+    \includegraphics[width=0.9\textwidth,keepaspectratio]{fe_dataflow}
+    \caption{Ablaufdiagramm}
 \end{figure}
 
 \subsection{Fehler Behandlung}
@@ -220,3 +220,5 @@ Der Benutzer wird mit einer entsprechenden Fehlermeldung auf das Problem aufmerk
     \includegraphics[width=\textwidth,keepaspectratio]{errormessage}
     \caption{Fehler Meldung}
 \end{figure}
+
+Beim wiederherstellen der Verbindung zum Server wird von diesem der aktuelle Zustand des Dokumentes mit einem Initial-Command geladen.
