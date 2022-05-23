@@ -159,13 +159,13 @@ Darin kann die URL zu einem Benutzerbild abgespeichert werden
 
 \textbf{DocumentCommand}
 
-Eine Instanz der Klasse DocumentCommand stellt eine Änderung am Zustand einer Document\-Instanz dar.
+Eine Instanz der Klasse DocumentCommand stellt eine Änderung am Zustand einer Document-Instanz dar.
 DocumentCommands werden als einzige Entität persistiert.
-Damit DocumentCommands eindeutig identifiziert werden können, beinhaltet jede Instanz ein Attribut ''id'' vom Tye UUID\@.
+Damit DocumentCommands eindeutig identifiziert werden können, beinhaltet jede Instanz ein Attribut ''id'' vom Typ UUID\@.
 Diese id wird auch als Identifikator in der MongoDB verwendet.
 
 Die Änderungen welche ein DocumentCommand darstellt, werden über die Attribute ''payload'' und ''type'' definiert.
-Die Payload hat den Typ String und beinhaltet JSON\-serialisierte Daten, welche die vorzunehmenden Änderung darstellen.
+Die Payload hat den Typ String und beinhaltet JSON-serialisierte Daten, welche die vorzunehmenden Änderung darstellen.
 Das Feld ''type'' beinhaltet einen Wert aus der Enum CommandType.
 Dieser Wert kann in den Serviceklassen verwendet werden, um die Payload korrekt zu deserialisieren und die nötigen Änderungen am Dokument vorzunehmen.
 
