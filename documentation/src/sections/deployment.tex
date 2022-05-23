@@ -14,7 +14,7 @@ NGINX dient dabei als Webserver für das Frontend und gleichzeitig als Reverse-P
 Alle API Anfragen werden so durch den NGINX Server entgegengenommen und zum internen Dockernetzwerk weitergeleitet.
 
 \subsubsection*{Backend}
-Der Spring Server wird auf Basis des OpenJdk 11 Images gebaut.
+Der Spring Server wird auf Basis des OpenJDK 11 Images gebaut.
 Spring Webflux verwendet per Default den Reactor Netty Webserver.
 Die Anbindung zur MongoDB ist direkt in den Application Properties konfiguriert.
 
