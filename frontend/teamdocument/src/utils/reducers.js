@@ -5,7 +5,9 @@ const updateOrder = (prevStateParagraphs, changedStateParagraphs) => {
     const prev = prevStateParagraphs.find((pPrev) => pPrev.id === pChanged.id);
     if (prev) prev.ordinal = pChanged.ordinal;
   });
-  return prevStateParagraphs.map((p) => changedStateParagraphs.find((np) => np.id === p.id) || p);
+
+  // eslint-disable-next-line max-len
+  return prevStateParagraphs.map((existingParagraph) => ({ ...existingParagraph, ordinal: changedStateParagraphs.find((np) => np.id === existingParagraph.id)?.ordinal || existingParagraph.ordinal }));
 };
 
 const updateLocalAuthor = (author, changedAuthor) => {
