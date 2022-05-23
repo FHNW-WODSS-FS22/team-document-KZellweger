@@ -1,9 +1,8 @@
 \section{Fazit}
 
-Die umgesetzte Lösung erlaubt es ein Dokument parallel auf einem öffentlich erreichbaren Server zu bearbeiten.
-Die funktionalen Anforderungen an die Applikation sind grösstenteils umgesetzt.
-Das System hat aber noch diverse Lücken in den Bereichen Konfliktlösung und Zustandsverwaltung.
-In gewissen Situationen ist es möglich, dass inkonsistente Ordinalnummern entstehen und Änderungen verloren gehen.
+Die Lösung funktioniert grundsätzlich.
+Es ist möglich parallel ein Dokument auf einem öffentlich erreichbaren Server gemeinsam zu erarbeiten.
+Die funktionalen Anforderungen an die Applikation sind umgesetzt.
 
 Der Ansatz im Backend mit einem reaktiven Stack zu arbeiten und Updates über die Eventsource zu versenden funktioniert sehr gut.
 Neue Funktionalität könnte elegant mit zusätzlichen Command-Types hinzugefügt und in die Processor Chain eingebunden werden.
@@ -14,8 +13,6 @@ Analog scheint auch der Ansatz im Frontend mit React und Redux gut zu funktionie
 Die Verarbeitung der Updates von der Eventsource lässt sich mit dem gleichen Prinzip wie im Backend einfach erweitern.
 Ein neuer Command entspräche dann einer neuen Funktion im Reducer.
 Die Redux Komponenten kommen ohne eigene Logik aus, was die gesamte Frontendapplikation übersichtlich und einfach zu warten macht.
-Die Implementation der Reducer-Funktionen hat sich als herausfordernder als erwartet dargestellt.
-So ist es im Endeffekt nicht gelungen, Reducer zu implementieren, welche einen garantiert konsistenten Zustand herstellen.
 
 Was sich retrospektiv als Fehler erwiesen hat, war die Entscheidung die Commands aus dem Frontend via HTTP an den Server zu senden.
 Für jedes Update wird eine TCP Verbindung aufgebaut und entsprechend auch gewartet bis diese wieder abgebaut ist.
@@ -25,8 +22,6 @@ Diese Probleme wurden erst nach erfolgreichem Deployment auf dem öffentlichen S
 Aufgrund des schon fortgeschrittenen Projektstandes haben wir dieses Grundkonzept nicht gänzlich überarbeitet, sondern versucht das Netzwerk mit einer debounce funktion zu entlasten.
 Die Konfliktbehandlung des Backends geht davon aus, dass Updates in der korrekten Reihenfolge (FIFO) ankommen.
 Da es dennoch noch vorkommen kann, dass sich einzelne Requests überholen und die eigenen Updates vom Client direkt im Redux Store angewendet werden, können inkonsistente Zustände im Frontend entstehen.
-Dieses Problem ist die zweite Ursache für die bekannten Lücken im Bereich Konfliktlösung und Zustandsverwaltung.
 
 Am Ende dieses Projektes würden wir die Architektur des Systems grösstenteils beibehalten.
 Dabei allerdings das Versenden von Commands von Backen und Clients immer über denselben Kanal gehen lassen.
-Die Implementierung der Reducer müsste überarbeitet werden, um alle Konflikte korrekt behandeln zu können.
