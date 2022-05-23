@@ -23,3 +23,28 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+// eslint-disable-next-line import/namespace
+import { headers } from '../utils/requestUtil';
+
+Cypress.Commands.add('requestUrl', (url, body, method, expectedResponseCode) => cy.request({
+  method,
+  body,
+  url,
+  headers: headers(),
+})
+  .should((response) => {
+    // eslint-disable-next-line jest/no-standalone-expect
+    expect(response.status).eq(expectedResponseCode);
+  }));
+
+Cypress.Commands.add('resetDB', () => {
+  cy.request({
+    method: 'DELETE',
+    body: {},
+    url: 'localhost:8080/api/v1/message/reset',
+    headers: headers(),
+  }).should((response) => {
+    // eslint-disable-next-line jest/no-standalone-expect
+    expect(response.status).eq(204);
+  });
+});

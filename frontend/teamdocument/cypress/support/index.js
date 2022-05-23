@@ -18,3 +18,19 @@ import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+beforeEach(() => {
+  cy.resetDB();
+  cy.visit('localhost:3000/login');
+  cy.get('.username', { timeout: 10000 }).clear();
+  cy.get('.username').type('user');
+  cy.get('.password').clear();
+  cy.get('.password').type('1234');
+  cy.get('.login').click();
+  cy.get('.INITIAL', { timeout: 10000 });
+});
+
+afterEach(() => {
+  cy.resetDB();
+  cy.get('.logout', { timeout: 10000 }).click();
+});

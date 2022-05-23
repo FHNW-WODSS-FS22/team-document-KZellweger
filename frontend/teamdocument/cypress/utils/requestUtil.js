@@ -7,23 +7,7 @@ const headers = () => ({
   'Content-Type': 'application/json',
 });
 
-// eslint-disable-next-line default-param-last
-const requestUrl = (url = backendUrl, body = {}, method = 'GET', expectedResponseCode) => cy.request({
-  method,
-  body,
-  url,
-  headers: headers(),
-})
-  .should((response) => {
-    expect(response.status).eq(expectedResponseCode);
-  });
-
-const resetDb = async () => {
-  const url = `${backendUrl}/reset`;
-  return requestUrl(url, {}, 'DELETE', 204);
-};
-
-const addParagraphByAPI = async (author) => {
+const addParagraphByAPI = (author) => {
   const payload = {
     id: randomUUID(),
     author,
@@ -31,7 +15,7 @@ const addParagraphByAPI = async (author) => {
     content: '',
   };
 
-  await requestUrl(backendUrl, [{
+  cy.requestUrl(backendUrl, [{
     type: 'ADD_PARAGRAPH',
     correlationId: payload.id,
     payload: JSON.stringify(payload),
@@ -41,8 +25,8 @@ const addParagraphByAPI = async (author) => {
   return payload;
 };
 
-const lockParagraphByAPI = async (author, paragraph) => {
-  await requestUrl(backendUrl, [{
+const lockParagraphByAPI = (author, paragraph) => {
+  cy.requestUrl(backendUrl, [{
     type: 'UPDATE_LOCK',
     payload: JSON.stringify(paragraph),
     sender: author.id,
@@ -51,12 +35,12 @@ const lockParagraphByAPI = async (author, paragraph) => {
   return paragraph;
 };
 
-const updateParagraphContentByAPI = async (author, paragraph, newContent) => {
+const updateParagraphContentByAPI = (author, paragraph, newContent) => {
   let pContent = paragraph.content;
   pContent += newContent;
   const payload = { ...paragraph, content: pContent };
 
-  await requestUrl(backendUrl, [{
+  cy.requestUrl(backendUrl, [{
     type: 'UPDATE_PARAGRAPH',
     payload: JSON.stringify(payload),
     sender: author.id,
@@ -66,8 +50,8 @@ const updateParagraphContentByAPI = async (author, paragraph, newContent) => {
   return payload;
 };
 
-const removeParagraphByAPI = async (author, paragraphId) => {
-  await requestUrl(backendUrl, [{
+const removeParagraphByAPI = (author, paragraphId) => {
+  cy.requestUrl(backendUrl, [{
     type: 'REMOVE_PARAGRAPH',
     payload: JSON.stringify(paragraphId),
     sender: author.id,
@@ -75,8 +59,7 @@ const removeParagraphByAPI = async (author, paragraphId) => {
 };
 
 export {
-  resetDb,
-  requestUrl,
+  headers,
   addParagraphByAPI,
   lockParagraphByAPI,
   updateParagraphContentByAPI,

@@ -5,10 +5,6 @@
 // check out the link below and learn how to write your first test:
 // https://on.cypress.io/writing-first-test
 describe('Login Suite', () => {
-  beforeEach(() => {
-    cy.visit('localhost:3000/');
-  });
-
   it('Logs into the application', () => {
     cy.get('.username', { timeout: 10000 }).clear();
     cy.get('.username').type('user');

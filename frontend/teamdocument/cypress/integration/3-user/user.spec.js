@@ -1,22 +1,4 @@
-import { resetDb } from '../../utils/requestUtil';
-
 describe('User Suite', () => {
-  beforeEach(async () => {
-    await resetDb();
-    cy.visit('localhost:3000/login');
-    // Login to the application
-    cy.get('.username', { timeout: 5000 }).clear();
-    cy.get('.username').type('user', { delay: 250 });
-    cy.get('.password').clear();
-    cy.get('.password').type('1234', { delay: 250 });
-    cy.get('.login').click();
-  });
-
-  afterEach(async () => {
-    await resetDb();
-    cy.get('.logout', { timeout: 5000 }).click();
-  });
-
   it('Displays a user', () => {
     cy.get('.username-primary', { timeout: 5000 }).should('have.length.at.least', 1);
     cy.get('.username-secondary').should('have.length.at.least', 1);
