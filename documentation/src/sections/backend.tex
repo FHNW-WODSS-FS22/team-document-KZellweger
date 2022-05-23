@@ -177,16 +177,6 @@ Bei CommandType handelt es sich um eine Enum.
 Diese Enum beinhaltet alle Arten von DocumentCommands, welche im System bekannt sind.
 CommandTypes werden als ihr String Wert auf DocumentCommands persistiert.
 
-%INITIAL \\
-%ADD\_PARAGRAPH \\
-%REMOVE\_PARAGRAPH \\
-%UPDATE\_PARAGRAPH \\
-%UPDATE\_PARAGRAPH\_ORDINALS \\
-%UPDATE\_AUTHOR \\
-%UPDATE\_LOCK \\
-%ADD\_CLIENTS \\
-%REMOVE\_CLIENT \\
-
 \subsubsection{Package Web}
 
 \textbf{AuthenticationController}
@@ -203,7 +193,6 @@ Der Endpunkt übergibt diese Liste von Commands an den DocumentService.
 Diese wenden die Änderungen am Zustand des Dokuments an und leiten die Änderungen an andere Teilnehmer weiter.
 Über den zweiten Endpunkt kann ein gelöschter Paragraph wiederhergestellt werden.
 Die entsprechende Fachlogik wird an den DocumentSerivce delegiert.
-%TODO: Generic undo description?
 
 \textbf{DocumentStreamUpdateController}
 
