@@ -347,7 +347,7 @@ Es liegt in der Verantwortung des Clients die Verbindung erneut zu öffnen und d
 Um sicherzustellen, dass ein Dokument auf allen Clients einen konsistenten Zustand hat, wird der Zustand des Dokuments in der Serverapplikation geführt.
 Änderungen von Clients müssen an den Server gesendet werden.
 Dieser wendet die Änderungen auf dem Dokument an und leitet die Änderungen an alle anderen Clients weiter.
-Während der Anwendung von Änderungen, ist es in der Verantwortung der Serverapplikation, sicherzustellen, dass das Dokument in einem Konsistenten zustand bleibt.
+Während der Anwendung von Änderungen, ist es in der Verantwortung der Serverapplikation, sicherzustellen, dass das Dokument in einem Konsistenten Zustand bleibt.
 Wenn nötig, erstellt es dazu zusätzliche Änderungen und veröffentlicht diese ebenfalls an alle Clients.
 
 Die entsprechende Fachlogik ist in den Klassen DocumentService und DocumentProcessor implementiert.
@@ -360,7 +360,7 @@ Der DocumentProcessor hat zwei private Instanzvariablen, die für das Zustandsma
 Die Variable \textbf{document} ist vom gleichnamigen Typ.
 Diese Document-Instanz stellt die ''Source Of Truth'' für den Zustand des Dokuments dar.
 Ein Document besteht im Wesentlichen aus einer Liste von Paragraphen.
-Diese Liste wird mit synchronizedList(mutableListOf<Paragraph>()) initialisiert.
+Diese Liste wird mit ''synchronizedList(mutableListOf<Paragraph>())'' initialisiert.
 Dadurch wird sichergestellt, dass der Zugriff für die Liste zwischen der Verarbeitung einzelner Commands synchronisiert ist.
 Die Variable \textbf{lock} hat den Typ ReentrantLock.
 Die Verarbeitung einiger DocumentCommands darf nicht parallel passieren, weil dadurch Konflikte ausgelöst werden können.
@@ -370,7 +370,6 @@ Die Verarbeitung solcher DocumentCommands wird durch die Verwendung dieses Reent
 
 Alle Änderungen werden als Instanzen der Klasse DocumentCommand an den Server übermittelt.
 Nachfolgend wird beschrieben, welche Arten von DocumentCommands unterstützt sind, wie diese verarbeitet werden und wie mit möglichen Konflikten umgegangen wird.
-
 
 Ein DocumentCommand mit Typ \textbf{INITIAL} stellt den vollständigen Zustand eines Dokuments dar.
 Er beinhaltet als Payload eine Liste der Paragraphen in diesem Dokument.
@@ -384,14 +383,14 @@ Es ist möglich, gleichzeitig zwei Commands eingehen, welche an derselben Stelle
 Deshalb wird hier sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
 Während diese Korrektur vorgenommen wird, dürfen keine anderen Änderungen möglich sein.
 Deshalb wird die Verarbeitung eines ADD\_PARAGRAPH Commands mit dem ReentrantLock versehen.
-Nach der Verarbeitung werden der ADD\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS Command zurückgegeben, damit Sie veröffentlicht werden können.
+Nach der Verarbeitung werden die ADD\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS Commands zurückgegeben, damit Sie veröffentlicht werden können.
 
 Ein DocumentCommand mit Typ \textbf{REMOVE\_PARAGRAPH} entfernt einen Paragraphen aus dem Dokument.
 Ein beinhaltet als Payload die UUID, des zu entfernenden Abschnitts.
 Bei der Verarbeitung wird der Abschnitt mit der gegebenen Id entfernt.
 Ist der Abschnitt bereits entfernt, wird kein Fehler geworfen.
 Nachdem ein Paragraph entfernt wurde, muss sichergestellt werden, dass es keine Lücke in den Ordinal Nummern der Paragraphen gibt.
-Deshalb wird auch hier sichergetellt, dass die Ordinalnummern aller Paragraphen korrekt sind.
+Deshalb wird auch hier sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind.
 Anschliessend werden die REMOVE\_PARAGRAPH und UPDATE\_PARAGRAPH\_ORDINALS zurückgegeben.
 Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
 
@@ -409,7 +408,7 @@ Ein DocumentCommand mit Typ \textbf{UPDATE\_PARAGRAPH\_ORDINALS} aktualisiert di
 Er beinhaltet als Payload eine Liste von Paragraphen.
 Bei der Verarbeitung dieses Commands werden die Ordinalnummern aller Abschnitte mit den Ordinalnummern aus der Payload überschrieben.
 Anschliessend wird sichergestellt, dass die Ordinalnummern aller Paragraphen korrekt sind und keine Nummer doppelt vorkommt.
-Es werden darauf der erhaltenen Command und allfällige Commands zur Konfliktlösung zurückgegeben.
+Es werden darauf der erhaltenen Command und Commands zur Konfliktlösung zurückgegeben.
 Um sicherzustellen, dass die Ordinalnummern korrekt gesetzt werden, ist auch diese Verarbeitung mit dem ReentrantLock abgeschlossen.
 
 Ein DocumentCommand mit Typ \textbf{UPDATE\_AUTHOR} aktualisiert den Namen eines Authors, der das Dokument bearbeitet.
@@ -426,16 +425,17 @@ Dies wird in den Clients verwendet, um sicherzustellen, dass nur ein Benutzer gl
 Die Payload dieses Commands beinhaltet als Payload den Pargraphen, der gesperrt werden soll.
 Dieser Paragraph wird in der Liste von Pargraphen gefunden und durch setzten des lockedBy Attributs gesperrt.
 Ist auf der Payload kein lockedBy Attribut gesetzt, wird die Sperre entfernt.
-Dabei wird sichergestellt, dass eine Sperre nur durch den Benutzer der sie erstellt hat entfernt werden kann.
+Dabei wird sichergestellt, dass eine Sperre nur durch den Benutzer, der sie erstellt hat entfernt werden kann.
 Versucht ein anderer Benutzer, die Sperre aufzuheben, wird die Verarbeitung abgebrochen und ein Command welcher die Sperre zurücksetzt zurückgegeben.
 Damit sich das Sperren von Paragraphen zwischen Benutzern nicht überschneiden kann, ist die Verarbeitung dieses Commands mit dem ReentrantLock versehen. 
 
 Ein DocumentCommand mit Typ \textbf{ADD\_CLIENTS} teilt mit, dass ein neuer Bearbeiter am Dokument existiert.
 Dieser Command führt zu keiner Änderung am Dokument und wird im DocumentProcessor nicht verarbeitet.
-Er wird aber zurückgegeben, damit er an alle anderen Clients weitergegeben werden kann.
+Er wird bei der Registrierung einer Subscription erstellt und veröffentlicht.
 
 Ein DocumentCommand mit Typ \textbf{REMOVE\_CLIENT} teilt mit, dass die Verbindung eines Bearbeiters getrennt wurde.
 Bei der Verarbeitung dieses Commands werden alle Paragraphen, welche durch diesen Bearbeiter gesperrt waren entsperrt.
 Dadurch wird sichergestellt, dass Paragraphen nicht gesperrt sind wenn ein Benutzer den Client beendet oder die Verbindung abbricht.
+Der Command wird durch den ActiveSessionService generiert und vom DocumentProcessor verarbeitet, nachdem ein Client die Verbindung getrennt hat.
 
 \clearpage
