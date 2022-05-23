@@ -83,14 +83,19 @@ Nebst der angesprochenen Einzelnutzer Limitierung gibt es noch andere Herausford
 Da jedes Update ein eigenes Command erzeugt, kann es es sein, dass Cypress beispielsweise zu schnell tippt und bereits die n\"achste Aktion ausf\"uhrt, bevor das Backend die Inputs verarbeiten konnte.
 Beim normalen Arbeiten mit dem Dokument w\"urde einfach der letzte konsistente Zustand hergestellt.
 Beim Test ist es aber notwendig, dass von einem Bestimmten Output oder Status in der Applikation ausgegangen werden kann, um die Testbedingung zu erf\"ullen.
-Damit dies beim Testen nicht zum Problem wird, werden \"ofters cy.wait() Statements und delay Optionen auf Input aufgerufen.
+Damit dies beim Testen nicht zum Problem wird, wartet Cypress bestimmte Elemente im Frontend ab.
+Beim Eintippen wird jeweils ein delay von einigen Millisekunden verwendet.
 Dies ist aus Sicht des Testings vertretbar, da ein Mensch auch einen Abstand zwischen einzelnen Tastenanschl\"agen hat, eine "Think Time" hat oder auch auf das visuelle Feedback der Applikation warten kann.
-Einzelne cy.wait() Statements werden beispielsweise verwendet, um das Laden der Applikation nach dem Login oder das Zur\"ucksetzen des Dokuments abzuwarten.
+Es kann sein, dass die verwendete Star Wars API eine URL für ein Bild zurückliefert, diese konkret aber einen 404 - Not Found Fehler auslöst.
+Dies kann dazu führen, dass einige Tests fehlschlagen, obwohl sie korrekt implementiert sind.
+Auch sonst lassen sich bei Cypress einige Fehler nicht rekonstruieren, lösen sich aber bei erneuter Ausführung der Tests automatisch.
 
 \subsubsection{Stress Tests}
 Die Stress Tests werden mit mehreren Instanzen der User Klasse ausgef\"uhrt.
 Der "User" verwaltet dabei einen eigenen State seiner Paragraphen in Memory und ruft die API auf, um seine eigenen Paragraphen im Dokument zu ver\"andern.
 Der Cypress User interagiert mit diesen anderen Usern und versucht dabei seine Aufgaben abzuarbeiten.
+Die Tests lösen das Stressverhalten aus, indem mehrere Commands an das Backend gesendet werden, die ein zufälliges Userverhalten abbilden.
+Die Aufrufe erfolgen jedoch nicht asynchron.
 
 Stress Tests auf dem Live System wurden unsystematisch w\"ahrend der Entwicklung durch die Entwickler mit mehreren Browsern ausgef\"uhrt.
 Dadurch konnten jedoch verschiedene Probleme festgestellt werden, wie zum Beispiel die Limitierung \"uber das Netzwerk oder die Notwendigkeit eines gr\"osseren Buffers.
