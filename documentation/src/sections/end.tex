@@ -1,33 +1,31 @@
 \section{Fazit}
 
-Was funktioniert?
-Was geht nicht?
+Die Lösung funktioniert grundsätzlich.
+Es ist möglich parallel ein Dokument auf einem öffentlich erreichbaren Server gemeinsam zu erarbeiten.
+Die funktionalen Anforderungen an die Applikation sind umgesetzt.
 
+Der Ansatz im Backend mit einem reaktiven Stack zu arbeiten und Updates über die Eventsource zu versenden funktioniert sehr gut.
+Neue Funktionalität könnte elegant mit zusätzlichen Command-Types hinzugefügt und in die Processor Chain eingebunden werden.
+Der Processor erreichte im isolierten Lasttest eine durchschnittliche Verarbeitungszeit von 4 ms für einen einzelnen Command.
+Der Application Test von Controller bis zur Eventsource brauchte im Schnitt 40 ms für die komplette Verarbeitung.
 
-Backend teil mit Flux ist ganz nice.
-Der ist auch performant wie sau.
+Analog scheint auch der Ansatz im Frontend mit React und Redux gut zu funktionieren.
+Die Verarbeitung der Updates von der Eventsource lässt sich mit dem gleichen Prinzip wie im Backend einfach erweitern.
+Ein neuer Command entspräche dann einer neuen Funktion im Reducer.
+Die Redux Komponenten kommen ohne eigene Logik aus, was die gesamte Frontendapplikation übersichtlich und einfach zu warten macht.
 
-Frontend Teil mit Redux ist auch ganz nice.
-React mit Redux für Eventsourcing ist echt cool.
-Nur events publishen über Http.
-Sorta dumb components and hooks
+Was sich retrospektiv als Fehler erwiesen hat, war die Entscheidung die Commands aus dem Frontend via HTTP an den Server zu senden.
+Für jedes Update wird eine TCP Verbindung aufgebaut und entsprechend auch gewartet bis diese wieder abgebaut ist.
+Das führt bei schnellen aufeinanderfolgenden Updates über das Internet zu einem Request-Stau.
 
-Problematisch ist Netzwerk Traffic.
-Jedes Update ber Http und TCP.
-Langsam über netzwerk.
-Entweder blockend darum noch langsamer oder race conditions.
-EventSource (Server Sent Events) Teil wäre okay.
+Treffen am Server mehr Requests ein als dieser verarbeiten kann ist auch die Reihenfolge der eingehenden Commands nicht mehr garantiert.
 
-Wegen Netzwerk Issues (und deployment problemen) performt das Ganze nicht so.
-Versuche zu beheben hat viel Zeit gebraucht.
-Konflikt und State management deshalb zu kurz gekommen.
-Single Source Of Truth
+Diese Probleme wurden erst nach erfolgreichem Deployment auf dem öffentlichen Server sichtbar.
+Aufgrund des schon fortgeschrittenen Projektstandes haben wir dieses Grundkonzept nicht gänzlich überarbeitet, sondern versucht das Netzwerk mit einer debounce funktion zu entlasten.
 
-Zu spät im Ganzen getestet.
-Konzeptionelles Problem mit Dual Channel. (HTTP)
+Die Konfliktbehandlung des Backends geht davon aus, dass Updates in der korrekten Reihenfolge (FIFO) ankommen.
+Da es dennoch noch vorkommen kann, dass sich einzelne Requests überholen und die eigenen Updates vom Client direkt im Redux Store angewendet werden, können inkonsistente Zustände im Frontend entstehen.
 
-Backend Korrekt unter Annahme, dass Reihenfolge eingehalten.
-Könnte eleganter sein.
+Der vermeintliche Vorteil, dass kein Session-Management notwendig ist, wird hinfällig, sobald Informationen über andere Benutzer allen Clients zur Verfügung stehen sollen.
 
-Am Schluss: Sound Great, Doesn't work.
-Konzeptionelles Problem. Wäre vlt möglich. Aber sehr Aufwändig. (vlt mit websockets wäre es ok)
+Aus diesen Gründen würden wir die gesamte Lösung auf Websockets umbauen bei ansonst gleichbleibender Architektur.
