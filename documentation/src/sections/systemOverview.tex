@@ -41,37 +41,39 @@ Wir erhoffen uns vom Einsatz von Kotlin folgende Vorteile:
     \item Effiziente und Übersichtliche Anwendung von Streams
 \end{itemize}
 
-
 \subsubsection{Frontend Clients}
-Kein Teammitglied hat bis jetzt vertiefte Erfahrung im Bereich der Frontend-Entwicklung.
-Daher setzen wir auf das an der FHNW vermittelte Framework React, um die Clients zu implementieren.
+
+Für die Client-Applikation wird das Framework React eingesetzt.
 React bietet mit seinem Komponenten-Model eine einfache Abstraktionsmöglichkeit um die Anwendung sauber zu Kapseln.
-Die Funktionalen JSX Komponenten scheinen leichtgewichtiger im Vergleich zu den HTML-Template-Ansätzen von Angular oder VueJS\@.
-Unser Ziel ist es in diesem Projekt die Kenntnisse in einem Projekt zu vertiefen und die Client-Software möglichst pur funktional zu halten.
+Die Funktionalen React Komponenten scheinen leichtgewichtiger im Vergleich zu den HTML-Template-Ansätzen von Angular oder VueJS\@.
+Das Projektteam hat bis jetzt noch keine grösseren Projekte mit React umgesetzt.
+Unser Ziel ist es in diesem Projekt die React Kenntnisse in einem Projekt zu vertiefen und die Client-Software möglichst pur funktional zu halten.
 
 Änderungen am Dokument werden auch im Frontend immer als Commands modelliert.
-Für die Verarbeitung dieser Commands und das verwalten des Zustands der Client Applikation wird redux verwendet.
+Für die Verarbeitung dieser Commands und das Verwalten des Zustands der Client Applikation wird redux verwendet.
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}[b]{\textwidth}
+        \includegraphics[width=\textwidth]{images/TechStack2.drawio}
+        \caption{Technologie Stack}
+    \end{minipage}\label{fig:figstack}
+\end{figure}
 
 \subsubsection{Datenbank System}
 Um die kollaborativ erstellten Dokumente zu persistieren und zu verwalten setzen wir auf eine No-SQL Lösung.
 Das notwendige Datenmodel lässt sich elegant als \emph{Document} abbilden.
 Durch den Einsatz einer No-SQL Lösung kann die Representation der Dokumente über alle Layer der Applikation gleichbleibend beibehalten werden\@.
-
 Konkret wird im Projekt MongoDB als Datenbanksystem verwendet.
 Wir haben uns für diese Variante aufgrund der bestehenden reaktiven Integration in das Springframework entschieden.
 
 \clearpage
 
-\begin{figure}
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{images/TechStack2.drawio}
-    \caption{Technologie Stack}
-\end{figure}
-
 \subsection{Applikationsprotokoll}
 In der Folge wird auf die verschiedenen Kanäle und das Applikationsprotokoll eingegangen.
 
 \subsubsection{EventSource}
-Für die stetige Verbindung der Clients zum Server abonieren die Clients eine EventSource.
+Für die stetige Verbindung der Clients zum Server abonnieren die Clients eine EventSource.
 Die EventSource ist eine persistente HTTP Verbindung.
 Über diese Verbindung hören alle Clients auf Änderungen, die von anderen Clients gemacht werden.
 Dieser Kanal sendet alle Kommandos einzeln an die Clients.
