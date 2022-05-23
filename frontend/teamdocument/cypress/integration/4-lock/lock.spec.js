@@ -13,6 +13,7 @@ describe('User Suite', () => {
 
     // Assert locked for this user
     cy.get('[tabindex="1"]').click();
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
     cy.get('.locked-by').should('contain.text', 'Test');
     cy.get('[tabindex="1"]').should('have.class', 'editing');
   });
@@ -32,6 +33,7 @@ describe('User Suite', () => {
     cy.get('[tabindex="1"]').click();
     cy.get('[tabindex="1"]').should('have.class', 'editing');
     cy.get('[tabindex="2"]').should('have.class', 'locked');
+    cy.get('.UPDATE_LOCK', { timeout: 10000 });
     // Swap
     cy.get('[tabindex="2"]').click();
     cy.get('[tabindex="1"]').should('have.class', 'locked');
