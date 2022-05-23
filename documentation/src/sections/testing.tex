@@ -1,7 +1,27 @@
 \section{Testing}
-%TODO: Lead @Peter
+
+Das Testing der Applikation soll einerseits Unit Tests in Frontend und Backend beinhalten, sowie Integration Tests, die das Verhalten der kompletten Applikation \"uberpr\"ufen.
+Eine der identifizierten Problemquellen ist das Netzwerk.
+Dieses wird aber nicht explizit weiter getestet oder simuliert, da es kein Teil der Nutzererfahrung ist, die wir beeinflussen k\"onnen.
+F\"ur die einzelnen Teile der Applikation sollen Testframeworks angewandt werden, die grosse Verwendung finden und f\"ur die ausgew\"ahlte Technologie \"ublich ist.
+
 \subsection{Frontend}
-%TODO: @Peter
+F\"ur das Frontend wird Jest\footnote{{https://jestjs.io/}{https://jestjs.io/}} verwendet.
+
+Jest folgende Vorteile:
+
+\begin{enumerate}
+    \item Integration f\"ur React und Babel
+    \item Einfachheit
+    \item Ohne Browser ausf\"uhrbar
+    \item Einfach aufzusetzen
+    \item Schnell in der Ausf\"uhrung und dem Feedback
+\end{enumerate}
+
+Es sollen einzelne Komponenten getestet werden, damit deren Funktionalit\"at gegeben ist.
+Es wird darauf verzichtet Enzyme als zus\"atzliche Dependency einzubinden, da die Tests einfach gehalten werden sollen.
+Da die einzelnen Komponenten oftmals nur Commands an Redux dispatchen, ist deren Testing als abgeschottete Komponente nicht immer zielf\"uhrend, da indirekt die Funktionalit\"at von Redux getestet wird.
+Es bietet sich deshalb an, mehrere Funktionen in die End to End Tests zu verschieben.
 
 \subsection{Backend}
 
@@ -36,4 +56,41 @@ Es wird weiter geprüft, dass das Dokument nach der Verarbeitung in einem Konsis
 
 
 \subsection{End to End Test}
-%TODO: @Peter
+F\"ur das End to End Testing wird Cypress verwendet.
+
+Cypress bietet folgende interessanten Features:
+
+\begin{enumerate}
+    \item Simulation eines Browsers
+    \item DOM Traversierung anhand von CSS Selektoren
+    \item \"Uberpr\"ufen von Attributen, CSS Klassen, Value, \ldots
+    \item Aufnehmen von Test Cases mittels experimentellen Features im Cypress Studio
+\end{enumerate}
+
+Cypress bietet aber explizit ein wichtiges Feature nicht: Es ist nicht m\"oglich mehrere Tabs oder Browser Fenster zu simulieren.
+Aus der offiziellen Dokumentation\footnote{\href{https://docs.cypress.io/guides/references/trade-offs}{https://docs.cypress.io/guides/references/trade-offs}}: "There will never be support for multiple browser tabs."
+
+Konkret bedeutet dies f\"ur das Testing der Applikation, dass nicht mehrere Nutzer mit Cypress simuliert werden k\"onnen.
+Um dem entgegenzuwirken, wird eine Klasse f\"ur einen Dummy User geschrieben, der direkt die API der Applikation ansteuert.
+Mehrere Instanzen dieser Klasse k\"onnen somit die Multiuser Interaktion simulieren.
+Damit kann getestet werden, dass der maschinell gesteuerte Anwender von Cypress einen konsistenten Zustand beim Arbeiten antrifft.
+Auch f\"ur andere Basis Funktionen wie das Locking ist es notwendig mehrere Nutzer einzubringen.
+
+Da die End to End Test auf die Datenbank zugreifen, ist es ebenfalls notwendig einen Endpunkt anzubieten, der den Zustand des Dokuments zwischen den Ausf\"uhrungen zur\"ucksetzt.
+
+\subsubsection{Probleme}
+Nebst der angesprochenen Einzelnutzer Limitierung gibt es noch andere Herausforderungen im Zusammenhang mit dem End to End Testing.
+Da jedes Update ein eigenes Command erzeugt, kann es es sein, dass Cypress beispielsweise zu schnell tippt und bereits die n\"achste Aktion ausf\"uhrt, bevor das Backend die Inputs verarbeiten konnte.
+Beim normalen Arbeiten mit dem Dokument w\"urde einfach der letzte konsistente Zustand hergestellt.
+Beim Test ist es aber notwendig, dass von einem Bestimmten Output oder Status in der Applikation ausgegangen werden kann, um die Testbedingung zu erf\"ullen.
+Damit dies beim Testen nicht zum Problem wird, werden \"ofters cy.wait() Statements und delay Optionen auf Input aufgerufen.
+Dies ist aus Sicht des Testings vertretbar, da ein Mensch auch einen Abstand zwischen einzelnen Tastenanschl\"agen hat, eine "Think Time" hat oder auch auf das visuelle Feedback der Applikation warten kann.
+Einzelne cy.wait() Statements werden beispielsweise verwendet, um das Laden der Applikation nach dem Login oder das Zur\"ucksetzen des Dokuments abzuwarten.
+
+\subsubsection{Stress Tests}
+Die Stress Tests werden mit mehreren Instanzen der User Klasse ausgef\"uhrt.
+Der "User" verwaltet dabei einen eigenen State seiner Paragraphen in Memory und ruft die API auf, um seine eigenen Paragraphen im Dokument zu ver\"andern.
+Der Cypress User interagiert mit diesen anderen Usern und versucht dabei seine Aufgaben abzuarbeiten.
+
+Stress Tests auf dem Live System wurden unsystematisch w\"ahrend der Entwicklung durch die Entwickler mit mehreren Browsern ausgef\"uhrt.
+Dadurch konnten jedoch verschiedene Probleme festgestellt werden, wie zum Beispiel die Limitierung \"uber das Netzwerk oder die Notwendigkeit eines gr\"osseren Buffers.
