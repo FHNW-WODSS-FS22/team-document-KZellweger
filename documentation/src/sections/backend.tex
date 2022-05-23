@@ -259,10 +259,10 @@ Es kann damit verwendet werden um Create, Read, Update und Delete Optionen für 
 
 \textbf{Spring}
 
-Alle Klassen im Package "Service" sind mit der Spring-Boot-Annotation ''@Service'' versehen.
+Alle Klassen im Package ''Service'' sind mit der Spring-Boot-Annotation ''@Service'' versehen.
 Sie können damit automatisch von Spring-Boot instanziiert werden und stehen Sie in Spring Beans zur Verfügung und können über Constructor-Injection verwendet werden.
 
-Alle Klassen im Package "web" sind mit der Spring-Boot-Annotation ''@RestController'' versehen.
+Alle Klassen im Package ''web'' sind mit der Spring-Boot-Annotation ''@RestController'' versehen.
 Sie können damit automatisch von Spring-Boot instanziiert werden.
 
 \textbf{application.yml}
@@ -294,7 +294,7 @@ Die Klasse WebConfig beinhaltet die Konfiguration für SpringSecurity.
 \end{figure}
 
 Die Komponente DocumentUpdateStreamController erlaubt es, ein Dokument zu laden und Änderungen an diesem Dokument zu abonnieren.
-Dazu bietet der RestController einen Endpunkt, welcher den ein Resultat vom Typ Flux$<$DocumentCommand$>$ zurückgibt.
+Dazu bietet der RestController einen Endpunkt, welcher ein Resultat vom Typ Flux$<$DocumentCommand$>$ zurückgibt.
 Nachdem eine Anfrage beim Controller eingegangen ist, delegiert dieser die Erstellung des Flux an den DocumentService.
 Dieser registriert den Client hinter der Subscription beim ActiveSessionService und trägt anschliessend Informationen aus drei Quellen zusammen.
 Zuerst wird der aktuelle Stand des Dokuments beim DocumentProcessor angefragt.
