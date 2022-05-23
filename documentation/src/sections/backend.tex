@@ -40,7 +40,7 @@ Der Domain Layer wird durch das Package domain abgebildet.
 Dieses beinhaltet die Domänenobjekte und darf keine Abhängigkeiten auf andere Module beinhalten.
 Umgekehrt dürfen alle anderen Layer Abhängigkeiten auf den Domain Layer haben.
 Die Fachlogik der Applikation wird im Domain Service Layer implementiert.
-Dieser wird durch das Package service abgebildet.
+Dieser wird durch das Package Service abgebildet.
 Das Package Service beinhaltet alle Komponenten welche die Domänenobjekte verwalten oder den internen Zustand der Applikation führen.
 Der Layer Application Services bildet die Brücke zwischen externer Infrastruktur und Domain Services.
 Er wird mit den Packages persistence und web abgebildet.
@@ -52,8 +52,8 @@ Letztlich beinhaltet das Package config die technische Konfiguration der Applika
 
 \subsection{API}\label{subsec:api}
 
-Die Backendapplikation bietet eine HTTP\-Schnittstelle, welche von Frontendapplikationen verwendet werden kann.
-Die Schnittstelle ermöglicht es, sich im System anzumelden, Dokumente zu laden und Änderungen an Dokumenten zu laden und speichern.
+Die Backendapplikation bietet eine HTTP-Schnittstelle, welche von Frontendapplikationen verwendet werden kann.
+Die Schnittstelle ermöglicht es, sich im System anzumelden, Dokumente und Änderungen zu laden und zu speichern.
 Um diese Funktionalität zu ermöglichen, bietet die Schnittstelle die drei Bereiche ''Authentication'', ''Document'' und ''Message''.
 
 \subsubsection{API Authentication}
