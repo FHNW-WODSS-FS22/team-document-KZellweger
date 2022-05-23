@@ -1,26 +1,39 @@
 \section{Systemübersicht}
 
 \subsection{Lösungsstrategie}
-Um die verteilte Dokumentenbearbeitung zu ermöglichen, verwenden wir eine Variante von Eventsourcing als Lösungsansatz.
-Dabei sollen die eingehenden Änderungen am Dokument als einzelne Commands modelliert werden.
-Die eingehenden Commands werden vom Backend verarbeitet und an alle Teilnehmer weitergeleitet.
-Konflikte werden dabei auf dem Server gelöst.
-Wenn nötig werden dabei zusätzliche Commands generiert, welche die Konflikte auflösen.
+Um die verteilte Dokumentenbearbeitung zu ermöglichen, verwenden wir eine Variante von Eventsourcing.
+Dabei sollen die alle Änderungen am Dokument als einzelne Commands modelliert werden.
+Commands werden von Clients generiert, lokal angewendet und anschliessend an den Server gesendet.
+Dieser führt den Zustand des Dokuments und wendet Änderungen darauf an.
+Allfällige Konflikte werden dabei auf dem Server gelöst.
+Nach der Verarbeitung eines Commands veröffentlicht der Server alle angewendeten Commands sowie Commands zur Konfliktlösung.
+Diese Commands werden wiederum von den Clients angewendet, um einen konsistenten Zustand des Dokuments herzustellen.
+Commands werden in einer Datenbank persistiert.
+
+Dieser Ansatz erlaubt es Änderungen nachzuvollziehen und bei Bedarf einen früheren Zustand des Dokuments wiederherzustellen.
+Das Führen des Zustands auf dem Server erlaubt es, eine ''Source Of Truth'' zu haben, die den gültigen Zustand des Dokuments diktiert.
+Das Anwenden von Commands in den Clients erlaubt es auch dort einzelne Änderungen nachzuvollziehen und darzustellen.
 
 \subsection{Technologien und Systemaufbau}
 
-Wir verwenden HTTP-Event Streams als Grundlage für die Kommunikation zwischen dem Backend Server und den Klienten.
+Das Versenden von Commands findet über zwei getrennte Kanäle statt.
+Für Versenden von Commands vom Backend an Clients verwenden wir HTTP-Event Streams (Server Sent Events).
 Als konkrete Implementation dieser Technologie setzen wir Spring-WebFlux ein.
 Die weitere Technologieauswahl orientiert sich an diesem Grundsatz Entscheid.
+Für das Versenden von Commands von Clients an das Backend werden HTTP-POST-Requests verwendet.
+Diese Trennung erlaubt es, das Schreiben und Lesen von Änderungen zu trennen.
 
 \subsubsection{Backend Server}
-Spring WebFlux ist integriert in das Spring Boot Ökosystem und benötigt daher eine zugrundeliegende JVM\@.
-Sprachen die auf der JVM aufbauen, haben den Vorteil, dass sie System Interoperabel sind.
 
+Für das Backend wird eine Spring Boot Applikation mit Spring Webflux erstellt.
+Dieser Ansatz ermöglicht es, eine reaktive Serverapplikation zu erstellen, welche mit minimalem Boilerplate Code auskommt.
+
+Das Spring Boot Ökosystem benötigt eine zugrundeliegende JVM\@.
+Sprachen die auf der JVM aufbauen, haben den Vorteil, dass sie System Interoperabel sind.
 Anstatt Java setzen wir jedoch auf Kotlin als Backend Sprache.
-Bis jetzt hat kein Mitglied des Projektteams nennenswerte Erfahrung mit Kotlin und wir möchten diese Gelegenheit nutzen,
-die Sprache in einem Projekt näher kennenzulernen.
-Wir erwarten die nachfolgenden Vorteile:
+Bis jetzt hat kein Mitglied des Projektteams nennenswerte Erfahrung mit Kotlin oder reaktiver Programmierung.
+Wir möchten diese Gelegenheit nutzen, die Sprache in einem Projekt näher kennenzulernen.
+Wir erhoffen uns vom Einsatz von Kotlin folgende Vorteile:
 
 \begin{itemize}
     \item Robuste Implementierung dank Null Safety
