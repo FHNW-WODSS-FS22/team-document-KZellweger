@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   team_document:
-    image: zellwegerk/fhnw-teamdocument:0.0.6
+    image: zellwegerk/fhnw-teamdocument:1.0.4
     container_name: team_document
     ports:
       - "80:80"
@@ -11,7 +11,7 @@ services:
     depends_on:
       - "team_document_server"
   team_document_server:
-    image: zellwegerk/fhnw-document-server:0.0.6
+    image: zellwegerk/fhnw-document-server:1.0.4
     container_name: team_document_server
     ports:
       - "8080:8080"
