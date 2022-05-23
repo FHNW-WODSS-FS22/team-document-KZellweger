@@ -87,7 +87,7 @@ Die Clients wenden im Frontend alle Commands auf sich selber an und senden danac
 Dafür gibt es einen HTTP POST Endpunkt, der alle Commands entgegennimmt.
 Intern wird anhand des ''type'' in der Payload entschieden, wie mit dem Command umgegangen wird.
 Die genaue Übersicht der Endpunkte ist im Kapitel ''API'' zu finden.
-Eine Beschreibung der implementierten Typen ist im Kapitel 5 beschrieben.
+Eine Beschreibung der implementierten Typen ist im Kapitel 4 beschrieben.
 
 \subsubsection{Applikationsprotokoll}
 
@@ -103,5 +103,5 @@ Dabei haben die ausgetauschten Objekte folgenden Aufbau:
 
 \subsection{Benutzerverwaltung}
 Es ist keine persistente Benutzerverwaltung mit Registrationsprozess implementiert.
-Nach erstmaligem Anmelden in der Applikation mit einem globalen Benutzer, wird ein zufälliger Author erstellt.
-Die Daten des Authors werden im Local Storage des Browsers gespeichert, sodass bei erneutem Öffnen der Applikation der gleiche Author wiederverwendet wird.
+Nach erstmaligem Anmelden in der Applikation mit einem globalen Benutzer, wird ein zufälliger Autor erstellt.
+Die Daten des Autors werden im Local Storage des Browsers gespeichert, sodass bei erneutem Öffnen der Applikation der gleiche Autor wiederverwendet wird.

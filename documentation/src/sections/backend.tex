@@ -119,7 +119,7 @@ Response Body:  \> \>  \> application/json \\
 
 \subsubsection{Package Domain}
 
-Abbildung 5.3 zeigt die Klassen, des Packages Domain.
+Abbildung 4.3 zeigt die Klassen, des Packages Domain.
 Sämtliche Klassen in diesem Package besitzen einen öffentlichen Konstruktor, welcher für alle Instanzvariablen einen Parameter entgegennimmt.
 Diese Konstruktoren sind in der Abbildung nicht abgebildet.
 Im Zentrum der Domäne stehen die beiden Klassen DocumentCommand und Document.
@@ -142,10 +142,10 @@ Diese Liste kann mutiert, aber nicht ersetzt werden.
 \textbf{Paragraph}
 
 Eine Instanz der Klasse Paragraph repräsentiert einen Abschnitt in einem Dokument.
-Jeder Paragraph wird durch eine UUID identifiziert und ist einem Author zugewiesen.
+Jeder Paragraph wird durch eine UUID identifiziert und ist einem Autor zugewiesen.
 Ein Paragraph definiert weiter ein Attribut ''content'',  welches den Textinhalt des Abschnitts beinhaltet und ein Attribut ''ordinal'', welches die Position des Abschnitts im Dokument darstellt.
 Letztlich hat ein Paragraph ein Optionales Attribut ''lockedBy''.
-Dieses kann entweder leer (NULL) sein oder einen Author beinhalten.
+Dieses kann entweder leer (NULL) sein oder einen Autor beinhalten.
 Dieses Feld kann von Consumern der API verwendet werden, um das bearbeiten eines Paragraphen zu erlauben oder verbieten.
 
 \textbf{Author}
@@ -179,7 +179,7 @@ Bei CommandType handelt es sich um eine Enum.
 Diese Enum beinhaltet alle Arten von DocumentCommands, welche im System bekannt sind.
 CommandTypes werden als ihr String Wert auf DocumentCommands persistiert.
 Der verwendete CommandType bestimmt, wie ein Command verarbeitet wird.
-Dies ist in Kapitel 5.5 weiter beschrieben.
+Dies ist in Kapitel 4.5 weiter beschrieben.
 
 \subsubsection{Package Web}
 
@@ -230,7 +230,7 @@ Sie delegiert die entsprechende Fachlogik an die Klassen ActiveSessionService, D
 
 Die Methode process erlaubt es, eine Liste von DocumentCommands zu verarbeiten.
 Die Methode subscribe erlaubt es, einen Stream des aktuellen Zustands des Dokuments und aller künftigen Änderungen an einem Dokument anzufragen.
-Beide Abläufe werden in Kapitel 5.4 beschrieben.
+Beide Abläufe werden in Kapitel 4.4 beschrieben.
 
 \textbf{DocumentProcessor}
 
