@@ -13,9 +13,13 @@ const unknownAuthor = {
 }
 
 describe('Test Add Button', () => {
-    beforeEach(() => {
-        global.crypto = require('crypto');
-    })
+    const crypto = require('crypto');
+
+    Object.defineProperty(global.self, 'crypto', {
+        value: {
+            getRandomValues: arr => crypto.randomBytes(arr.length)
+        }
+    });
 
     it('Renders a button', () => {
         const store = createStore(reducer, initialState(unknownAuthor.id, unknownAuthor.name, unknownAuthor.image) , applyMiddleware(ReduxThunk))
