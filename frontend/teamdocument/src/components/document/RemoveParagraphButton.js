@@ -1,32 +1,38 @@
 import React from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import useSendMessagesHook from "../../utils/sendMessagesService";
+import { useDispatch, useSelector } from 'react-redux';
+import useSendMessagesHook from '../../utils/sendMessagesService';
 
 /* eslint-disable react/prop-types */
-const RemoveParagraphButton = ({id, isAllowedToRemove}) => {
+function RemoveParagraphButton({ id, isAllowedToRemove }) {
+  const dispatch = useDispatch();
+  const author = useSelector((state) => state.author);
+  const sendMessages = useSendMessagesHook(dispatch);
 
-    const dispatch = useDispatch();
-    const author = useSelector(state => state.author);
-    const sendMessages = useSendMessagesHook(dispatch);
+  const handleRemoveParagraph = (e) => {
+    e.preventDefault();
+    if (isAllowedToRemove) {
+      dispatch({ type: 'REMOVE_PARAGRAPH', payload: id });
 
-    const handleRemoveParagraph = e => {
-        e.preventDefault();
-        if (isAllowedToRemove) {
-            dispatch({ type: 'REMOVE_PARAGRAPH', payload: id })
-
-            sendMessages([{
-                type: 'REMOVE_PARAGRAPH',
-                payload: JSON.stringify(id),
-                sender: author.id
-            }]);
-        }
+      sendMessages([{
+        type: 'REMOVE_PARAGRAPH',
+        payload: JSON.stringify(id),
+        sender: author.id,
+      }]);
     }
+  };
 
-    return (
-        <button value="Remove Paragraph" className={`danger ${isAllowedToRemove ? "" : "locked"}`} onClick={handleRemoveParagraph} tabIndex={-1} >
-            Remove
-        </button>
-    );
+  return (
+    <button
+      type="button"
+      value="Remove Paragraph"
+      className={`remove danger ${isAllowedToRemove ? '' : 'locked'}`}
+      onClick={handleRemoveParagraph}
+      tabIndex={-1}
+      name={author.id}
+    >
+      Remove
+    </button>
+  );
 }
 
 export default RemoveParagraphButton;

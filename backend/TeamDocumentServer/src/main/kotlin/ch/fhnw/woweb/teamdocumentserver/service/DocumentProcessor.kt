@@ -71,6 +71,10 @@ class DocumentProcessor(
         return Flux.merge(just(addParagraphCommand), resolveOrdinalsConflicts())
     }
 
+    fun resetDocument() {
+        document.paragraphs.removeAll(document.paragraphs)
+    }
+
     private fun removeParagraph(removeParagraphCommand: DocumentCommand): Flux<DocumentCommand> = lock.withLock {
         val paragraphIdPayload = Gson().fromJson(removeParagraphCommand.payload, UUID::class.java)
         document.paragraphs.removeIf { it.id == paragraphIdPayload }

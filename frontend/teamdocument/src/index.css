@@ -9,7 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-input[type=text], button {
+input[type=text], input[type=password], button {
   color: #212121;
   font-size: 1.2rem;
   padding: 0.25rem 0.75rem;

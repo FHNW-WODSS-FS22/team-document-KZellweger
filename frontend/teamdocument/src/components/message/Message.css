@@ -1,0 +1,19 @@
+.message {
+    padding: .1rem;
+}
+
+.ADD_CLIENTS, .ADD_PARAGRAPH {
+    color: #28a745;
+}
+
+.REMOVE_CLIENT, .REMOVE_PARAGRAPH {
+    color: #dc3545
+}
+
+.UPDATE_PARAGRAPH_ORDINALS, .UPDATE_LOCK, .UPDATE_PARAGRAPH, .UPDATE_AUTHOR {
+    color: #ffc107
+}
+
+.INITIAL {
+    color: #17a2b8
+}

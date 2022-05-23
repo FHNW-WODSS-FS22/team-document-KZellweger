@@ -1,15 +1,22 @@
-import React from 'react'
-import {useSelector} from "react-redux";
+import React from 'react';
+import './Message.css';
+import { useSelector } from 'react-redux';
 
-const Message = () => {
+function Message() {
+  const messages = useSelector((state) => state.messages);
 
-    const messages = useSelector(state => state.messages);
-
-    return(
-        <div className="wrapper">
-            { messages.map((m, i) => { return <p key={i}>{m}</p>}) }
-        </div>
-    )
+  return (
+    <div className="wrapper">
+      {
+          messages.map((m, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <p key={i} className={`message ${m}`}>
+              {m}
+            </p>
+          ))
+      }
+    </div>
+  );
 }
 
-export default Message
+export default Message;

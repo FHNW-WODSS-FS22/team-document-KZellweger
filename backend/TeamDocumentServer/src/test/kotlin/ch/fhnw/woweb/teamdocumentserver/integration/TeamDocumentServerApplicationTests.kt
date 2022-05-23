@@ -58,7 +58,8 @@ class TeamDocumentServerApplicationTests {
     fun testProcessCommands_persistenceAndNewSubscription() {
         // Given
         val cmds = listOf(createAddCommand(createParagraphPayload()))
-        val subscription = updateController?.getUpdatedDocumentSubscription(clientId)?.take(4)
+        val subscription = updateController?.getUpdatedDocumentSubscription(clientId)?.take(5)
+
         // When
         thread {
             commandController?.processCommands(cmds)
