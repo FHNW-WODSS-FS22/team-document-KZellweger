@@ -28,4 +28,5 @@ Da es dennoch noch vorkommen kann, dass sich einzelne Requests überholen und di
 
 Der vermeintliche Vorteil, dass kein Session-Management notwendig ist, wird hinfällig, sobald Informationen über andere Benutzer allen Clients zur Verfügung stehen sollen.
 
-Aus diesen Gründen würden wir die gesamte Lösung auf Websockets umbauen bei ansonst gleichbleibender Architektur.
+Am Ende dieses Projektes würden wir die Architektur des Systems grösstenteils beibehalten.
+Dabei allerdings das Versenden von Commands von Backen und Clients immer über denselben Kanal gehen lassen.
