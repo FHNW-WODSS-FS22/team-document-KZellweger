@@ -160,7 +160,7 @@ Der Zustand enthält folgende Komponenten:
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
     Key:  \> \> \> author\\
-    Type:  \> \> \> Object {id: UUID, name: String, image: String} \\
+    Type:  \> \> \> Object \{id: UUID, name: String, image: String\} \\
     Beschreibung \>  \> \> Repräsentation des eigenen Autors.\\
 \end{tabbing}
 
@@ -188,7 +188,7 @@ Der Zustand enthält folgende Komponenten:
 \begin{tabbing}
     Left \= Middle \= Right \= Right \kill
     Key:  \> \> \> error\\
-    Type:  \> \> \> Object{isPresent: Boolean, message: String} \\
+    Type:  \> \> \> Object\{isPresent: Boolean, message: String\} \\
     Beschreibung \>  \> \> Objekt welches einen Fehler anzeigt sofern einer vorhanden ist\\
 \end{tabbing}
 
@@ -199,7 +199,7 @@ Dieser sendet anschliessend den aktuellen Zustand des Dokuments mit einem Initia
 Parallel wird die Änderung als Command an den Server gesendet welcher den Zustand des Dokuments aktualisiert und an alle anderen Teilnehmer weiterleitet.
 
 Allfällige Konflikte werden dabei vom Server detektiert und aufgelöst.
-Diese korrekturen werden dann von allen Clients verarbeitet.
+Diese Korrekturen werden dann von allen Clients verarbeitet.
 
 Das nachfolgende Ablaufdiagramm stellt die möglichen Varianten von Mutationen innerhalb des Frontends dar.
 
