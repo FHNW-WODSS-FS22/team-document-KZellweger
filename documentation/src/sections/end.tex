@@ -17,16 +17,11 @@ Die Redux Komponenten kommen ohne eigene Logik aus, was die gesamte Frontendappl
 Was sich retrospektiv als Fehler erwiesen hat, war die Entscheidung die Commands aus dem Frontend via HTTP an den Server zu senden.
 Für jedes Update wird eine TCP Verbindung aufgebaut und entsprechend auch gewartet bis diese wieder abgebaut ist.
 Das führt bei schnellen aufeinanderfolgenden Updates über das Internet zu einem Request-Stau.
-
 Treffen am Server mehr Requests ein als dieser verarbeiten kann ist auch die Reihenfolge der eingehenden Commands nicht mehr garantiert.
-
 Diese Probleme wurden erst nach erfolgreichem Deployment auf dem öffentlichen Server sichtbar.
 Aufgrund des schon fortgeschrittenen Projektstandes haben wir dieses Grundkonzept nicht gänzlich überarbeitet, sondern versucht das Netzwerk mit einer debounce funktion zu entlasten.
-
 Die Konfliktbehandlung des Backends geht davon aus, dass Updates in der korrekten Reihenfolge (FIFO) ankommen.
 Da es dennoch noch vorkommen kann, dass sich einzelne Requests überholen und die eigenen Updates vom Client direkt im Redux Store angewendet werden, können inkonsistente Zustände im Frontend entstehen.
-
-Der vermeintliche Vorteil, dass kein Session-Management notwendig ist, wird hinfällig, sobald Informationen über andere Benutzer allen Clients zur Verfügung stehen sollen.
 
 Am Ende dieses Projektes würden wir die Architektur des Systems grösstenteils beibehalten.
 Dabei allerdings das Versenden von Commands von Backen und Clients immer über denselben Kanal gehen lassen.
