@@ -6,7 +6,7 @@ Dieses wird aber nicht explizit weiter getestet oder simuliert, da es kein Teil 
 F\"ur die einzelnen Teile der Applikation sollen Testframeworks angewandt werden, die grosse Verwendung finden und f\"ur die ausgew\"ahlte Technologie \"ublich ist.
 
 \subsection{Frontend}
-F\"ur das Frontend wird Jest\footnote{{https://jestjs.io/}{https://jestjs.io/}} verwendet.
+F\"ur das Frontend wird Jest\footnote{\href{{https://jestjs.io/}{https://jestjs.io/}} verwendet.
 
 Jest folgende Vorteile:
 
@@ -30,12 +30,12 @@ Es bietet sich deshalb an, mehrere Funktionen in die End to End Tests zu verschi
 Sämtliche Service- und Controller Klassen werden mit Unit-Tests getestet.
 Dazu wird das Framework JUnit verwendet.
 Die Unit Tests testen jeweils genau eine Klasse.
-Sämtliche Abhängigkeiten auf andere Services werden mit dem Framework Mockito gemocked.
+Sämtliche Abhängigkeiten auf andere Services werden mit dem Framework Mockito gemocket.
 
 \subsubsection{Lasttests}
 
 Neben den einfachen Unit Tests wurden für den DocumentProcessor Lasttests implementiert.
-Diese stellen sicher, dass der DocumentProcessor Änderungen auch unter grössere Last schnell verarbeitet und dabei einen konsistenten Zustand im Dokument erstellt.
+Diese stellen sicher, dass der DocumentProcessor Änderungen auch unter grössereunter r Last schnell verarbeitet und dabei einen konsistenten Zustand im Dokument erstellt.
 In diesen Lasttests werden drei Benutzer simuliert welche parallel je 512 DocumentCommands verarbeiten lassen.
 Dabei wird vor jedem Verarbeitungsschritt eine zufällige Verzögerung von max. einer Sekunde eingebaut.
 Der Test stellt sicher, dass im Schnitt nicht mehr als vier Millisekunden für die Verarbeitung eines Commands verwendet.

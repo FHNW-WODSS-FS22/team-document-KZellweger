@@ -310,7 +310,7 @@ Nachdem der Flux geschlossen wird, wird die Registrierung des aktiven Benutzers 
 
 Die Komponente CommandController erlaubt es, Änderungen an einem Dokument vorzunehmen und zu persistieren.
 Der Controller bietet dazu einen HTTP-Endpunkt, über welchen ein JSON-serialisierter DocumentCommand übergeben werden kann.
-Ein DocumentCommand definiert unter anderem einen Typ, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
+Ein DocumentCommand definiert unter Anderem einen Typ, welcher ein Wert der Enum CommandType sein muss und eine Payload vom Typ String.
 Die Payload ist wiederum ein JSON-serialisiertes Objekt.
 Die Verarbeitung eines DokumentCommands wird vom Controller an den DocumentService delegiert.
 Dieser übergibt den Command wiederum an den DocumentProcessor.
