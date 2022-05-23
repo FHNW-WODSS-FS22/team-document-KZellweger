@@ -1,2 +1,33 @@
 \section{Fazit}
 
+Was funktioniert?
+Was geht nicht?
+
+
+Backend teil mit Flux ist ganz nice.
+Der ist auch performant wie sau.
+
+Frontend Teil mit Redux ist auch ganz nice.
+React mit Redux für Eventsourcing ist echt cool.
+Nur events publishen über Http.
+Sorta dumb components and hooks
+
+Problematisch ist Netzwerk Traffic.
+Jedes Update ber Http und TCP.
+Langsam über netzwerk.
+Entweder blockend darum noch langsamer oder race conditions.
+EventSource (Server Sent Events) Teil wäre okay.
+
+Wegen Netzwerk Issues (und deployment problemen) performt das Ganze nicht so.
+Versuche zu beheben hat viel Zeit gebraucht.
+Konflikt und State management deshalb zu kurz gekommen.
+Single Source Of Truth
+
+Zu spät im Ganzen getestet.
+Konzeptionelles Problem mit Dual Channel. (HTTP)
+
+Backend Korrekt unter Annahme, dass Reihenfolge eingehalten.
+Könnte eleganter sein.
+
+Am Schluss: Sound Great, Doesn't work.
+Konzeptionelles Problem. Wäre vlt möglich. Aber sehr Aufwändig. (vlt mit websockets wäre es ok)
